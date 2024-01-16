@@ -7,6 +7,7 @@ import { FieldValues } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { Button, Form, TextInput } from "@/components";
 import { useNotification } from "@/providers";
+import { fetchService } from "@/services";
 
 const schema = z.object({
   name: z.string().min(1, { message: "Required" }),
@@ -25,25 +26,18 @@ const Registration = () => {
 
   const onSubmit = async (data: FieldValues) => {
     setIsLoading(true);
-    try {
-      const res = await fetch("/api/auth/users", {
-        method: "POST",
-        body: JSON.stringify(data),
-      }).then((res) => res.json());
 
-      if (res.error) {
-        setSnackBarMessage(`${res?.error}`);
-        setIsSnackbarOpen(true);
-        return { error: res.error, details: res?.details };
-      }
+    const response = await fetchService("auth/users", { method: "POST", data });
 
-      if (res.user) push("/");
-    } catch (err) {
-      setSnackBarMessage(`${err}`);
+    setIsLoading(false);
+
+    if (response.error) {
+      setSnackBarMessage(`${response?.error}`);
       setIsSnackbarOpen(true);
-    } finally {
-      setIsLoading(false);
+      return response;
     }
+
+    if (response.user) push("/");
   };
 
   return (
