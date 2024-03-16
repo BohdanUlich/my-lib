@@ -6,6 +6,7 @@ import { z } from "zod";
 import bcrypt from "bcrypt";
 import { NextAuthOptions } from "next-auth";
 import { UserDocument } from "@/app/api/auth/users/route";
+import { Session } from "next-auth";
 
 async function getUser(email: string): Promise<UserDocument | undefined> {
   try {
@@ -70,44 +71,46 @@ export const authConfig: NextAuthOptions = {
         try {
           await connectDb();
 
-          const userExists = await User.findOne({ email });
+          let currentUser = await User.findOne({ email });
 
-          if (!userExists) {
-            const res = await fetch("http://localhost:3000/api/user", {
-              method: "POSt",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                name,
-                email,
-              }),
+          if (!currentUser) {
+            currentUser = new User({
+              name,
+              email,
             });
 
-            if (res.status === 200) return user;
+            await currentUser.save();
 
-            return null;
+            user.id = currentUser._id.toString();
+
+            return true;
           }
+
+          user.id = currentUser._id.toString();
+
+          return true;
         } catch (err) {
           console.log(err);
+          return false;
         }
       }
-      return user;
+
+      return true;
     },
-    jwt(params: any) {
-      if (params.user) {
-        params.token.id = params.user.id;
+    async jwt({ token, user }) {
+      if (user) {
+        token.userId = user.id;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      let customSession: any = session;
+
+      if (token.userId) {
+        customSession.user.id = token.userId;
       }
 
-      return params.token;
-    },
-    session({ session, token }) {
-      console.log("session, token", session, token);
-
-      if (session?.user) {
-        (session.user as { id: string }).id = token.id as string;
-      }
-      return session;
+      return customSession as Session;
     },
   },
   session: {

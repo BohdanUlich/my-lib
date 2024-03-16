@@ -43,6 +43,7 @@ export const POST = async (req: NextRequest): Promise<NewResponse> => {
     if (oldUser) {
       return NextResponse.json(
         {
+          success: false,
           error: "Email is already in use",
         },
         { status: 422 }
@@ -52,6 +53,7 @@ export const POST = async (req: NextRequest): Promise<NewResponse> => {
     const user = await User.create({ ...parsedCredentials });
 
     return NextResponse.json({
+      success: true,
       user: {
         id: user._id.toString(),
         email: user.email,
@@ -62,6 +64,7 @@ export const POST = async (req: NextRequest): Promise<NewResponse> => {
     if (error instanceof ZodError) {
       return NextResponse.json(
         {
+          success: false,
           error: "Validation error",
           details: error.errors.map((err) => ({
             message: err.message,
@@ -74,6 +77,7 @@ export const POST = async (req: NextRequest): Promise<NewResponse> => {
 
     return NextResponse.json(
       {
+        success: false,
         error: "Internal server error",
       },
       { status: 500 }

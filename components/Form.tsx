@@ -3,11 +3,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Box, SxProps } from "@mui/material";
 import React, { ReactNode } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import { ZodObject, ZodRawShape } from "zod";
+import { ZodType } from "zod";
 
 interface FormParams {
   children: ReactNode;
-  schema: ZodObject<ZodRawShape>;
+  schema: ZodType;
   onSubmit: (data: any) => Promise<{ error: string; details: any[] } | void>;
   sx?: SxProps;
 }

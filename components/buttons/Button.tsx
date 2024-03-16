@@ -13,11 +13,13 @@ export const Button = ({
   isLoading,
   disabled,
   startIcon,
+  sx,
   ...rest
 }: ButtonProps) => {
   return (
     <MuiButton
       disabled={isLoading || disabled}
+      sx={{ textTransform: "initial", ...sx }}
       {...rest}
       startIcon={
         isLoading ? <CircularProgress color="inherit" size={20} /> : startIcon

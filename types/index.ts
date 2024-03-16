@@ -1,6 +1,2 @@
-interface User {
-  id: string;
-  email: string;
-  name?: string;
-  password?: string;
-}
+export * from "./constants";
+export * from "./types";
