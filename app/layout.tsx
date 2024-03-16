@@ -1,4 +1,8 @@
-import { NextAuthProvider, NotificationProvider } from "@/providers";
+import {
+  NextAuthProvider,
+  NotificationProvider,
+  QueryClientProvider,
+} from "@/providers";
 import "./globals.css";
 import type { Metadata } from "next";
 import { ThemeProvider } from "@/providers";
@@ -16,11 +20,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <NextAuthProvider>
-          <ThemeProvider>
-            <NotificationProvider>{children}</NotificationProvider>
-          </ThemeProvider>
-        </NextAuthProvider>
+        <QueryClientProvider>
+          <NextAuthProvider>
+            <ThemeProvider>
+              <NotificationProvider>{children}</NotificationProvider>
+            </ThemeProvider>
+          </NextAuthProvider>
+        </QueryClientProvider>
       </body>
     </html>
   );
