@@ -20,6 +20,9 @@ export const robotoMono = Roboto_Mono({
 
 const theme = createTheme({
   typography: { fontFamily: robotoMono.style.fontFamily },
+  palette: {
+    contrastThreshold: 4.5,
+  },
 });
 
 export const ThemeProvider = ({ children }: ThemeProviderProps) => {

@@ -1,61 +1,21 @@
 "use client";
-import { Alert, Snackbar } from "@mui/material";
-import {
-  useState,
-  createContext,
-  useContext,
-  ReactNode,
-  Dispatch,
-  SetStateAction,
-} from "react";
+import { ReactNode } from "react";
+import { SnackbarProvider } from "notistack";
 
 interface NotificationProviderProps {
   children: ReactNode;
 }
 
-interface NotificationContextProps {
-  setIsSnackbarOpen: Dispatch<SetStateAction<boolean>>;
-  setSnackBarMessage: Dispatch<SetStateAction<string>>;
-}
-
-const NotificationContext = createContext<NotificationContextProps | undefined>(
-  undefined
-);
-
 export const NotificationProvider = ({
   children,
 }: NotificationProviderProps) => {
-  const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackBarMessage] = useState("");
-
   return (
-    <NotificationContext.Provider
-      value={{
-        setIsSnackbarOpen,
-        setSnackBarMessage,
-      }}
+    <SnackbarProvider
+      autoHideDuration={3000}
+      anchorOrigin={{ horizontal: "center", vertical: "bottom" }}
+      hideIconVariant
     >
       {children}
-
-      <Snackbar
-        open={isSnackbarOpen}
-        autoHideDuration={4000}
-        onClose={() => setIsSnackbarOpen(false)}
-        color="error"
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-      >
-        <Alert severity="error">{snackbarMessage}</Alert>
-      </Snackbar>
-    </NotificationContext.Provider>
+    </SnackbarProvider>
   );
-};
-
-export const useNotification = () => {
-  const context = useContext(NotificationContext);
-  if (!context) {
-    throw new Error(
-      "useNotification must be used within a NotificationProvider"
-    );
-  }
-  return context;
 };

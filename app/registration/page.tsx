@@ -6,23 +6,29 @@ import * as z from "zod";
 import { FieldValues } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { Button, Form, TextInput } from "@/components";
-import { useNotification } from "@/providers";
 import { fetchService } from "@/services";
+import { useSnackbar } from "notistack";
+import { signIn } from "next-auth/react";
 
-const schema = z.object({
-  name: z.string().min(1, { message: "Required" }),
-  email: z
-    .string()
-    .email({ message: "Invalid email" })
-    .min(1, { message: "Required" }),
-  password: z.string().min(6, { message: "Min 6 chars" }),
-});
+const schema = z
+  .object({
+    name: z.string().min(1, { message: "Required" }),
+    email: z
+      .string()
+      .email({ message: "Invalid email" })
+      .min(1, { message: "Required" }),
+    password: z.string().min(6, { message: "Min 6 chars" }),
+    confirm_password: z.string().min(1, { message: "Required" }),
+  })
+  .refine((data) => data.password === data.confirm_password, {
+    message: "Passwords do not match",
+    path: ["confirm_password"],
+  });
 
 const Registration = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const { setSnackBarMessage, setIsSnackbarOpen } = useNotification();
-
   const { push } = useRouter();
+  const { enqueueSnackbar } = useSnackbar();
 
   const onSubmit = async (data: FieldValues) => {
     setIsLoading(true);
@@ -32,12 +38,26 @@ const Registration = () => {
     setIsLoading(false);
 
     if (response.error) {
-      setSnackBarMessage(`${response?.error}`);
-      setIsSnackbarOpen(true);
+      enqueueSnackbar(`${response?.error}`, { variant: "error" });
       return response;
     }
 
-    if (response.user) push("/");
+    if (response.user) {
+      const result = await signIn("credentials", {
+        redirect: false,
+        email: data.email,
+        password: data.password,
+      });
+
+      if (!result?.error && result?.status === 200) {
+        enqueueSnackbar("Sign up successful. Welcome to My lib", {
+          variant: "success",
+        });
+        push("/");
+      } else {
+        enqueueSnackbar(result?.error, { variant: "error" });
+      }
+    }
   };
 
   return (
@@ -57,6 +77,16 @@ const Registration = () => {
             label="Password"
             type="password"
             autoComplete="new-password"
+            required
+            fullWidth
+          />
+        </Grid>
+
+        <Grid item xs={12}>
+          <TextInput
+            name="confirm_password"
+            label="Confirm Password"
+            type="password"
             required
             fullWidth
           />

@@ -7,8 +7,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useState } from "react";
 import { Button, Form, TextInput } from "@/components";
-import { useNotification } from "@/providers";
 import { FieldValues } from "react-hook-form";
+import { useSnackbar } from "notistack";
 
 const schema = z.object({
   email: z
@@ -20,8 +20,8 @@ const schema = z.object({
 
 const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const { setSnackBarMessage, setIsSnackbarOpen } = useNotification();
   const { push } = useRouter();
+  const { enqueueSnackbar } = useSnackbar();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/";
 
@@ -35,14 +35,12 @@ const Login = () => {
       });
 
       if (res?.error) {
-        setSnackBarMessage(`${res?.error}`);
-        setIsSnackbarOpen(true);
+        enqueueSnackbar(`${res?.error}`, { variant: "error" });
       } else {
         push("/");
       }
     } catch (err) {
-      setSnackBarMessage(`${err}`);
-      setIsSnackbarOpen(true);
+      enqueueSnackbar(`${err}`, { variant: "error" });
     } finally {
       setIsLoading(false);
     }
