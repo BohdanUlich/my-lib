@@ -1,21 +1,24 @@
 "use client";
 import { Button, CategoryCard } from "@/components";
 import { Box, Container, Grid } from "@mui/material";
-import { signOut, useSession } from "next-auth/react";
+import { signOut } from "next-auth/react";
 import AddIcon from "@mui/icons-material/Add";
 import { useGetCategories } from "@/hooks";
-import { useEffect, useState } from "react";
-import { Category } from "@/types";
+import { useCallback, useEffect } from "react";
+import { useCategories } from "@/providers";
 
 const Home = () => {
-  const { data: session } = useSession();
-  const userId = session?.user?.id;
-  const { categories } = useGetCategories({ userId });
-  const [currentCategories, setCurrentCategories] = useState<Category[]>([]);
+  const { categories } = useGetCategories();
+  const { currentCategories, setCurrentCategories } = useCategories();
+
+  console.log({ categories, currentCategories });
 
   useEffect(() => {
-    if (categories.length) setCurrentCategories(categories);
-  }, [categories]);
+    if ((!categories.length && currentCategories.length) || categories.length) {
+      setCurrentCategories(categories);
+    }
+    //eslint-disable-next-line
+  }, [categories, setCurrentCategories]);
 
   const onAddNewCategory = () => {
     setCurrentCategories((prev) => [
@@ -24,9 +27,9 @@ const Home = () => {
     ]);
   };
 
-  const onFinishCreatingCategory = () => {
+  const onFinishCreatingCategory = useCallback(() => {
     setCurrentCategories(categories);
-  };
+  }, [categories, setCurrentCategories]);
 
   return (
     <Box component="main">
@@ -62,7 +65,7 @@ const Home = () => {
                   isNewCategory={!category.id}
                   onFinishCreatingCategory={onFinishCreatingCategory}
                   categoryId={category.id}
-                  userId={userId}
+                  labels={category.labels || []}
                 />
               </Grid>
             ))}

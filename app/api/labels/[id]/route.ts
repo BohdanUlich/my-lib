@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectDb } from "@/lib";
-import Category from "@/models/category";
 import { ZodError, z } from "zod";
 import Label from "@/models/label";
+import Category from "@/models/category";
 
-interface UpdateCategoryRequest {
+interface UpdateLabelRequest {
   name: string;
+  color: string;
 }
 
 export async function PUT(
@@ -16,11 +17,11 @@ export async function PUT(
     await connectDb();
 
     const id = params.id;
-    const body = (await req.json()) as UpdateCategoryRequest;
+    const body = (await req.json()) as UpdateLabelRequest;
 
     if (!id) {
       return NextResponse.json(
-        { success: false, error: "Category id is required" },
+        { success: false, error: "Label id is required" },
         {
           status: 400,
         }
@@ -30,19 +31,20 @@ export async function PUT(
     const parsedBody = z
       .object({
         name: z.string().min(1),
-        labels: z.array(
-          z.object({ id: z.string(), name: z.string(), color: z.string() })
-        ),
+        color: z.string().min(1),
+        category_ids: z.array(z.string()),
       })
       .parse(body);
 
-    const category = await Category.findOneAndUpdate(
+    console.log("parsedBody", parsedBody);
+
+    const label = await Label.findOneAndUpdate(
       { _id: id },
       { $set: { ...parsedBody } },
       { new: true }
     );
 
-    return NextResponse.json({ success: true, data: category });
+    return NextResponse.json({ success: true, data: label });
   } catch (error) {
     if (error instanceof ZodError) {
       return NextResponse.json(
@@ -75,22 +77,22 @@ export async function DELETE(
   try {
     await connectDb();
 
-    const categoryId = params.id;
+    const labelId = params.id;
 
-    if (!categoryId) {
+    if (!labelId) {
       return NextResponse.json(
-        { success: false, error: "Category id is required" },
+        { success: false, error: "Label id is required" },
         {
           status: 400,
         }
       );
     }
 
-    await Category.findOneAndDelete({ _id: categoryId });
+    await Label.findOneAndDelete({ _id: labelId });
 
-    await Label.updateMany(
-      { category_ids: categoryId },
-      { $pull: { category_ids: categoryId } }
+    await Category.updateMany(
+      { "labels._id": labelId },
+      { $pull: { labels: { _id: labelId } } }
     );
 
     return NextResponse.json({ success: true });

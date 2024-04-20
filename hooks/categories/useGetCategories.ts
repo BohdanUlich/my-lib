@@ -2,10 +2,7 @@ import { fetchService } from "@/services";
 import { ApiResponse, CATEGORIES_API_ENDPOINT, Category } from "@/types";
 import { useQuery } from "react-query";
 import { useSnackbar } from "notistack";
-
-interface UseGetCategoriesParams {
-  userId: string;
-}
+import { useGetUser } from "../useGetUser";
 
 const fetchCategories = async (userId: string): Promise<Category[]> => {
   const urlWithQuery = `${CATEGORIES_API_ENDPOINT}?userId=${userId}`;
@@ -21,7 +18,8 @@ const fetchCategories = async (userId: string): Promise<Category[]> => {
   return response.data;
 };
 
-export const useGetCategories = ({ userId }: UseGetCategoriesParams) => {
+export const useGetCategories = () => {
+  const { userId } = useGetUser();
   const { enqueueSnackbar } = useSnackbar();
 
   const {
@@ -34,6 +32,7 @@ export const useGetCategories = ({ userId }: UseGetCategoriesParams) => {
     {
       enabled: !!userId,
       retry: 2,
+      staleTime: 600000,
       onError: (error) =>
         enqueueSnackbar(`${error}`, {
           variant: "error",

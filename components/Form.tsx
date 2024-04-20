@@ -18,10 +18,8 @@ export const Form = ({ children, schema, onSubmit, sx }: FormParams) => {
   });
 
   const handleSubmit = async (values: unknown) => {
-    if (!onSubmit) {
-      return;
-    }
     const res = await onSubmit(values);
+
     if (res?.error) {
       setFormErrors(res.details, form.setError);
     }

@@ -1,13 +1,13 @@
-import { Modal, Grid } from "@mui/material";
+import { Modal, ModalProps, Grid } from "@mui/material";
 import { Typography } from "@mui/material";
-import { Button } from "./buttons";
+import { Button } from "../buttons";
 
-interface ConfirmationModalProps {
-  open: boolean;
+interface ConfirmationModalProps extends Omit<ModalProps, "children"> {
   onClose: () => void;
   onConfirm: () => void;
   title: string;
   text?: string;
+  isLoading?: boolean;
 }
 
 export const ConfirmationModal = ({
@@ -16,9 +16,11 @@ export const ConfirmationModal = ({
   onConfirm,
   title,
   text,
+  isLoading,
+  ...rest
 }: ConfirmationModalProps) => {
   return (
-    <Modal open={open} onClose={onClose}>
+    <Modal open={open} onClose={onClose} {...rest}>
       <Grid
         container
         flexDirection="column"
@@ -42,7 +44,12 @@ export const ConfirmationModal = ({
           <Button onClick={onClose} variant="contained" sx={{ mr: 2 }}>
             Cancel
           </Button>
-          <Button onClick={onConfirm} variant="contained" color="error">
+          <Button
+            onClick={onConfirm}
+            variant="contained"
+            color="error"
+            isLoading={isLoading}
+          >
             Confirm
           </Button>
         </Grid>

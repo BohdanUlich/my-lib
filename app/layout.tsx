@@ -1,4 +1,5 @@
 import {
+  CategoriesProvider,
   NextAuthProvider,
   NotificationProvider,
   QueryClientProvider,
@@ -23,7 +24,9 @@ export default function RootLayout({
         <QueryClientProvider>
           <NextAuthProvider>
             <ThemeProvider>
-              <NotificationProvider>{children}</NotificationProvider>
+              <NotificationProvider>
+                <CategoriesProvider>{children}</CategoriesProvider>
+              </NotificationProvider>
             </ThemeProvider>
           </NextAuthProvider>
         </QueryClientProvider>
