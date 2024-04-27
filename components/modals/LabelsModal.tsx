@@ -10,7 +10,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Button } from "../";
-import { useGetLabels, useUpdateCategory, useUpdateLabel } from "@/hooks";
+import { useGetLabels, useUpdateLabel } from "@/hooks";
 import { Label } from "@/types";
 import { useCategories } from "@/providers";
 

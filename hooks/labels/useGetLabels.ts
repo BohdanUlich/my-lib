@@ -28,6 +28,7 @@ export const useGetLabels = () => {
     isError,
   } = useQuery([LABELS_API_ENDPOINT, userId], () => fetchLabels(userId), {
     enabled: !!userId,
+    staleTime: 600000,
     retry: 2,
     onError: (error) =>
       enqueueSnackbar(`${error}`, {

@@ -20,6 +20,7 @@ export async function GET(req: NextRequest) {
 
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId");
+  const searchQuery = searchParams.get("q");
 
   if (!userId) {
     return NextResponse.json(
@@ -31,7 +32,7 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const categories = await Category.aggregate([
+    let aggregationPipeline: any[] = [
       { $match: { user_id: new mongoose.Types.ObjectId(userId) } },
       { $sort: { createdAt: -1 } },
       {
@@ -53,7 +54,17 @@ export async function GET(req: NextRequest) {
           },
         },
       },
-    ]);
+    ];
+
+    if (searchQuery) {
+      aggregationPipeline.unshift({
+        $match: {
+          name: { $regex: searchQuery, $options: "i" },
+        },
+      });
+    }
+
+    const categories = await Category.aggregate(aggregationPipeline);
 
     return NextResponse.json({ success: true, data: categories });
   } catch (error) {

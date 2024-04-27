@@ -1,24 +1,45 @@
 "use client";
+import { useCallback, useEffect, useState } from "react";
 import { Button, CategoryCard } from "@/components";
 import { Box, Container, Grid } from "@mui/material";
 import { signOut } from "next-auth/react";
 import AddIcon from "@mui/icons-material/Add";
-import { useGetCategories } from "@/hooks";
-import { useCallback, useEffect } from "react";
+import { useGetCategories, useGetLabels } from "@/hooks";
 import { useCategories } from "@/providers";
+import { CategoriesFilter } from "@/components/filters/CategoriesFilter";
+import { useSearchParams } from "next/navigation";
+import { getCategoryIdsFromLabels } from "@/helpers";
 
 const Home = () => {
   const { categories } = useGetCategories();
+  const { labels } = useGetLabels();
   const { currentCategories, setCurrentCategories } = useCategories();
-
-  console.log({ categories, currentCategories });
+  const searchParams = useSearchParams();
+  const labelIds = searchParams.getAll("label");
+  const [filteredCategories, setFilteredCategories] = useState(categories);
 
   useEffect(() => {
+    // Initial categories filtering when label ids are in search params
+    if (labels?.length && categories.length && labelIds.length) {
+      const categoryIds = getCategoryIdsFromLabels({ labelIds, labels });
+
+      const filteredCategories = categories.filter((category) =>
+        categoryIds.includes(category.id)
+      );
+
+      setFilteredCategories(filteredCategories);
+      setCurrentCategories(filteredCategories);
+
+      return;
+    }
+
+    // Initial set of categories without filters
     if ((!categories.length && currentCategories.length) || categories.length) {
       setCurrentCategories(categories);
     }
+
     //eslint-disable-next-line
-  }, [categories, setCurrentCategories]);
+  }, [labels, categories, setCurrentCategories, searchParams]);
 
   const onAddNewCategory = () => {
     setCurrentCategories((prev) => [
@@ -28,8 +49,10 @@ const Home = () => {
   };
 
   const onFinishCreatingCategory = useCallback(() => {
-    setCurrentCategories(categories);
-  }, [categories, setCurrentCategories]);
+    labelIds.length
+      ? setCurrentCategories(filteredCategories)
+      : setCurrentCategories(categories);
+  }, [categories, labelIds, filteredCategories, setCurrentCategories]);
 
   return (
     <Box component="main">
@@ -47,15 +70,26 @@ const Home = () => {
             </Button>
           }
 
-          <Grid item>
-            <Button
-              variant="contained"
-              startIcon={<AddIcon />}
-              sx={{ maxWidth: 1 }}
-              onClick={onAddNewCategory}
-            >
-              Create category
-            </Button>
+          <Grid
+            container
+            item
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <Grid item>
+              <Button
+                variant="contained"
+                startIcon={<AddIcon />}
+                sx={{ maxWidth: 1 }}
+                onClick={onAddNewCategory}
+              >
+                Create category
+              </Button>
+            </Grid>
+
+            <Grid item>
+              <CategoriesFilter />
+            </Grid>
           </Grid>
           <Grid container gap={2} alignItems="stretch">
             {currentCategories?.map((category) => (
