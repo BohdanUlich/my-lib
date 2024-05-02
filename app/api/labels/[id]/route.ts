@@ -33,10 +33,9 @@ export async function PUT(
         name: z.string().min(1),
         color: z.string().min(1),
         category_ids: z.array(z.string()),
+        type: z.string().min(1),
       })
       .parse(body);
-
-    console.log("parsedBody", parsedBody);
 
     const label = await Label.findOneAndUpdate(
       { _id: id },

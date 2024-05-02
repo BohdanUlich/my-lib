@@ -7,13 +7,14 @@ import { TextInput } from "../inputs";
 import { useCreateLabel, useGetUser, useUpdateLabel } from "@/hooks";
 import { FieldValues } from "react-hook-form";
 import * as z from "zod";
-import { Label } from "@/types";
+import { Label, LabelType } from "@/types";
 
 interface LabelFormModalProps {
   isOpen: boolean;
   onClose: () => void;
   label?: { id: string; name: string; color: string };
   editedLabel: Label | null;
+  labelType: LabelType;
 }
 
 const schema = z.object({
@@ -26,6 +27,7 @@ export const EditLabelModal = ({
   onClose,
   label,
   editedLabel,
+  labelType,
 }: LabelFormModalProps) => {
   const { userId } = useGetUser();
   const { createLabel, isLoading } = useCreateLabel();
@@ -47,6 +49,7 @@ export const EditLabelModal = ({
         name: data.name,
         color: data.color,
         user_id: userId,
+        type: labelType,
       });
     } finally {
       onClose();

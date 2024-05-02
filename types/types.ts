@@ -1,3 +1,5 @@
+import { CATEGORY_TYPE, CODE_ITEM_TYPE } from "./constants";
+
 export interface User {
   id: string;
   email: string;
@@ -18,6 +20,7 @@ export interface Label {
   user_id: string;
   category_ids?: string[];
   color: string;
+  type: string;
 }
 
 export interface SuccessResponse<T> {
@@ -32,3 +35,5 @@ export interface ErrorResponse {
 }
 
 export type ApiResponse<T> = SuccessResponse<T> | ErrorResponse;
+
+export type LabelType = typeof CATEGORY_TYPE | typeof CODE_ITEM_TYPE;

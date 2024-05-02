@@ -1,14 +1,18 @@
 import { useCallback, useState } from "react";
 import { ConfirmationModal, EditLabelModal, LabelsModal } from "../modals";
 import { Button } from "./Button";
-import { Label } from "@/types";
+import { Label, LabelType } from "@/types";
 import { useDeleteLabel } from "@/hooks";
 
 interface EditLabelButtonProps {
   categoryId: string;
+  labelType: LabelType;
 }
 
-export const EditLabelButton = ({ categoryId }: EditLabelButtonProps) => {
+export const EditLabelButton = ({
+  categoryId,
+  labelType,
+}: EditLabelButtonProps) => {
   const [isOpenLabelsModal, setIsOpenLabelsModal] = useState(false);
   const [isOpenEditLabelModal, setIsOpenEditLabelModal] = useState(false);
   const [isOpenDeleteLabelModal, setIsOpenDeleteLabelModal] = useState(false);
@@ -18,6 +22,11 @@ export const EditLabelButton = ({ categoryId }: EditLabelButtonProps) => {
 
   const onSetEditedLabel = (label: Label) => {
     setEditedLabel(label);
+  };
+
+  const onCloseEditedModal = () => {
+    setIsOpenEditLabelModal(false);
+    setEditedLabel(null);
   };
 
   const onDeleteLabel = useCallback((label: Label) => {
@@ -44,12 +53,14 @@ export const EditLabelButton = ({ categoryId }: EditLabelButtonProps) => {
         onOpenEditModal={() => setIsOpenEditLabelModal(true)}
         onSetEditedLabel={onSetEditedLabel}
         onDeleteLabel={onDeleteLabel}
+        labelType={labelType}
       />
 
       <EditLabelModal
         isOpen={isOpenEditLabelModal}
-        onClose={() => setIsOpenEditLabelModal(false)}
         editedLabel={editedLabel}
+        labelType={labelType}
+        onClose={onCloseEditedModal}
       />
 
       <ConfirmationModal

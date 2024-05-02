@@ -11,11 +11,11 @@ import {
 import FilterIcon from "@mui/icons-material/FilterList";
 import { Button } from "../buttons/Button";
 import { useGetLabels } from "@/hooks";
-import { LABEL_QUERY_KEY, Label } from "@/types";
+import { CATEGORY_TYPE, LABEL_QUERY_KEY, Label } from "@/types";
 import { useSearchParams, useRouter } from "next/navigation";
 
 export const CategoriesFilter = () => {
-  const { labels } = useGetLabels();
+  const { labels } = useGetLabels({ labelType: CATEGORY_TYPE });
   const searchParams = useSearchParams();
   const [open, setOpen] = useState(false);
   const [labelIds, setLabelIds] = useState<string[]>(

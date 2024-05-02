@@ -9,10 +9,11 @@ import { useCategories } from "@/providers";
 import { CategoriesFilter } from "@/components/filters/CategoriesFilter";
 import { useSearchParams } from "next/navigation";
 import { getCategoryIdsFromLabels } from "@/helpers";
+import { CATEGORY_TYPE } from "@/types";
 
 const Home = () => {
   const { categories } = useGetCategories();
-  const { labels } = useGetLabels();
+  const { labels } = useGetLabels({ labelType: CATEGORY_TYPE });
   const { currentCategories, setCurrentCategories } = useCategories();
   const searchParams = useSearchParams();
   const labelIds = searchParams.getAll("label");

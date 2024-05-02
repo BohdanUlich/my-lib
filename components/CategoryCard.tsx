@@ -17,7 +17,7 @@ import { FieldValues } from "react-hook-form";
 import * as z from "zod";
 import { EditLabelButton, Button, DeleteCategoryButton } from "./buttons";
 import { TextInput } from "./inputs";
-import { Label as ILabel } from "@/types";
+import { CATEGORY_TYPE, Label as ILabel } from "@/types";
 import { Label } from "./Label";
 
 interface CategoryCardProps {
@@ -201,7 +201,10 @@ export const CategoryCard = ({
                 sx={{ position: "absolute", top: 0, right: -150, zIndex: 11 }}
               >
                 <Box sx={{ position: "relative" }}>
-                  <EditLabelButton categoryId={categoryId} />
+                  <EditLabelButton
+                    categoryId={categoryId}
+                    labelType={CATEGORY_TYPE}
+                  />
                 </Box>
 
                 <DeleteCategoryButton

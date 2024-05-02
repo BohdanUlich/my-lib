@@ -11,12 +11,13 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Button } from "../";
 import { useGetLabels, useUpdateLabel } from "@/hooks";
-import { Label } from "@/types";
+import { Label, LabelType } from "@/types";
 import { useCategories } from "@/providers";
 
 interface LabelsModalProps {
   isOpen: boolean;
   categoryId: string;
+  labelType: LabelType;
   onClose: () => void;
   onOpenEditModal: () => void;
   onSetEditedLabel: (label: Label) => void;
@@ -26,12 +27,13 @@ interface LabelsModalProps {
 export const LabelsModal = ({
   isOpen,
   categoryId,
+  labelType,
   onClose,
   onOpenEditModal,
   onSetEditedLabel,
   onDeleteLabel,
 }: LabelsModalProps) => {
-  const { labels } = useGetLabels();
+  const { labels } = useGetLabels({ labelType });
   const { currentCategories, setCurrentCategories } = useCategories();
   const { updateLabel } = useUpdateLabel();
 
@@ -107,7 +109,15 @@ export const LabelsModal = ({
         >
           <CloseIcon />
         </IconButton>
-        <Grid container gap={1} flexDirection="column">
+        <Grid
+          container
+          gap={1}
+          flexDirection="column"
+          maxHeight={329}
+          sx={{ overflowY: "auto" }}
+          flexWrap="nowrap"
+          pr={2}
+        >
           {labels.length
             ? labels.map((label) => (
                 <Grid
@@ -137,7 +147,7 @@ export const LabelsModal = ({
                       bgcolor: label.color,
                       borderRadius: 1,
                       p: 1,
-                      minWidth: 200,
+                      minWidth: 230,
                     }}
                   >
                     <Typography color="text.primary">{label.name}</Typography>

@@ -16,6 +16,7 @@ export async function GET(req: NextRequest) {
 
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId");
+  const labelType = searchParams.get("type");
 
   if (!userId) {
     return NextResponse.json(
@@ -26,9 +27,23 @@ export async function GET(req: NextRequest) {
     );
   }
 
+  if (!labelType) {
+    return NextResponse.json(
+      { success: false, error: "Label type is required" },
+      {
+        status: 400,
+      }
+    );
+  }
+
   try {
     const labels = await Label.aggregate([
-      { $match: { user_id: new mongoose.Types.ObjectId(userId) } },
+      {
+        $match: {
+          user_id: new mongoose.Types.ObjectId(userId),
+          type: labelType,
+        },
+      },
       {
         $project: {
           id: { $toString: "$_id" },
@@ -36,6 +51,7 @@ export async function GET(req: NextRequest) {
           name: 1,
           color: 1,
           category_ids: 1,
+          type: 1,
         },
       },
     ]);
@@ -60,6 +76,7 @@ export async function POST(req: NextRequest) {
         name: z.string().min(1),
         user_id: z.string(),
         color: z.string(),
+        type: z.string().min(1),
       })
       .parse(body);
 
@@ -78,6 +95,7 @@ export async function POST(req: NextRequest) {
     const existingLabel = await Label.findOne({
       name: parsedBody.name,
       user_id: parsedBody.user_id,
+      type: parsedBody.type,
     });
 
     if (existingLabel) {
