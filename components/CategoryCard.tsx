@@ -19,6 +19,7 @@ import { EditLabelButton, Button, DeleteCategoryButton } from "./buttons";
 import { TextInput } from "./inputs";
 import { CATEGORY_TYPE, Label as ILabel } from "@/types";
 import { Label } from "./Label";
+import { useRouter } from "next/navigation";
 
 interface CategoryCardProps {
   categoryName: string;
@@ -41,6 +42,7 @@ export const CategoryCard = ({
 }: CategoryCardProps) => {
   const [isEdit, setIsEdit] = useState(false);
   const { userId } = useGetUser();
+  const router = useRouter();
   const { createCategory, isLoading: isLoadingCreate } = useCreateCategory();
   const { updateCategory, isLoading: isLoadingUpdate } = useUpdateCategory();
   const isLoading = isLoadingCreate || isLoadingUpdate;
@@ -72,6 +74,10 @@ export const CategoryCard = ({
     onFinishCreatingCategory();
   };
 
+  const onRedirect = () => {
+    router.push(`/categories/${categoryId}`);
+  };
+
   return (
     <>
       <Box
@@ -87,6 +93,7 @@ export const CategoryCard = ({
               height: 1,
               "&:hover": { ".MuiSvgIcon-root": { color: "text.primary" } },
             }}
+            onClick={onRedirect}
           >
             <CardActionArea sx={{ height: 1 }}>
               <CardContent
@@ -117,7 +124,7 @@ export const CategoryCard = ({
                       overflow="hidden"
                       sx={{
                         display: "grid",
-                        gridTemplateColumns: "repeat(5, 1fr)",
+                        gridTemplateColumns: "repeat(3, 1fr)",
                       }}
                     >
                       {labels.map((label) => (
@@ -135,7 +142,10 @@ export const CategoryCard = ({
                         display="flex"
                         justifyContent="end"
                         xs={1}
-                        onClick={() => setIsEdit(true)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setIsEdit(true);
+                        }}
                       >
                         <Edit
                           sx={{
