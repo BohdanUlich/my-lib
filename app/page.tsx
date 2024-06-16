@@ -1,8 +1,7 @@
 "use client";
 import { useCallback, useEffect, useState } from "react";
 import { Button, CategoryCard } from "@/components";
-import { Box, Container, Grid } from "@mui/material";
-import { signOut } from "next-auth/react";
+import { Box, Container, Grid, Typography } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { useGetCategories, useGetLabels } from "@/hooks";
 import { useCategories } from "@/providers";
@@ -65,12 +64,9 @@ const Home = () => {
           justifyContent="center"
           minHeight="100vh"
         >
-          {
-            <Button onClick={() => signOut()} variant="contained">
-              Log out
-            </Button>
-          }
-
+          <Typography variant="h2" mb={4}>
+            Categories
+          </Typography>
           <Grid
             container
             item
@@ -92,7 +88,7 @@ const Home = () => {
               <CategoriesFilter />
             </Grid>
           </Grid>
-          <Grid container gap={2} alignItems="stretch">
+          <Grid container spacing={2} alignItems="stretch">
             {currentCategories?.map((category) => (
               <Grid item xs={6} md={4} lg={3} key={category.id}>
                 <CategoryCard
