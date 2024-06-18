@@ -1,13 +1,6 @@
 "use client";
-import { useEffect, useState } from "react";
-import {
-  Box,
-  Modal,
-  Grid,
-  Checkbox,
-  Typography,
-  TextField,
-} from "@mui/material";
+import { useState } from "react";
+import { Box, Modal, Grid, Checkbox, Typography } from "@mui/material";
 import FilterIcon from "@mui/icons-material/FilterList";
 import { Button } from "../buttons/Button";
 import { useGetLabels } from "@/hooks";
@@ -21,24 +14,8 @@ export const CategoriesFilter = () => {
   const [labelIds, setLabelIds] = useState<string[]>(
     searchParams.getAll(LABEL_QUERY_KEY)
   );
-  const [keyword, setKeyword] = useState<string>(searchParams.get("q") || "");
   const router = useRouter();
-  const params = new URLSearchParams(searchParams.toString());
-
-  function updateSearch() {
-    keyword ? params.set("q", keyword) : params.delete("q");
-
-    router.replace(`?${params.toString()}`);
-  }
-
-  useEffect(() => {
-    const delay = setTimeout(() => {
-      updateSearch();
-    }, 300);
-
-    return () => clearTimeout(delay);
-    // eslint-disable-next-line
-  }, [keyword]);
+  const keyword = searchParams.get("q") || "";
 
   const onChangeLabelsFilter = ({
     label,
@@ -111,14 +88,6 @@ export const CategoriesFilter = () => {
           <Typography variant="h6" textAlign="center" mb={2}>
             Filters
           </Typography>
-
-          <TextField
-            label="Keyword"
-            value={keyword}
-            sx={{ mb: 2 }}
-            fullWidth
-            onChange={(e) => setKeyword(e.target.value)}
-          />
 
           <Typography variant="body2" fontWeight={700} mb={2}>
             Labels
