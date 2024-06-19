@@ -9,6 +9,7 @@ import { CategoriesFilter } from "@/components/filters/CategoriesFilter";
 import { useSearchParams } from "next/navigation";
 import { getCategoryIdsFromLabels } from "@/helpers";
 import { CATEGORY_TYPE } from "@/types";
+import { CategoryCardSkeleton } from "@/components/skeletons/CategoryCardSkeleton";
 
 const Home = () => {
   const { data: categories = [], isLoading, isIdle } = useGetCategories();
@@ -53,7 +54,6 @@ const Home = () => {
       ? setCurrentCategories(filteredCategories)
       : setCurrentCategories(categories);
   }, [categories, labelIds, filteredCategories, setCurrentCategories]);
-
   return (
     <Box component="main">
       <Container maxWidth="lg">
@@ -72,6 +72,7 @@ const Home = () => {
             item
             justifyContent="space-between"
             alignItems="center"
+            columnGap={2}
           >
             <Grid item>
               <Button
@@ -89,17 +90,25 @@ const Home = () => {
             </Grid>
           </Grid>
           <Grid container spacing={2} alignItems="stretch">
-            {currentCategories?.map((category) => (
-              <Grid item xs={6} md={4} lg={3} key={category.id}>
-                <CategoryCard
-                  categoryName={category.name}
-                  isNewCategory={!category.id}
-                  onFinishCreatingCategory={onFinishCreatingCategory}
-                  categoryId={category.id}
-                  labels={category.labels || []}
-                />
-              </Grid>
-            ))}
+            <Grid container spacing={2} alignItems="stretch">
+              {isLoading || isIdle
+                ? Array.from({ length: 8 }).map((_, index) => (
+                    <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+                      <CategoryCardSkeleton />
+                    </Grid>
+                  ))
+                : currentCategories?.map((category) => (
+                    <Grid item xs={12} sm={6} md={4} lg={3} key={category.id}>
+                      <CategoryCard
+                        categoryName={category.name}
+                        isNewCategory={!category.id}
+                        onFinishCreatingCategory={onFinishCreatingCategory}
+                        categoryId={category.id}
+                        labels={category.labels || []}
+                      />
+                    </Grid>
+                  ))}
+            </Grid>
           </Grid>
         </Grid>
       </Container>
