@@ -33,11 +33,7 @@ export const useGetLabels = ({ labelType }: UseGetLabelsParams) => {
   const { userId } = useGetUser();
   const { enqueueSnackbar } = useSnackbar();
 
-  const {
-    data: labels,
-    isLoading,
-    isError,
-  } = useQuery(
+  return useQuery(
     [LABELS_API_ENDPOINT, userId, labelType],
     () => fetchLabels({ userId, labelType }),
     {
@@ -51,10 +47,4 @@ export const useGetLabels = ({ labelType }: UseGetLabelsParams) => {
         }),
     }
   );
-
-  return {
-    labels: labels ?? [],
-    isLoading,
-    isError,
-  };
 };

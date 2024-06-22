@@ -34,11 +34,7 @@ export const useGetCategories = () => {
   const searchParams = useSearchParams();
   const q = searchParams.get("q");
 
-  const {
-    data: categories,
-    isLoading,
-    isError,
-  } = useQuery(
+  return useQuery(
     [CATEGORIES_API_ENDPOINT, userId, q],
     () => fetchCategories({ userId, q }),
     {
@@ -52,10 +48,4 @@ export const useGetCategories = () => {
         }),
     }
   );
-
-  return {
-    categories: categories ?? [],
-    isLoading,
-    isError,
-  };
 };

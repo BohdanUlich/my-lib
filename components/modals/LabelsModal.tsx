@@ -33,7 +33,7 @@ export const LabelsModal = ({
   onSetEditedLabel,
   onDeleteLabel,
 }: LabelsModalProps) => {
-  const { labels } = useGetLabels({ labelType });
+  const { data: labels } = useGetLabels({ labelType });
   const { currentCategories, setCurrentCategories } = useCategories();
   const { updateLabel } = useUpdateLabel();
 
@@ -118,7 +118,7 @@ export const LabelsModal = ({
           flexWrap="nowrap"
           pr={2}
         >
-          {labels.length
+          {labels?.length
             ? labels.map((label) => (
                 <Grid
                   container
