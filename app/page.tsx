@@ -11,8 +11,8 @@ import { getCategoryIdsFromLabels } from "@/helpers";
 import { CATEGORY_TYPE } from "@/types";
 
 const Home = () => {
-  const { categories } = useGetCategories();
-  const { labels } = useGetLabels({ labelType: CATEGORY_TYPE });
+  const { data: categories = [], isLoading, isIdle } = useGetCategories();
+  const { data: labels } = useGetLabels({ labelType: CATEGORY_TYPE });
   const { currentCategories, setCurrentCategories } = useCategories();
   const searchParams = useSearchParams();
   const labelIds = searchParams.getAll("label");

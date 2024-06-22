@@ -15,7 +15,7 @@ import { CATEGORY_TYPE, LABEL_QUERY_KEY, Label } from "@/types";
 import { useSearchParams, useRouter } from "next/navigation";
 
 export const CategoriesFilter = () => {
-  const { labels } = useGetLabels({ labelType: CATEGORY_TYPE });
+  const { data: labels } = useGetLabels({ labelType: CATEGORY_TYPE });
   const searchParams = useSearchParams();
   const [open, setOpen] = useState(false);
   const [labelIds, setLabelIds] = useState<string[]>(
@@ -125,7 +125,7 @@ export const CategoriesFilter = () => {
           </Typography>
 
           <Grid container gap={2} flexDirection="column">
-            {labels.length
+            {labels?.length
               ? labels.map((label) => (
                   <Grid
                     container
