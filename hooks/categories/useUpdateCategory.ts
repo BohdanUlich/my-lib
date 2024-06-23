@@ -3,7 +3,13 @@ import { ApiResponse, CATEGORIES_API_ENDPOINT, Category } from "@/types";
 import { useSnackbar } from "notistack";
 import { useMutation, useQueryClient } from "react-query";
 
-export const useUpdateCategory = () => {
+interface UseUpdateCategoryProps {
+  hideSuccessMessage?: boolean;
+}
+
+export const useUpdateCategory = ({
+  hideSuccessMessage,
+}: UseUpdateCategoryProps = {}) => {
   const { enqueueSnackbar } = useSnackbar();
   const queryClient = useQueryClient();
 
@@ -30,9 +36,11 @@ export const useUpdateCategory = () => {
     },
     {
       onSuccess: () => {
-        enqueueSnackbar("Category updated successfully", {
-          variant: "success",
-        });
+        if (!hideSuccessMessage) {
+          enqueueSnackbar("Category updated successfully", {
+            variant: "success",
+          });
+        }
       },
       onError: (error: Error) => {
         enqueueSnackbar(error.message, { variant: "error" });

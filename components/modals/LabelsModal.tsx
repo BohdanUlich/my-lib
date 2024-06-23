@@ -10,7 +10,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Button } from "../";
-import { useGetLabels, useUpdateLabel } from "@/hooks";
+import { useGetLabels, useUpdateCategory, useUpdateLabel } from "@/hooks";
 import { Label, LabelType } from "@/types";
 import { useCategories } from "@/providers";
 
@@ -35,7 +35,8 @@ export const LabelsModal = ({
 }: LabelsModalProps) => {
   const { data: labels } = useGetLabels({ labelType });
   const { currentCategories, setCurrentCategories } = useCategories();
-  const { updateLabel } = useUpdateLabel();
+  const { updateLabel } = useUpdateLabel({ hideSuccessMessage: true });
+  const { updateCategory } = useUpdateCategory({ hideSuccessMessage: true });
 
   const onEdit = (label: Label) => {
     onOpenEditModal();
@@ -62,6 +63,13 @@ export const LabelsModal = ({
       const finalLabels = checked
         ? [...labels, { ...label }]
         : labels.filter((currentLabel) => currentLabel.id !== label.id);
+
+      updateCategory({
+        id: categoryId,
+        labels: finalLabels,
+        name: category.name,
+        user_id: category.user_id,
+      });
 
       return { ...category, labels: finalLabels };
     });
