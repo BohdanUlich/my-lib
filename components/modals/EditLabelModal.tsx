@@ -4,7 +4,12 @@ import { grey } from "@mui/material/colors";
 import { Button } from "../buttons";
 import { Form } from "../Form";
 import { TextInput } from "../inputs";
-import { useCreateLabel, useGetUser, useUpdateLabel } from "@/hooks";
+import {
+  useCreateLabel,
+  useGetCategories,
+  useGetUser,
+  useUpdateLabel,
+} from "@/hooks";
 import { FieldValues } from "react-hook-form";
 import * as z from "zod";
 import { Label, LabelType } from "@/types";
@@ -32,6 +37,7 @@ export const EditLabelModal = ({
   const { userId } = useGetUser();
   const { createLabel, isLoading } = useCreateLabel();
   const { updateLabel, isLoading: isLoadingUpdate } = useUpdateLabel();
+  const { refetch } = useGetCategories();
 
   const onSaveLabel = async (data: FieldValues) => {
     try {
@@ -53,6 +59,7 @@ export const EditLabelModal = ({
       });
     } finally {
       onClose();
+      refetch();
     }
   };
 

@@ -3,7 +3,12 @@ import { ApiResponse, LABELS_API_ENDPOINT, Label } from "@/types";
 import { useSnackbar } from "notistack";
 import { useMutation, useQueryClient } from "react-query";
 
-export const useUpdateLabel = () => {
+interface UseUpdateLabelProps {
+  hideSuccessMessage?: boolean;
+}
+export const useUpdateLabel = ({
+  hideSuccessMessage,
+}: UseUpdateLabelProps = {}) => {
   const { enqueueSnackbar } = useSnackbar();
   const queryClient = useQueryClient();
 
@@ -30,9 +35,11 @@ export const useUpdateLabel = () => {
     },
     {
       onSuccess: () => {
-        enqueueSnackbar("Label updated successfully", {
-          variant: "success",
-        });
+        if (!hideSuccessMessage) {
+          enqueueSnackbar("Label updated successfully", {
+            variant: "success",
+          });
+        }
       },
       onError: (error: Error) => {
         enqueueSnackbar(error.message, { variant: "error" });

@@ -2,7 +2,7 @@ import { useCallback, useState } from "react";
 import { ConfirmationModal, EditLabelModal, LabelsModal } from "../modals";
 import { Button } from "./Button";
 import { Label, LabelType } from "@/types";
-import { useDeleteLabel } from "@/hooks";
+import { useDeleteLabel, useGetCategories } from "@/hooks";
 
 interface EditLabelButtonProps {
   categoryId: string;
@@ -19,6 +19,7 @@ export const EditLabelButton = ({
   const [editedLabel, setEditedLabel] = useState<Label | null>(null);
   const [deletedLabel, setDeletedLabel] = useState<Label | null>(null);
   const { deleteLabel, isLoading } = useDeleteLabel();
+  const { refetch } = useGetCategories();
 
   const onSetEditedLabel = (label: Label) => {
     setEditedLabel(label);
@@ -37,8 +38,10 @@ export const EditLabelButton = ({
   const onConfirmDeletelabel = useCallback(async () => {
     if (deletedLabel) await deleteLabel(deletedLabel.id);
 
+    refetch();
+
     setIsOpenDeleteLabelModal(false);
-  }, [deletedLabel, deleteLabel]);
+  }, [deletedLabel, deleteLabel, refetch]);
 
   return (
     <>

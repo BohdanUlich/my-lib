@@ -9,6 +9,47 @@ interface UpdateLabelRequest {
   color: string;
 }
 
+const labelSchema = z.object({
+  name: z.string().min(1),
+  color: z.string().min(1),
+  category_ids: z.array(z.string()),
+  type: z.string().min(1),
+});
+
+type LabelSchema = z.infer<typeof labelSchema>;
+
+const validateBody = async (body: unknown): Promise<LabelSchema> => {
+  return labelSchema.parse(body);
+};
+
+const updateLabel = async (id: string, parsedBody: LabelSchema) => {
+  const label = await Label.findOneAndUpdate(
+    { _id: id },
+    { $set: { ...parsedBody } },
+    { new: true }
+  );
+
+  if (!label) {
+    throw new Error("Label not found");
+  }
+
+  // Update label in all categories
+  await Category.updateMany(
+    { _id: { $in: label.category_ids }, "labels._id": id },
+    { $set: { "labels.$": label } }
+  );
+
+  return label;
+};
+
+const deleteLabel = async (labelId: string): Promise<void> => {
+  await Label.findOneAndDelete({ _id: labelId });
+  await Category.updateMany(
+    { "labels._id": labelId },
+    { $pull: { labels: { _id: labelId } } }
+  );
+};
+
 export async function PUT(
   req: NextRequest,
   { params }: { params: { id: string } }
@@ -28,20 +69,8 @@ export async function PUT(
       );
     }
 
-    const parsedBody = z
-      .object({
-        name: z.string().min(1),
-        color: z.string().min(1),
-        category_ids: z.array(z.string()),
-        type: z.string().min(1),
-      })
-      .parse(body);
-
-    const label = await Label.findOneAndUpdate(
-      { _id: id },
-      { $set: { ...parsedBody } },
-      { new: true }
-    );
+    const parsedBody = await validateBody(body);
+    const label = await updateLabel(id, parsedBody);
 
     return NextResponse.json({ success: true, data: label });
   } catch (error) {
@@ -87,12 +116,7 @@ export async function DELETE(
       );
     }
 
-    await Label.findOneAndDelete({ _id: labelId });
-
-    await Category.updateMany(
-      { "labels._id": labelId },
-      { $pull: { labels: { _id: labelId } } }
-    );
+    await deleteLabel(labelId);
 
     return NextResponse.json({ success: true });
   } catch (error) {
