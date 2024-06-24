@@ -7,10 +7,11 @@ import {
   CardActionArea,
   CardContent,
   Grid,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import { grey } from "@mui/material/colors";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useCreateCategory, useGetUser, useUpdateCategory } from "@/hooks";
 import { Form } from "./Form";
 import { FieldValues } from "react-hook-form";
@@ -46,6 +47,8 @@ export const CategoryCard = ({
   const { createCategory, isLoading: isLoadingCreate } = useCreateCategory();
   const { updateCategory, isLoading: isLoadingUpdate } = useUpdateCategory();
   const isLoading = isLoadingCreate || isLoadingUpdate;
+  const [showTooltip, setShowTooltip] = useState(false);
+  const textRef = useRef<HTMLDivElement>(null);
 
   const onSave = async (data: FieldValues) => {
     try {
@@ -75,8 +78,25 @@ export const CategoryCard = ({
   };
 
   const onRedirect = () => {
-    router.push(`/categories/${categoryId}`);
+    if (!isEdit && !isNewCategory) {
+      router.push(`/categories/${categoryId}`);
+    }
   };
+
+  useEffect(() => {
+    const element = textRef.current;
+    if (element) {
+      const lineHeight = parseInt(
+        window.getComputedStyle(element).lineHeight,
+        10
+      );
+      const textHeight = element.scrollHeight;
+      const numberOfLines = textHeight / lineHeight;
+      if (numberOfLines > 2.3) {
+        setShowTooltip(true);
+      }
+    }
+  }, [categoryName]);
 
   return (
     <>
@@ -167,6 +187,7 @@ export const CategoryCard = ({
 
                 {isEdit || isNewCategory ? (
                   <TextInput
+                    spellCheck="false"
                     variant="standard"
                     defaultValue={categoryName}
                     name="editedCategoryName"
@@ -183,7 +204,32 @@ export const CategoryCard = ({
                     autoFocus
                   />
                 ) : (
-                  <Typography fontSize={50}>{categoryName}</Typography>
+                  <Tooltip
+                    placement="bottom"
+                    arrow
+                    title={showTooltip ? categoryName : ""}
+                    componentsProps={{
+                      tooltip: {
+                        sx: { fontSize: 10 },
+                      },
+                    }}
+                  >
+                    <Typography
+                      ref={textRef}
+                      sx={{
+                        display: "-webkit-box",
+                        WebkitBoxOrient: "vertical",
+                        WebkitLineClamp: { xs: 5, sm: 2 },
+                        overflow: "hidden",
+                        wordBreak: "break-word",
+                        textAlign: "center",
+                        lineHeight: 1.3,
+                        fontSize: "30px",
+                      }}
+                    >
+                      {categoryName}
+                    </Typography>
+                  </Tooltip>
                 )}
               </CardContent>
             </CardActionArea>
