@@ -89,7 +89,15 @@ export const LabelsModal = ({
   };
 
   return (
-    <Modal open={isOpen} onClose={onClose} hideBackdrop>
+    <Modal
+      open={isOpen}
+      onClose={onClose}
+      slotProps={{
+        backdrop: {
+          invisible: true,
+        },
+      }}
+    >
       <Box
         sx={{
           position: "absolute",
