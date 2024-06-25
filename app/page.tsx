@@ -10,6 +10,7 @@ import { useSearchParams } from "next/navigation";
 import { getCategoryIdsFromLabels } from "@/helpers";
 import { CATEGORY_TYPE } from "@/types";
 import { CategoryCardSkeleton } from "@/components/skeletons/CategoryCardSkeleton";
+import { SearchInput } from "@/components/SearchInput";
 
 const Home = () => {
   const { data: categories = [], isLoading, isIdle } = useGetCategories();
@@ -83,6 +84,10 @@ const Home = () => {
               >
                 Create category
               </Button>
+            </Grid>
+
+            <Grid item ml="auto">
+              <SearchInput />
             </Grid>
 
             <Grid item>
