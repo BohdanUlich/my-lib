@@ -49,6 +49,11 @@ export const CategoryCard = ({
 
   const onSave = async (data: FieldValues) => {
     try {
+      if (data.editedCategoryName === categoryName) {
+        setIsEdit(false);
+        return;
+      }
+
       if (isNewCategory) {
         await createCategory({
           name: data.editedCategoryName,
