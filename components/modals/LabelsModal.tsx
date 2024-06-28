@@ -134,59 +134,61 @@ export const LabelsModal = ({
           flexWrap="nowrap"
           pr={2}
         >
-          {labels?.length
-            ? labels.map((label) => (
+          {labels?.length ? (
+            labels.map((label) => (
+              <Grid
+                container
+                flexWrap="nowrap"
+                item
+                xs={12}
+                key={label.id}
+                gap={1}
+              >
+                <Checkbox
+                  edge="start"
+                  checked={
+                    !!currentLabels.find(
+                      (currentLabel) => currentLabel.id === label.id
+                    )
+                  }
+                  onChange={(e) =>
+                    onSelectLabel({ checked: e.target.checked, label })
+                  }
+                />
+
                 <Grid
                   container
-                  flexWrap="nowrap"
-                  item
-                  xs={12}
-                  key={label.id}
-                  gap={1}
+                  alignItems="center"
+                  sx={{
+                    bgcolor: label.color,
+                    borderRadius: 1,
+                    p: 1,
+                    minWidth: 230,
+                  }}
                 >
-                  <Checkbox
-                    edge="start"
-                    checked={
-                      !!currentLabels.find(
-                        (currentLabel) => currentLabel.id === label.id
-                      )
-                    }
-                    onChange={(e) =>
-                      onSelectLabel({ checked: e.target.checked, label })
-                    }
-                  />
-
-                  <Grid
-                    container
-                    alignItems="center"
-                    sx={{
-                      bgcolor: label.color,
-                      borderRadius: 1,
-                      p: 1,
-                      minWidth: 230,
-                    }}
-                  >
-                    <Typography color="text.primary">{label.name}</Typography>
-                  </Grid>
-
-                  <IconButton
-                    edge="end"
-                    aria-label="edit"
-                    onClick={() => onEdit(label)}
-                  >
-                    <EditIcon />
-                  </IconButton>
-
-                  <IconButton
-                    edge="end"
-                    aria-label="edit"
-                    onClick={() => onDeleteLabel(label)}
-                  >
-                    <DeleteIcon color="error" />
-                  </IconButton>
+                  <Typography color="text.primary">{label.name}</Typography>
                 </Grid>
-              ))
-            : "No labels found ..."}
+
+                <IconButton
+                  edge="end"
+                  aria-label="edit"
+                  onClick={() => onEdit(label)}
+                >
+                  <EditIcon />
+                </IconButton>
+
+                <IconButton
+                  edge="end"
+                  aria-label="edit"
+                  onClick={() => onDeleteLabel(label)}
+                >
+                  <DeleteIcon color="error" />
+                </IconButton>
+              </Grid>
+            ))
+          ) : (
+            <Typography>No labels found ...</Typography>
+          )}
         </Grid>
 
         <Button variant="contained" sx={{ mt: 2 }} onClick={onOpenEditModal}>
