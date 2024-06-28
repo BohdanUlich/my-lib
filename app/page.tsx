@@ -58,13 +58,7 @@ const Home = () => {
   return (
     <Box component="main">
       <Container maxWidth="lg">
-        <Grid
-          container
-          gap={2}
-          flexDirection="column"
-          justifyContent="center"
-          minHeight="100vh"
-        >
+        <Grid container gap={2.5} flexDirection="column" pt={20} pb={3}>
           <Typography variant="h2" mb={4}>
             Categories
           </Typography>
@@ -73,7 +67,7 @@ const Home = () => {
             item
             justifyContent="space-between"
             alignItems="center"
-            columnGap={2}
+            gap={2}
           >
             <Grid item>
               <Button
@@ -95,25 +89,23 @@ const Home = () => {
             </Grid>
           </Grid>
           <Grid container spacing={2} alignItems="stretch">
-            <Grid container spacing={2} alignItems="stretch">
-              {isLoading || isIdle
-                ? Array.from({ length: 8 }).map((_, index) => (
-                    <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
-                      <CategoryCardSkeleton />
-                    </Grid>
-                  ))
-                : currentCategories?.map((category) => (
-                    <Grid item xs={12} sm={6} md={4} lg={3} key={category.id}>
-                      <CategoryCard
-                        categoryName={category.name}
-                        isNewCategory={!category.id}
-                        onFinishCreatingCategory={onFinishCreatingCategory}
-                        categoryId={category.id}
-                        labels={category.labels || []}
-                      />
-                    </Grid>
-                  ))}
-            </Grid>
+            {isLoading || isIdle
+              ? Array.from({ length: 8 }).map((_, index) => (
+                  <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+                    <CategoryCardSkeleton />
+                  </Grid>
+                ))
+              : currentCategories?.map((category) => (
+                  <Grid item xs={12} sm={6} md={4} lg={3} key={category.id}>
+                    <CategoryCard
+                      categoryName={category.name}
+                      isNewCategory={!category.id}
+                      onFinishCreatingCategory={onFinishCreatingCategory}
+                      categoryId={category.id}
+                      labels={category.labels || []}
+                    />
+                  </Grid>
+                ))}
           </Grid>
         </Grid>
       </Container>
