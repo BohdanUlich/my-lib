@@ -17,7 +17,7 @@ export interface LabelDocument {
 
 const labelSchema = new Schema<LabelDocument>(
   {
-    name: { type: String, required: true, unique: true },
+    name: { type: String, required: true },
     user_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
