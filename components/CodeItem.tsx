@@ -1,11 +1,13 @@
-"use client";
-
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { Edit } from "@mui/icons-material";
 import { Grid, ListItem, ListItemButton, ListItemText } from "@mui/material";
 import { grey } from "@mui/material/colors";
 
-export const CategoryItem = () => {
+interface CodeItemProps {
+  codeItemName: string;
+}
+
+export const CodeItem = ({ codeItemName }: CodeItemProps) => {
   return (
     <ListItem
       sx={{
@@ -24,7 +26,8 @@ export const CategoryItem = () => {
           height: 70,
         }}
       >
-        <ListItemText primary="Just text for test" />
+        <ListItemText primary={codeItemName} />
+
         <Grid onMouseDown={(e) => e.stopPropagation()}>
           <Edit
             sx={{
@@ -40,6 +43,7 @@ export const CategoryItem = () => {
             }}
           />
         </Grid>
+
         <Grid onMouseDown={(e) => e.stopPropagation()}>
           <VisibilityIcon
             sx={{

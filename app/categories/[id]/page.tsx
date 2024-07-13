@@ -1,12 +1,14 @@
 "use client";
 
 import AddIcon from "@mui/icons-material/Add";
-import { Button, CategoriesFilter } from "@/components";
-import { CategoryItem } from "./CategoryItem";
+import { Button, CategoriesFilter, CodeItem } from "@/components";
 import { SearchInput } from "@/components/SearchInput";
 import { Box, Container, Grid, Typography, List } from "@mui/material";
+import { useGetCodeItems } from "@/hooks/codeItems/useGetCodeItem";
 
 const CategoryPage = () => {
+  const { data: codeItems = [] } = useGetCodeItems();
+
   return (
     <Box component="main">
       <Container maxWidth="lg">
@@ -14,6 +16,7 @@ const CategoryPage = () => {
           <Typography variant="h2" mb={4}>
             Code items
           </Typography>
+
           <Grid
             container
             item
@@ -30,19 +33,22 @@ const CategoryPage = () => {
                 Create item
               </Button>
             </Grid>
+
             <Grid item ml="auto">
               <SearchInput />
             </Grid>
+
             <Grid item>
               <CategoriesFilter />
             </Grid>
           </Grid>
+
           <List
             dense
             sx={{ width: "100%", "& .MuiTypography-root": { fontSize: 20 } }}
           >
-            {Array.from({ length: 10 }).map((_, i) => (
-              <CategoryItem key={i} />
+            {codeItems?.map((codeItem) => (
+              <CodeItem codeItemName={codeItem.name} key={codeItem.id} />
             ))}
           </List>
         </Grid>
