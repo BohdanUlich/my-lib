@@ -84,7 +84,7 @@ export const CategoryCard = ({
 
   const onRedirect = () => {
     if (!isEdit && !isNewCategory) {
-      router.push(`/categories/${categoryId}`);
+      router.push(`/code-items?categoryId=${categoryId}`);
     }
   };
 

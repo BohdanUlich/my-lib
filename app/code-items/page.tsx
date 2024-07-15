@@ -5,9 +5,12 @@ import { Button, CategoriesFilter, CodeItem } from "@/components";
 import { SearchInput } from "@/components/SearchInput";
 import { Box, Container, Grid, Typography, List } from "@mui/material";
 import { useGetCodeItems } from "@/hooks/codeItems/useGetCodeItem";
+import { useSearchParams } from "next/navigation";
 
-const CategoryPage = () => {
+const CodeItemsPage = () => {
   const { data: codeItems = [] } = useGetCodeItems();
+  const searchParams = useSearchParams();
+  const categoryId = searchParams.get("categoryId");
 
   return (
     <Box component="main">
@@ -29,6 +32,7 @@ const CategoryPage = () => {
                 variant="contained"
                 startIcon={<AddIcon />}
                 sx={{ maxWidth: 1 }}
+                href={`code-items/create?categoryId=${categoryId}`}
               >
                 Create item
               </Button>
@@ -57,4 +61,4 @@ const CategoryPage = () => {
   );
 };
 
-export default CategoryPage;
+export default CodeItemsPage;
