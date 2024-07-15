@@ -12,13 +12,17 @@ import {
   Container,
   Avatar,
   Tooltip,
+  Switch,
 } from "@mui/material";
 import Link from "next/link";
 import { useGetUser } from "@/hooks";
+import { useColorMode } from "@/providers";
 
 export const Header = () => {
   const { userName, userImage, userId, userEmail } = useGetUser();
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
+
+  const { theme, toggleTheme } = useColorMode();
 
   const onOpenUserMenu = (event: MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
@@ -84,6 +88,11 @@ export const Header = () => {
                 >
                   {userEmail}
                 </Typography>
+
+                <Box display="flex" alignItems="center" gap={1}>
+                  <Switch checked={theme === "dark"} onChange={toggleTheme} />
+                  <Typography variant="subtitle2">Dark mode</Typography>
+                </Box>
 
                 <MenuItem onClick={() => signOut()}>
                   <Typography textAlign="center" color="primary">
