@@ -32,6 +32,7 @@ const CodeItemsPage = () => {
                 variant="contained"
                 startIcon={<AddIcon />}
                 sx={{ maxWidth: 1 }}
+                component={Link}
                 href={`code-items/create?categoryId=${categoryId}`}
               >
                 Create item
