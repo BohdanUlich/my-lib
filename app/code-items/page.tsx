@@ -1,16 +1,17 @@
 "use client";
 
+import Link from "next/link";
 import AddIcon from "@mui/icons-material/Add";
-import { Button, CategoriesFilter, CodeItem } from "@/components";
-import { SearchInput } from "@/components/SearchInput";
-import { Box, Container, Grid, Typography, List } from "@mui/material";
-import { useGetCodeItems } from "@/hooks/codeItems/useGetCodeItem";
 import { useSearchParams } from "next/navigation";
+import { SearchInput } from "@/components/SearchInput";
+import { Button, CategoriesFilter, CodeItem } from "@/components";
+import { useGetCodeItems } from "@/hooks/codeItems/useGetCodeItem";
+import { Box, Container, Grid, Typography, List } from "@mui/material";
 
 const CodeItemsPage = () => {
-  const { data: codeItems = [] } = useGetCodeItems();
   const searchParams = useSearchParams();
   const categoryId = searchParams.get("categoryId");
+  const { data: codeItems = [] } = useGetCodeItems();
 
   return (
     <Box component="main">
@@ -53,7 +54,11 @@ const CodeItemsPage = () => {
             sx={{ width: "100%", "& .MuiTypography-root": { fontSize: 20 } }}
           >
             {codeItems?.map((codeItem) => (
-              <CodeItem codeItemName={codeItem.name} key={codeItem.id} />
+              <CodeItem
+                codeItemName={codeItem.name}
+                codeItemId={codeItem.id}
+                key={codeItem.id}
+              />
             ))}
           </List>
         </Grid>
