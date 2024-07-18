@@ -20,7 +20,18 @@ export const ConfirmationModal = ({
   ...rest
 }: ConfirmationModalProps) => {
   return (
-    <Modal open={open} onClose={onClose} {...rest}>
+    <Modal
+      open={open}
+      onClose={onClose}
+      {...rest}
+      slotProps={{
+        backdrop: {
+          onMouseDown: (e) => {
+            e.stopPropagation();
+          },
+        },
+      }}
+    >
       <Grid
         container
         flexDirection="column"
@@ -35,6 +46,7 @@ export const ConfirmationModal = ({
           maxWidth: "fit-content",
           borderRadius: 2,
         }}
+        onMouseDown={(e) => e.stopPropagation()}
       >
         <Typography variant="h4">{title}</Typography>
 

@@ -2,15 +2,17 @@
 
 import Link from "next/link";
 import { Edit } from "@mui/icons-material";
-import { Grid, ListItem, ListItemButton, ListItemText } from "@mui/material";
 import { grey } from "@mui/material/colors";
+import { DeleteCodeItemButton } from "./buttons";
 import { useSearchParams } from "next/navigation";
 import { ListItem, ListItemButton, ListItemText } from "@mui/material";
 
 interface CodeItemProps {
   codeItemName: string;
+  codeItemId: string;
 }
 
+export const CodeItem = ({ codeItemName, codeItemId }: CodeItemProps) => {
   const searchParams = useSearchParams();
   const categoryId = searchParams.get("categoryId") ?? "";
 
@@ -58,6 +60,10 @@ interface CodeItemProps {
             }}
           />
         </Link>
+        <DeleteCodeItemButton
+          codeItemName={codeItemName}
+          codeItemId={codeItemId}
+        />
       </ListItemButton>
     </ListItem>
   );
