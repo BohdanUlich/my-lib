@@ -96,3 +96,48 @@ export async function DELETE(
     return internalServerError;
   }
 }
+
+export async function GET(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    await connectDb();
+
+    const { searchParams } = new URL(req.url);
+    const userId = searchParams.get("userId");
+    const codeItemId = params.id;
+
+    const codeItem = await CodeItem.findById(codeItemId);
+
+    if (!codeItem) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Code item not found",
+        },
+        { status: 404 }
+      );
+    }
+
+    if (codeItem.user_id.toString() !== userId?.toString()) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Forbidden",
+        },
+        { status: 403 }
+      );
+    }
+
+    const { _id, ...rest } = codeItem.toObject();
+    const responseData = { id: _id.toString(), ...rest };
+
+    return NextResponse.json({
+      success: true,
+      data: responseData,
+    });
+  } catch (error) {
+    return internalServerError;
+  }
+}
