@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { grey } from "@mui/material/colors";
-import { ConfirmationModal } from "../modals";
 import { Button as MuiButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useDeleteCodeItem } from "@/hooks/codeItems";
+import { ConfirmationModal } from "@/components/modals";
 
 interface DeleteCodeItemButtonProps {
   codeItemId: string;

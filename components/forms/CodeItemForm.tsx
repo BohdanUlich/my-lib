@@ -1,57 +1,71 @@
-"use client";
-
 import * as z from "zod";
-import { Form } from "../Form";
-import { Button } from "../buttons";
+import { CodeItem } from "@/types";
 import { Grid } from "@mui/material";
-import { TextInput } from "../inputs";
-import CodeEditor from "../CodeEditor";
-import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { FieldValues } from "react-hook-form";
-import { useRouter, useSearchParams } from "next/navigation";
+import {
+  AutocompleteInput,
+  Button,
+  CodeEditor,
+  TextInput,
+  Form,
+} from "@/components";
+import { useMonaco } from "@monaco-editor/react";
 
 interface CodeItemFormProps {
   onSubmit: (data: FieldValues) => Promise<void>;
   isLoading: boolean;
+  codeItem?: CodeItem;
 }
 
-export const CodeItemForm = ({ onSubmit, isLoading }: CodeItemFormProps) => {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const categoryId = searchParams.get("categoryId") ?? "";
-  const [code, setCode] = useState<string>("// Write your code");
+const schema = z.object({
+  name: z.string().min(1, { message: "Required" }),
+  description: z.string(),
+  language: z.string().min(1, { message: "Required" }),
+  code: z.string(),
+});
 
-  const schema = z.object({
-    name: z.string().min(1, { message: "Required" }),
-    description: z.string(),
-  });
+export const CodeItemForm = ({
+  onSubmit,
+  isLoading,
+  codeItem,
+}: CodeItemFormProps) => {
+  const { back } = useRouter();
 
-  const onCancelBack = () => {
-    router.back();
-  };
-  const onSaveBack = () => {
-    if (isLoading) {
-      router.back();
+  const [languages, setLanguages] = useState<string[]>([]);
+
+  const monaco = useMonaco();
+
+  useEffect(() => {
+    if (monaco) {
+      setLanguages(monaco.languages.getLanguages().map((lang) => lang.id));
     }
-  };
-
-  const handleEditorChange = (value: string | undefined) => {
-    if (value !== undefined) {
-      setCode(value);
-    }
-  };
+  }, [codeItem, monaco]);
 
   const onSave = async (data: FieldValues) => {
-    await onSubmit({ ...data, code });
-    router.push(`/code-items?categoryId=${categoryId}`);
+    try {
+      await onSubmit({ ...data });
+    } finally {
+      back();
+    }
   };
 
   return (
-    <Form schema={schema} onSubmit={onSave} sx={{ width: 1 }}>
+    <Form
+      schema={schema}
+      onSubmit={onSave}
+      defaultValues={{
+        name: codeItem?.name,
+        description: codeItem?.description,
+        code: codeItem?.code,
+        language: codeItem?.language,
+      }}
+      sx={{ width: 1 }}
+    >
       <Grid
         container
         sx={{
-          display: "flex",
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
@@ -59,47 +73,30 @@ export const CodeItemForm = ({ onSubmit, isLoading }: CodeItemFormProps) => {
         }}
       >
         <TextInput label="Name" spellCheck="false" name="name" fullWidth />
+
         <TextInput
-          multiline
+          multiline={true}
           fullWidth
           rows={4}
           label="Description"
-          spellCheck="false"
           name="description"
         />
-        <Grid
-          sx={{
-            border: "1px solid rgba(0, 0, 0, 0.23)",
-            borderRadius: "4px",
-            width: "100%",
-            overflow: "auto",
-            "&:focus": {
-              border: "2px solid #1976d2",
-            },
-            "&:hover": {
-              border: "1px solid black",
-            },
-          }}
-        >
-          <CodeEditor
-            value={code}
-            language="typescript"
-            onChange={handleEditorChange}
-          />
-        </Grid>
-        <Grid
-          container
-          sx={{ display: "flex", justifyContent: "space-between" }}
-        >
-          <Button variant="contained" onClick={onCancelBack}>
+
+        <AutocompleteInput
+          name="language"
+          options={languages}
+          defaultValue="typescript"
+          fullWidth
+        />
+
+        <CodeEditor name="code" defaultValue="// Write your code" />
+
+        <Grid container sx={{ justifyContent: "space-between" }}>
+          <Button variant="contained" onClick={back}>
             Cancel
           </Button>
-          <Button
-            variant="contained"
-            isLoading={isLoading}
-            type="submit"
-            onClick={onSaveBack}
-          >
+
+          <Button variant="contained" isLoading={isLoading} type="submit">
             Save
           </Button>
         </Grid>

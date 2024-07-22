@@ -5,7 +5,7 @@ import { CodeItemForm } from "@/components";
 import { FieldValues } from "react-hook-form";
 import { useSearchParams } from "next/navigation";
 import { Box, Container, Typography } from "@mui/material";
-import { useCreateCodeItem } from "@/hooks/codeItems/useCreateCodeItem";
+import { useCreateCodeItem } from "@/hooks/codeItems";
 
 const CodeItemCreate = () => {
   const { userId } = useGetUser();
@@ -20,6 +20,7 @@ const CodeItemCreate = () => {
       category_id: categoryId,
       description: data.description,
       code: data.code,
+      language: data.language,
     });
   };
 
@@ -37,7 +38,7 @@ const CodeItemCreate = () => {
           rowGap: 1.5,
         }}
       >
-        <Typography fontSize="35px">Create code-item</Typography>
+        <Typography variant="h3">Create code-item</Typography>
         <CodeItemForm onSubmit={onSubmit} isLoading={isLoading} />
       </Container>
     </Box>

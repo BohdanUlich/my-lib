@@ -7,6 +7,7 @@ export interface CodeItemDocument {
   code?: string;
   category_id: mongoose.Schema.Types.ObjectId;
   user_id: mongoose.Schema.Types.ObjectId;
+  language: string;
   labels: {
     label_id: mongoose.Schema.Types.ObjectId;
     name: string;
@@ -19,6 +20,7 @@ const codeItemSchema = new Schema<CodeItemDocument>(
     name: { type: String, required: true },
     description: { type: String },
     code: { type: String },
+    language: { type: String },
     category_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Category",

@@ -3,9 +3,8 @@
 import Link from "next/link";
 import AddIcon from "@mui/icons-material/Add";
 import { useSearchParams } from "next/navigation";
-import { SearchInput } from "@/components/SearchInput";
-import { Button, CategoriesFilter, CodeItem } from "@/components";
-import { useGetCodeItems } from "@/hooks/codeItems/useGetCodeItem";
+import { Button, CategoriesFilter, CodeItem, SearchInput } from "@/components";
+import { useGetCodeItems } from "@/hooks/codeItems";
 import { Box, Container, Grid, Typography, List } from "@mui/material";
 
 const CodeItemsPage = () => {

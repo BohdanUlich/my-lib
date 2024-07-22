@@ -10,3 +10,7 @@ export const LABEL_QUERY_KEY = "label";
 // Types
 export const CATEGORY_TYPE = "category";
 export const CODE_ITEM_TYPE = "codeItem";
+
+// Consts
+export const LIGHT_THEME = "light";
+export const DARK_THEME = "dark";

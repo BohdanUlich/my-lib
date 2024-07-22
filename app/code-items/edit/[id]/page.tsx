@@ -3,11 +3,12 @@
 import { CodeItemForm } from "@/components";
 import { useParams } from "next/navigation";
 import { FieldValues } from "react-hook-form";
-import { useUpdateCodeItem } from "@/hooks/codeItems";
 import { Box, Container, Typography } from "@mui/material";
+import { useUpdateCodeItem, useGetOneCodeItem } from "@/hooks/codeItems";
 
 const CodeItemEdit = () => {
   const { updateCodeItem, isLoading } = useUpdateCodeItem();
+  const { data: codeItem } = useGetOneCodeItem();
   const params = useParams();
   const id = params.id;
 
@@ -16,6 +17,7 @@ const CodeItemEdit = () => {
       name: data.name,
       description: data.description,
       code: data.code,
+      language: data.language,
       id: `${id}`,
     });
   };
@@ -34,8 +36,12 @@ const CodeItemEdit = () => {
           rowGap: 1.5,
         }}
       >
-        <Typography fontSize="35px">Update code-item</Typography>
-        <CodeItemForm onSubmit={onSubmit} isLoading={isLoading} />
+        <Typography variant="h3">Update code-item</Typography>
+        <CodeItemForm
+          onSubmit={onSubmit}
+          isLoading={isLoading}
+          codeItem={codeItem}
+        />
       </Container>
     </Box>
   );
