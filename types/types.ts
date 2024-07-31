@@ -13,7 +13,16 @@ export interface Category {
   user_id: string;
   labels?: Label[];
 }
-
+export interface CodeItem {
+  id: string;
+  name: string;
+  description?: string;
+  code?: string;
+  category_id: string;
+  user_id: string;
+  labels?: Label[];
+  language: string;
+}
 export interface Label {
   id: string;
   name: string;

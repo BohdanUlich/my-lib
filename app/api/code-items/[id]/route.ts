@@ -13,6 +13,7 @@ const codeItemSchema = z.object({
   name: z.string().min(1),
   description: z.string().optional(),
   code: z.string().optional(),
+  language: z.string().min(1),
 });
 
 type CodeItemSchema = z.infer<typeof codeItemSchema>;

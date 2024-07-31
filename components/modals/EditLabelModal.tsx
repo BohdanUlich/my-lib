@@ -2,7 +2,6 @@ import { Modal, Box, Typography, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { grey } from "@mui/material/colors";
 import { Button } from "../buttons";
-import { Form } from "../Form";
 import { TextInput } from "../inputs";
 import {
   useCreateLabel,
@@ -13,6 +12,7 @@ import {
 import { FieldValues } from "react-hook-form";
 import * as z from "zod";
 import { Label, LabelType } from "@/types";
+import { Form } from "../forms";
 
 interface LabelFormModalProps {
   isOpen: boolean;

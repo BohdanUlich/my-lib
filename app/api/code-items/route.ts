@@ -88,6 +88,7 @@ export async function POST(req: NextRequest) {
         user_id: z.string().min(1),
         category_id: z.string().min(1),
         description: z.string(),
+        language: z.string().min(1),
         code: z.string(),
       })
       .parse(body);

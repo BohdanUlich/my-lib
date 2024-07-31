@@ -26,7 +26,7 @@ export const SearchInput = () => {
 
   return (
     <TextField
-      label="Search categories"
+      label="Search"
       value={keyword}
       sx={{ width: "300px" }}
       fullWidth

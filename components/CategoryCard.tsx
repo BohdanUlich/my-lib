@@ -13,7 +13,6 @@ import {
 import { grey } from "@mui/material/colors";
 import { useState, useEffect, useRef } from "react";
 import { useCreateCategory, useGetUser, useUpdateCategory } from "@/hooks";
-import { Form } from "./Form";
 import { FieldValues } from "react-hook-form";
 import * as z from "zod";
 import { EditLabelButton, Button, DeleteCategoryButton } from "./buttons";
@@ -21,6 +20,7 @@ import { TextInput } from "./inputs";
 import { CATEGORY_TYPE, Label as ILabel } from "@/types";
 import { Label } from "./Label";
 import { useRouter } from "next/navigation";
+import { Form } from "./forms";
 
 interface CategoryCardProps {
   categoryName: string;
@@ -84,7 +84,7 @@ export const CategoryCard = ({
 
   const onRedirect = () => {
     if (!isEdit && !isNewCategory) {
-      router.push(`/categories/${categoryId}`);
+      router.push(`/code-items?categoryId=${categoryId}`);
     }
   };
 
