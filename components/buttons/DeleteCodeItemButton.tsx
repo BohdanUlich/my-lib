@@ -49,7 +49,7 @@ export const DeleteCodeItemButton = ({
 
       <ConfirmationModal
         title={`Delete ${codeItemName}`}
-        text="Are you sure you want to delete this category?"
+        text="Are you sure you want to delete this code?"
         open={isModalOpen}
         onConfirm={onDeleteCodeItem}
         onClose={() => setIsModalOpen(false)}
