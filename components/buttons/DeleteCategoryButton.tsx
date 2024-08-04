@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "./Button";
-import { useDeleteCategory } from "@/hooks";
 import { ConfirmationModal } from "../modals";
+import { useDeleteCategory } from "@/api";
 
 interface DeleteCategoryButtonProps {
   categoryId: string;
@@ -15,7 +15,7 @@ export const DeleteCategoryButton = ({
   setIsEdit,
 }: DeleteCategoryButtonProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { deleteCategory, isLoading } = useDeleteCategory();
+  const { deleteCategory, isPending } = useDeleteCategory();
 
   const onDeleteCategory = async () => {
     await deleteCategory(categoryId);
@@ -40,7 +40,7 @@ export const DeleteCategoryButton = ({
         open={isModalOpen}
         onConfirm={onDeleteCategory}
         onClose={() => setIsModalOpen(false)}
-        isLoading={isLoading}
+        isLoading={isPending}
         hideBackdrop
       />
     </>

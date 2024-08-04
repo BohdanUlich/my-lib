@@ -1,50 +1,38 @@
-"use client";
+import {
+  dehydrate,
+  HydrationBoundary,
+  QueryClient,
+} from "@tanstack/react-query";
 
-import { CodeItemForm } from "@/components";
-import { useParams } from "next/navigation";
-import { FieldValues } from "react-hook-form";
-import { Box, Container, Typography } from "@mui/material";
-import { useUpdateCodeItem, useGetOneCodeItem } from "@/hooks/codeItems";
+import { EditCodeItem } from "./edit";
+import { CODEITEMS_API_ENDPOINT } from "@/types";
+import { getServerSession } from "next-auth/next";
+import { authConfig } from "@/configs";
+import { fetchOneCodeItem } from "@/api/codeItems/fetchOneCodeItem";
 
-const CodeItemEdit = () => {
-  const { updateCodeItem, isLoading } = useUpdateCodeItem();
-  const { data: codeItem } = useGetOneCodeItem();
-  const params = useParams();
-  const id = params.id;
-
-  const onSubmit = async (data: FieldValues) => {
-    await updateCodeItem({
-      name: data.name,
-      description: data.description,
-      code: data.code,
-      language: data.language,
-      id: `${id}`,
-    });
+interface EditPageProps {
+  params: {
+    id: string;
   };
+}
+
+export default async function EditPage({ params }: EditPageProps) {
+  const queryClient = new QueryClient();
+  const session = await getServerSession(authConfig);
+  const userId = session?.user.id;
+  const { id: codeItemId } = params;
+
+  await queryClient.prefetchQuery({
+    queryKey: [CODEITEMS_API_ENDPOINT, codeItemId],
+    queryFn: () => fetchOneCodeItem({ userId, codeItemId }),
+  });
+
+  const dehydratedState = dehydrate(queryClient);
+  console.log(dehydratedState);
 
   return (
-    <Box component="main">
-      <Container
-        maxWidth="md"
-        sx={{
-          pt: 5,
-          pb: 3,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          rowGap: 1.5,
-        }}
-      >
-        <Typography variant="h3">Update code-item</Typography>
-        <CodeItemForm
-          onSubmit={onSubmit}
-          isLoading={isLoading}
-          codeItem={codeItem}
-        />
-      </Container>
-    </Box>
+    <HydrationBoundary state={dehydratedState}>
+      <EditCodeItem />
+    </HydrationBoundary>
   );
-};
-
-export default CodeItemEdit;
+}

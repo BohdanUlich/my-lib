@@ -1,4 +1,4 @@
-import { connectDb } from "@/lib";
+import { connectDb } from "@/services";
 import User from "@/models/user";
 import { NextRequest, NextResponse } from "next/server";
 import { ZodError, z } from "zod";

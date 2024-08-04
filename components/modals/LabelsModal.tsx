@@ -10,9 +10,9 @@ import CloseIcon from "@mui/icons-material/Close";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Button } from "../";
-import { useGetLabels, useUpdateCategory, useUpdateLabel } from "@/hooks";
 import { Label, LabelType } from "@/types";
 import { useCategories } from "@/providers";
+import { useGetLabels, useUpdateCategory, useUpdateLabel } from "@/api";
 
 interface LabelsModalProps {
   isOpen: boolean;

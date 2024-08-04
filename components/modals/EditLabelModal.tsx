@@ -3,16 +3,12 @@ import CloseIcon from "@mui/icons-material/Close";
 import { grey } from "@mui/material/colors";
 import { Button } from "../buttons";
 import { TextInput } from "../inputs";
-import {
-  useCreateLabel,
-  useGetCategories,
-  useGetUser,
-  useUpdateLabel,
-} from "@/hooks";
+import { useGetUser } from "@/hooks";
 import { FieldValues } from "react-hook-form";
 import * as z from "zod";
 import { Label, LabelType } from "@/types";
 import { Form } from "../forms";
+import { useUpdateLabel, useCreateLabel, useGetCategories } from "@/api";
 
 interface LabelFormModalProps {
   isOpen: boolean;
@@ -35,8 +31,8 @@ export const EditLabelModal = ({
   labelType,
 }: LabelFormModalProps) => {
   const { userId } = useGetUser();
-  const { createLabel, isLoading } = useCreateLabel();
-  const { updateLabel, isLoading: isLoadingUpdate } = useUpdateLabel();
+  const { createLabel, isPending } = useCreateLabel();
+  const { updateLabel, isPending: isLoadingUpdate } = useUpdateLabel();
   const { refetch } = useGetCategories();
 
   const onSaveLabel = async (data: FieldValues) => {
@@ -134,7 +130,7 @@ export const EditLabelModal = ({
             variant="contained"
             type="submit"
             sx={{ mt: 3 }}
-            isLoading={isLoading || isLoadingUpdate}
+            isLoading={isPending || isLoadingUpdate}
           >
             Save
           </Button>

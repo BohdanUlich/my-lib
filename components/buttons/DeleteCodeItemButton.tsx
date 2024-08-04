@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { grey } from "@mui/material/colors";
 import { Button as MuiButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { useDeleteCodeItem } from "@/hooks/codeItems";
 import { ConfirmationModal } from "@/components/modals";
+import { useDeleteCodeItem } from "@/api";
 
 interface DeleteCodeItemButtonProps {
   codeItemId: string;
@@ -15,7 +15,7 @@ export const DeleteCodeItemButton = ({
   codeItemId,
 }: DeleteCodeItemButtonProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { deleteCodeItem, isLoading } = useDeleteCodeItem();
+  const { deleteCodeItem, isPending } = useDeleteCodeItem();
 
   const onDeleteCodeItem = async () => {
     await deleteCodeItem(codeItemId);
@@ -53,7 +53,7 @@ export const DeleteCodeItemButton = ({
         open={isModalOpen}
         onConfirm={onDeleteCodeItem}
         onClose={() => setIsModalOpen(false)}
-        isLoading={isLoading}
+        isLoading={isPending}
       />
     </>
   );

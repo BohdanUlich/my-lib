@@ -12,15 +12,21 @@ import {
 } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import { useState, useEffect, useRef } from "react";
-import { useCreateCategory, useGetUser, useUpdateCategory } from "@/hooks";
+import { useGetUser } from "@/hooks";
 import { FieldValues } from "react-hook-form";
 import * as z from "zod";
 import { EditLabelButton, Button, DeleteCategoryButton } from "./buttons";
 import { TextInput } from "./inputs";
-import { CATEGORY_TYPE, Label as ILabel } from "@/types";
+import {
+  CATEGORY_TYPE,
+  CODEITEMS_API_ENDPOINT,
+  Label as ILabel,
+} from "@/types";
 import { Label } from "./Label";
 import { useRouter } from "next/navigation";
 import { Form } from "./forms";
+import { fetchCodeItems, useCreateCategory, useUpdateCategory } from "@/api";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface CategoryCardProps {
   categoryName: string;
@@ -44,11 +50,19 @@ export const CategoryCard = ({
   const [isEdit, setIsEdit] = useState(false);
   const { userId } = useGetUser();
   const router = useRouter();
-  const { createCategory, isLoading: isLoadingCreate } = useCreateCategory();
-  const { updateCategory, isLoading: isLoadingUpdate } = useUpdateCategory();
+  const { createCategory, isPending: isLoadingCreate } = useCreateCategory();
+  const { updateCategory, isPending: isLoadingUpdate } = useUpdateCategory();
   const isLoading = isLoadingCreate || isLoadingUpdate;
   const [showTooltip, setShowTooltip] = useState(false);
   const textRef = useRef<HTMLDivElement>(null);
+  const queryClient = useQueryClient();
+
+  const prefetchCodeItems = () => {
+    queryClient.prefetchQuery({
+      queryKey: [CODEITEMS_API_ENDPOINT, userId, null, categoryId],
+      queryFn: () => fetchCodeItems({ userId, categoryId }),
+    });
+  };
 
   const onSave = async (data: FieldValues) => {
     try {
@@ -111,6 +125,7 @@ export const CategoryCard = ({
           zIndex: isEdit || isNewCategory ? 20 : 9,
           height: 1,
         }}
+        onMouseEnter={prefetchCodeItems}
       >
         <Form schema={schema} onSubmit={onSave} sx={{ height: 1 }}>
           <Card

@@ -3,9 +3,9 @@ import { useState } from "react";
 import { Box, Modal, Grid, Checkbox, Typography } from "@mui/material";
 import FilterIcon from "@mui/icons-material/FilterList";
 import { Button } from "../buttons/Button";
-import { useGetLabels } from "@/hooks";
 import { CATEGORY_TYPE, LABEL_QUERY_KEY, Label } from "@/types";
 import { useSearchParams, useRouter } from "next/navigation";
+import { useGetLabels } from "@/api";
 
 export const CategoriesFilter = () => {
   const { data: labels } = useGetLabels({ labelType: CATEGORY_TYPE });

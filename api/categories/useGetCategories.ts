@@ -1,16 +1,15 @@
 import { fetchService } from "@/services";
 import { ApiResponse, CATEGORIES_API_ENDPOINT, Category } from "@/types";
-import { useQuery } from "react-query";
-import { useSnackbar } from "notistack";
-import { useGetUser } from "../useGetUser";
+import { useQuery } from "@tanstack/react-query";
+import { useGetUser } from "../../hooks/useGetUser";
 import { useSearchParams } from "next/navigation";
 
-const fetchCategories = async ({
+export const fetchCategories = async ({
   userId,
   q,
 }: {
   userId: string;
-  q: string | null;
+  q?: string | null;
 }): Promise<Category[]> => {
   let url = `${CATEGORIES_API_ENDPOINT}?userId=${userId}`;
   if (q) {
@@ -30,22 +29,12 @@ const fetchCategories = async ({
 
 export const useGetCategories = () => {
   const { userId } = useGetUser();
-  const { enqueueSnackbar } = useSnackbar();
   const searchParams = useSearchParams();
   const q = searchParams.get("q");
 
-  return useQuery(
-    [CATEGORIES_API_ENDPOINT, userId, q],
-    () => fetchCategories({ userId, q }),
-    {
-      enabled: !!userId,
-      retry: 2,
-      staleTime: 600000,
-      onError: (error) =>
-        enqueueSnackbar(`${error}`, {
-          variant: "error",
-          preventDuplicate: true,
-        }),
-    }
-  );
+  return useQuery({
+    queryKey: [CATEGORIES_API_ENDPOINT, userId, q],
+    queryFn: () => fetchCategories({ userId, q }),
+    enabled: !!userId,
+  });
 };

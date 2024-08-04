@@ -25,12 +25,6 @@ export const Form = ({
     defaultValues,
   });
 
-  useEffect(() => {
-    if (defaultValues) {
-      form.reset(defaultValues);
-    }
-  }, [defaultValues, form]);
-
   const handleSubmit = async (values: unknown) => {
     const res = await onSubmit(values);
 

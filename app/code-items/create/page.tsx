@@ -5,13 +5,13 @@ import { CodeItemForm } from "@/components";
 import { FieldValues } from "react-hook-form";
 import { useSearchParams } from "next/navigation";
 import { Box, Container, Typography } from "@mui/material";
-import { useCreateCodeItem } from "@/hooks/codeItems";
+import { useCreateCodeItem } from "@/api";
 
 const CodeItemCreate = () => {
   const { userId } = useGetUser();
   const searchParams = useSearchParams();
   const categoryId = searchParams.get("categoryId") ?? "";
-  const { createCodeItem, isLoading } = useCreateCodeItem();
+  const { createCodeItem, isPending } = useCreateCodeItem();
 
   const onSubmit = async (data: FieldValues) => {
     await createCodeItem({
@@ -39,7 +39,7 @@ const CodeItemCreate = () => {
         }}
       >
         <Typography variant="h3">Create code-item</Typography>
-        <CodeItemForm onSubmit={onSubmit} isLoading={isLoading} />
+        <CodeItemForm onSubmit={onSubmit} isLoading={isPending} />
       </Container>
     </Box>
   );

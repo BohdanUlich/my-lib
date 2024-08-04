@@ -2,7 +2,7 @@ import { useCallback, useState } from "react";
 import { ConfirmationModal, EditLabelModal, LabelsModal } from "../modals";
 import { Button } from "./Button";
 import { Label, LabelType } from "@/types";
-import { useDeleteLabel, useGetCategories } from "@/hooks";
+import { useDeleteLabel, useGetCategories } from "@/api";
 
 interface EditLabelButtonProps {
   categoryId: string;
@@ -18,7 +18,7 @@ export const EditLabelButton = ({
   const [isOpenDeleteLabelModal, setIsOpenDeleteLabelModal] = useState(false);
   const [editedLabel, setEditedLabel] = useState<Label | null>(null);
   const [deletedLabel, setDeletedLabel] = useState<Label | null>(null);
-  const { deleteLabel, isLoading } = useDeleteLabel();
+  const { deleteLabel, isPending } = useDeleteLabel();
   const { refetch } = useGetCategories();
 
   const onSetEditedLabel = (label: Label) => {
@@ -72,7 +72,7 @@ export const EditLabelButton = ({
         text="Are you sure you want to delete this label?"
         onClose={() => setIsOpenDeleteLabelModal(false)}
         onConfirm={onConfirmDeletelabel}
-        isLoading={isLoading}
+        isLoading={isPending}
         hideBackdrop
       />
     </>

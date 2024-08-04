@@ -1,8 +1,7 @@
 import { fetchService } from "@/services";
 import { ApiResponse, LABELS_API_ENDPOINT, Label, LabelType } from "@/types";
-import { useQuery } from "react-query";
-import { useSnackbar } from "notistack";
-import { useGetUser } from "../useGetUser";
+import { useQuery } from "@tanstack/react-query";
+import { useGetUser } from "../../hooks/useGetUser";
 
 interface UseGetLabelsParams {
   labelType: LabelType;
@@ -31,20 +30,10 @@ const fetchLabels = async ({
 
 export const useGetLabels = ({ labelType }: UseGetLabelsParams) => {
   const { userId } = useGetUser();
-  const { enqueueSnackbar } = useSnackbar();
 
-  return useQuery(
-    [LABELS_API_ENDPOINT, userId, labelType],
-    () => fetchLabels({ userId, labelType }),
-    {
-      enabled: !!userId,
-      staleTime: 600000,
-      retry: 2,
-      onError: (error) =>
-        enqueueSnackbar(`${error}`, {
-          variant: "error",
-          preventDuplicate: true,
-        }),
-    }
-  );
+  return useQuery({
+    queryFn: () => fetchLabels({ userId, labelType }),
+    queryKey: [LABELS_API_ENDPOINT, userId, labelType],
+    enabled: !!userId,
+  });
 };

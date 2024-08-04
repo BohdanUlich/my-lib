@@ -1,14 +1,16 @@
 import { fetchService } from "@/services";
 import { ApiResponse, LABELS_API_ENDPOINT, Label } from "@/types";
 import { useSnackbar } from "notistack";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export const useCreateLabel = () => {
   const { enqueueSnackbar } = useSnackbar();
   const queryClient = useQueryClient();
 
-  const { mutateAsync: createLabel, isLoading } = useMutation(
-    async (newLabel: Pick<Label, "name" | "color" | "user_id" | "type">) => {
+  const { mutateAsync: createLabel, isPending } = useMutation({
+    mutationFn: async (
+      newLabel: Pick<Label, "name" | "color" | "user_id" | "type">
+    ) => {
       const response: ApiResponse<Label> = await fetchService(
         LABELS_API_ENDPOINT,
         {
@@ -24,21 +26,19 @@ export const useCreateLabel = () => {
         throw new Error(response.error);
       }
 
-      await queryClient.invalidateQueries(LABELS_API_ENDPOINT);
+      await queryClient.invalidateQueries({ queryKey: [LABELS_API_ENDPOINT] });
 
       return response.data;
     },
-    {
-      onSuccess: () => {
-        enqueueSnackbar("Label created successfully", {
-          variant: "success",
-        });
-      },
-      onError: (error: Error) => {
-        enqueueSnackbar(error.message, { variant: "error" });
-      },
-    }
-  );
+    onSuccess: () => {
+      enqueueSnackbar("Label created successfully", {
+        variant: "success",
+      });
+    },
+    onError: (error: Error) => {
+      enqueueSnackbar(error.message, { variant: "error" });
+    },
+  });
 
-  return { createLabel, isLoading };
+  return { createLabel, isPending };
 };

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { connectDb } from "@/lib";
+import { connectDb } from "@/services";
 import { ZodError, z } from "zod";
 import CodeItem from "@/models/code-item";
 

@@ -2,4 +2,5 @@ export * from "./useGetCodeItems";
 export * from "./useCreateCodeItem";
 export * from "./useDeleteCodeItem";
 export * from "./useUpdateCodeItem";
-export * from "./useGetOneCodeItem";
+export * from "./fetchCodeItems";
+export * from "./fetchOneCodeItem";

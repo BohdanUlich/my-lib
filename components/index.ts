@@ -6,5 +6,6 @@ export * from "./CategoryCard";
 export * from "./Header";
 export * from "./CodeItem";
 export * from "./forms";
-export * from "./SearchInput";
+export * from "./skeletons";
 export * from "./CodeEditor";
+export * from "./LoadingSpinner";

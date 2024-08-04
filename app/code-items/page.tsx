@@ -4,8 +4,8 @@ import Link from "next/link";
 import AddIcon from "@mui/icons-material/Add";
 import { useSearchParams } from "next/navigation";
 import { Button, CategoriesFilter, CodeItem, SearchInput } from "@/components";
-import { useGetCodeItems } from "@/hooks/codeItems";
 import { Box, Container, Grid, Typography, List } from "@mui/material";
+import { useGetCodeItems } from "@/api";
 
 const CodeItemsPage = () => {
   const searchParams = useSearchParams();

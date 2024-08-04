@@ -22,7 +22,11 @@ export const fetchService = async (url: string, options: RequestOptions) => {
   }
 
   try {
-    const response = await fetch(`/api/${url}`, config);
+    const isServer = typeof window === "undefined";
+    const finalUrl = isServer
+      ? `${process.env.API_BASE_URL}/${url}`
+      : `/api/${url}`;
+    const response = await fetch(finalUrl, config);
     const jsonData = await response.json();
 
     return jsonData;

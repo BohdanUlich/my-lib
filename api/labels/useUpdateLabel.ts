@@ -1,7 +1,7 @@
 import { fetchService } from "@/services";
 import { ApiResponse, LABELS_API_ENDPOINT, Label } from "@/types";
 import { useSnackbar } from "notistack";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface UseUpdateLabelProps {
   hideSuccessMessage?: boolean;
@@ -12,8 +12,8 @@ export const useUpdateLabel = ({
   const { enqueueSnackbar } = useSnackbar();
   const queryClient = useQueryClient();
 
-  const { mutateAsync: updateLabel, isLoading } = useMutation(
-    async (label: Label) => {
+  const { mutateAsync: updateLabel, isPending } = useMutation({
+    mutationFn: async (label: Label) => {
       const response: ApiResponse<Label> = await fetchService(
         `${LABELS_API_ENDPOINT}/${label.id}`,
         {
@@ -29,23 +29,21 @@ export const useUpdateLabel = ({
         throw new Error(response.error);
       }
 
-      await queryClient.invalidateQueries(LABELS_API_ENDPOINT);
+      await queryClient.invalidateQueries({ queryKey: [LABELS_API_ENDPOINT] });
 
       return response.data;
     },
-    {
-      onSuccess: () => {
-        if (!hideSuccessMessage) {
-          enqueueSnackbar("Label updated successfully", {
-            variant: "success",
-          });
-        }
-      },
-      onError: (error: Error) => {
-        enqueueSnackbar(error.message, { variant: "error" });
-      },
-    }
-  );
+    onSuccess: () => {
+      if (!hideSuccessMessage) {
+        enqueueSnackbar("Label updated successfully", {
+          variant: "success",
+        });
+      }
+    },
+    onError: (error: Error) => {
+      enqueueSnackbar(error.message, { variant: "error" });
+    },
+  });
 
-  return { updateLabel, isLoading };
+  return { updateLabel, isPending };
 };

@@ -1,6 +1,6 @@
 import { useSnackbar } from "notistack";
 import { fetchService } from "@/services";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ApiResponse, CODEITEMS_API_ENDPOINT, CodeItem } from "@/types";
 
 interface UseUpdateCodeItemProps {
@@ -13,8 +13,8 @@ export const useUpdateCodeItem = ({
   const queryClient = useQueryClient();
   const { enqueueSnackbar } = useSnackbar();
 
-  const { mutateAsync: updateCodeItem, isLoading } = useMutation(
-    async (codeItem: Omit<CodeItem, "user_id" | "category_id">) => {
+  const { mutateAsync: updateCodeItem, isPending } = useMutation({
+    mutationFn: async (codeItem: Omit<CodeItem, "user_id" | "category_id">) => {
       const response: ApiResponse<CodeItem> = await fetchService(
         `${CODEITEMS_API_ENDPOINT}/${codeItem.id}`,
         {
@@ -30,23 +30,23 @@ export const useUpdateCodeItem = ({
         throw new Error(response.error);
       }
 
-      await queryClient.invalidateQueries(CODEITEMS_API_ENDPOINT);
+      await queryClient.invalidateQueries({
+        queryKey: [CODEITEMS_API_ENDPOINT],
+      });
 
       return response.data;
     },
-    {
-      onSuccess: () => {
-        if (!hideSuccessMessage) {
-          enqueueSnackbar("Code-item updated successfully", {
-            variant: "success",
-          });
-        }
-      },
-      onError: (error: Error) => {
-        enqueueSnackbar(error.message, { variant: "error" });
-      },
-    }
-  );
+    onSuccess: () => {
+      if (!hideSuccessMessage) {
+        enqueueSnackbar("Code-item updated successfully", {
+          variant: "success",
+        });
+      }
+    },
+    onError: (error: Error) => {
+      enqueueSnackbar(error.message, { variant: "error" });
+    },
+  });
 
-  return { updateCodeItem, isLoading };
+  return { updateCodeItem, isPending };
 };
