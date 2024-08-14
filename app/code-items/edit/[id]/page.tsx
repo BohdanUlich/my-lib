@@ -28,7 +28,6 @@ export default async function EditPage({ params }: EditPageProps) {
   });
 
   const dehydratedState = dehydrate(queryClient);
-  console.log(dehydratedState);
 
   return (
     <HydrationBoundary state={dehydratedState}>

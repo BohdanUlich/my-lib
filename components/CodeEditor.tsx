@@ -1,9 +1,9 @@
-import { useColorMode } from "@/providers";
-import { Grid } from "@mui/material";
-import MonacoEditor, { useMonaco } from "@monaco-editor/react";
-import { useController, useWatch } from "react-hook-form";
-import { DARK_THEME } from "@/types";
 import { useEffect } from "react";
+import { Grid } from "@mui/material";
+import { DARK_THEME } from "@/types";
+import { useColorMode } from "@/providers";
+import { useController, useWatch } from "react-hook-form";
+import MonacoEditor, { useMonaco } from "@monaco-editor/react";
 
 interface MonacoEditorProps {
   name: string;
