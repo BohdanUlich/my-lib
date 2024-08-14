@@ -1,24 +1,24 @@
-import { useEffect } from "react";
-import { Grid } from "@mui/material";
-import { DARK_THEME } from "@/types";
+import MonacoEditor, { OnChange, useMonaco } from "@monaco-editor/react";
 import { useColorMode } from "@/providers";
-import { useController, useWatch } from "react-hook-form";
-import MonacoEditor, { useMonaco } from "@monaco-editor/react";
+import { DARK_THEME } from "@/types";
+import { Grid } from "@mui/material";
+import { useEffect } from "react";
 
 interface MonacoEditorProps {
-  name: string;
-  defaultValue?: string;
+  language: string;
+  value?: string;
+  onChange?: OnChange;
+  readOnly?: boolean;
 }
 
-export const CodeEditor = ({ name, defaultValue }: MonacoEditorProps) => {
+export const CodeEditorView = ({
+  language,
+  value,
+  onChange,
+  readOnly,
+}: MonacoEditorProps) => {
   const { theme } = useColorMode();
-  const language = useWatch({ name: "language" });
   const monaco = useMonaco();
-
-  const { field } = useController({
-    name,
-    defaultValue,
-  });
 
   useEffect(() => {
     if (monaco) {
@@ -61,8 +61,9 @@ export const CodeEditor = ({ name, defaultValue }: MonacoEditorProps) => {
         height="500px"
         width="100%"
         language={language ?? "typescript"}
-        value={field.value}
-        onChange={field.onChange}
+        value={value}
+        onChange={onChange}
+        options={{ readOnly }}
       />
     </Grid>
   );

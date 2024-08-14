@@ -7,5 +7,5 @@ export * from "./Header";
 export * from "./CodeItem";
 export * from "./forms";
 export * from "./skeletons";
-export * from "./CodeEditor";
+export * from "./code-editor";
 export * from "./LoadingSpinner";
