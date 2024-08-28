@@ -1,67 +1,34 @@
-"use client";
-
-import { CodeEditorView } from "@/components/code-editor/CodeEditorView";
-import { fetchOneCodeItem } from "@/api/codeItems/fetchOneCodeItem";
-import { Box, Container, Grid, Typography } from "@mui/material";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { useParams, useRouter } from "next/navigation";
+import {
+  dehydrate,
+  HydrationBoundary,
+  QueryClient,
+} from "@tanstack/react-query";
+import { cookies } from "next/headers";
 import { CODEITEMS_API_ENDPOINT } from "@/types";
-import { Button } from "@/components";
-import { useGetUser } from "@/hooks";
+import { fetchOneCodeItem } from "@/api/codeItems/fetchOneCodeItem";
+import { ShowCodeItem } from "./show";
 
-const CodeItemShowPage = () => {
-  const params = useParams();
-  const { back } = useRouter();
-  const codeItemId = `${params.id}` ?? "";
-  const { userId } = useGetUser();
-
-  const typographyStyles = {
-    display: "-webkit-box",
-    WebkitBoxOrient: "vertical",
-    wordBreak: "break-word",
+interface EditPageProps {
+  params: {
+    id: string;
   };
+}
 
-  const { data: codeItem } = useSuspenseQuery({
+const CodeIteShowPage = async ({ params }: EditPageProps) => {
+  const queryClient = new QueryClient();
+  const { id: codeItemId } = params;
+
+  await queryClient.prefetchQuery({
     queryKey: [CODEITEMS_API_ENDPOINT, codeItemId],
-    queryFn: () => fetchOneCodeItem({ userId, codeItemId }),
+    queryFn: () =>
+      fetchOneCodeItem({ codeItemId, headers: { Cookie: cookies() } }),
   });
 
   return (
-    <Box component="main">
-      <Container maxWidth="lg" sx={{ pt: 5, pb: 2 }}>
-        <Grid
-          container
-          sx={{
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            rowGap: 1.5,
-          }}
-        >
-          <Typography variant="h3" sx={typographyStyles}>
-            {codeItem?.name}
-          </Typography>
-
-          <Typography fontSize={20} sx={typographyStyles}>
-            {codeItem?.description}
-          </Typography>
-
-          <Button
-            variant="contained"
-            onClick={back}
-            sx={{ alignSelf: "flex-start" }}
-          >
-            Back
-          </Button>
-
-          <CodeEditorView
-            language={codeItem?.language}
-            value={codeItem?.code}
-            readOnly
-          />
-        </Grid>
-      </Container>
-    </Box>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <ShowCodeItem />
+    </HydrationBoundary>
   );
 };
-export default CodeItemShowPage;
+
+export default CodeIteShowPage;

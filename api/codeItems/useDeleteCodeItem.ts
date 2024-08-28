@@ -20,7 +20,7 @@ export const useDeleteCodeItem = () => {
         throw new Error(response.error);
       }
 
-      await queryClient.invalidateQueries({
+      queryClient.invalidateQueries({
         queryKey: [CODEITEMS_API_ENDPOINT],
       });
     },

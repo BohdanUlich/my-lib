@@ -1,8 +1,10 @@
-import MonacoEditor, { OnChange, useMonaco } from "@monaco-editor/react";
+"use client";
+
 import { useColorMode } from "@/providers";
 import { DARK_THEME } from "@/types";
 import { Grid } from "@mui/material";
 import { useEffect } from "react";
+import MonacoEditor, { OnChange, useMonaco } from "@monaco-editor/react";
 
 interface MonacoEditorProps {
   language: string;

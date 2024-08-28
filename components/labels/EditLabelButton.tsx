@@ -1,8 +1,12 @@
+"use client";
+
 import { useCallback, useState } from "react";
-import { ConfirmationModal, EditLabelModal, LabelsModal } from "../modals";
-import { Button } from "./Button";
 import { Label, LabelType } from "@/types";
 import { useDeleteLabel, useGetCategories } from "@/api";
+import { LabelsModal } from "./LabelsModal";
+import { EditLabelModal } from "./EditLabelModal";
+import { ConfirmationModal } from "../modals";
+import { Button } from "../buttons";
 
 interface EditLabelButtonProps {
   categoryId: string;

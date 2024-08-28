@@ -1,6 +1,7 @@
 "use client";
 import { useState, MouseEvent } from "react";
 import { signOut } from "next-auth/react";
+import Link from "next/link";
 import {
   Menu,
   MenuItem,
@@ -14,7 +15,6 @@ import {
   Tooltip,
   Switch,
 } from "@mui/material";
-import Link from "next/link";
 import { useGetUser } from "@/hooks";
 import { useColorMode } from "@/providers";
 

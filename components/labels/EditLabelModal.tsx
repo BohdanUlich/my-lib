@@ -1,14 +1,13 @@
+import * as z from "zod";
 import { Modal, Box, Typography, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { grey } from "@mui/material/colors";
+import { FieldValues } from "react-hook-form";
+import { Label, LabelType } from "@/types";
+import { useUpdateLabel, useCreateLabel, useGetCategories } from "@/api";
+import { Form } from "../Form";
 import { Button } from "../buttons";
 import { TextInput } from "../inputs";
-import { useGetUser } from "@/hooks";
-import { FieldValues } from "react-hook-form";
-import * as z from "zod";
-import { Label, LabelType } from "@/types";
-import { Form } from "../forms";
-import { useUpdateLabel, useCreateLabel, useGetCategories } from "@/api";
 
 interface LabelFormModalProps {
   isOpen: boolean;
@@ -30,7 +29,6 @@ export const EditLabelModal = ({
   editedLabel,
   labelType,
 }: LabelFormModalProps) => {
-  const { userId } = useGetUser();
   const { createLabel, isPending } = useCreateLabel();
   const { updateLabel, isPending: isLoadingUpdate } = useUpdateLabel();
   const { refetch } = useGetCategories();
@@ -50,7 +48,6 @@ export const EditLabelModal = ({
       await createLabel({
         name: data.name,
         color: data.color,
-        user_id: userId,
         type: labelType,
       });
     } finally {

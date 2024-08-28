@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { connectDb } from "@/services";
+import { connectDb } from "@/lib";
 import { ZodError, z } from "zod";
 import CodeItem from "@/models/code-item";
+import { getServerSession } from "next-auth";
+import { authConfig } from "@/configs";
 
 interface UpdateCodeItemRequest {
   name: string;
@@ -105,8 +107,8 @@ export async function GET(
   try {
     await connectDb();
 
-    const { searchParams } = new URL(req.url);
-    const userId = searchParams.get("userId");
+    const session = await getServerSession({ ...authConfig });
+    const userId = session?.user?.id;
     const codeItemId = params.id;
 
     const codeItem = await CodeItem.findById(codeItemId);

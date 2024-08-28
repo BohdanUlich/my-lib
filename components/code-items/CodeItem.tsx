@@ -1,8 +1,12 @@
+"use client";
+
 import Link from "next/link";
-import { Edit } from "@mui/icons-material";
-import { grey } from "@mui/material/colors";
-import { DeleteCodeItemButton } from "@/components/buttons";
+import { useRouter } from "next/navigation";
 import { ListItem, ListItemButton, ListItemText, styled } from "@mui/material";
+import { grey } from "@mui/material/colors";
+import { Edit, Delete } from "@mui/icons-material";
+import { DeleteCodeItemButton } from "./DeleteCodeItemButton";
+import { useProgress } from "@/providers/ProgressBarProvider";
 
 interface CodeItemProps {
   codeItemName: string;
@@ -37,36 +41,61 @@ const StyledListItem = styled(ListItem)(({ theme }) => ({
       backgroundColor: grey[200],
     },
   },
-  [`& .${CodeItemClasses.link}`]: {
-    textDecoration: "none",
-    color: "inherit",
-  },
 }));
 
 export const CodeItem = ({ codeItemName, codeItemId }: CodeItemProps) => {
+  const { push } = useRouter();
+  const { setLoadingProgress } = useProgress();
+
+  const onRedirectToEdit = () => {
+    setLoadingProgress(true);
+    push(`/code-items/edit/${codeItemId}`);
+  };
+
+  const onRedirectToShow = () => {
+    setLoadingProgress(true);
+    push(`/code-items/show/${codeItemId}`);
+  };
+
   return (
     <StyledListItem
       className={CodeItemClasses.listItem}
       secondaryAction={
         <>
-          <Link
-            href={`/code-items/edit/${codeItemId}`}
-            className={CodeItemClasses.link}
-          >
-            <Edit className={CodeItemClasses.editIcon} />
-          </Link>
+          <Edit
+            className={CodeItemClasses.editIcon}
+            onClick={onRedirectToEdit}
+          />
 
           <DeleteCodeItemButton
             codeItemName={codeItemName}
             codeItemId={codeItemId}
-          />
+            sx={{
+              all: "unset",
+              borderRadius: "50%",
+            }}
+          >
+            <Delete
+              onMouseDown={(e) => e.stopPropagation()}
+              sx={{
+                height: 28,
+                width: 28,
+                opacity: 0,
+                transition: "0.1s all linear",
+                borderRadius: "50%",
+                padding: 0.6,
+                "&:hover": {
+                  backgroundColor: grey[200],
+                },
+              }}
+            />
+          </DeleteCodeItemButton>
         </>
       }
     >
       <ListItemButton
-        component={Link}
-        href={`/code-items/show/${codeItemId}`}
         className={CodeItemClasses.listItemButton}
+        onClick={onRedirectToShow}
       >
         <ListItemText
           primary={codeItemName}

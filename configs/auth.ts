@@ -1,6 +1,6 @@
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { connectDb } from "@/services";
+import { connectDb } from "@/lib";
 import User from "@/models/user";
 import { z } from "zod";
 import bcrypt from "bcrypt";

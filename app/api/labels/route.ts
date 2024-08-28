@@ -1,26 +1,27 @@
 import { NextRequest, NextResponse } from "next/server";
-import { connectDb } from "@/services";
+import { connectDb } from "@/lib";
 import Label, { LabelDocument } from "@/models/label";
 import { ZodError, z } from "zod";
 import User from "@/models/user";
 import mongoose from "mongoose";
+import { getServerSession } from "next-auth";
+import { authConfig } from "@/configs";
 
 interface NewLabelRequest {
   name: string;
-  user_id: string;
   color: string;
 }
 
 export async function GET(req: NextRequest) {
   await connectDb();
-
+  const session = await getServerSession({ ...authConfig });
   const { searchParams } = new URL(req.url);
-  const userId = searchParams.get("userId");
   const labelType = searchParams.get("type");
+  const userId = session?.user?.id;
 
   if (!userId) {
     return NextResponse.json(
-      { success: false, error: "User id is required" },
+      { success: false, error: "Not authenticated" },
       {
         status: 400,
       }
@@ -68,19 +69,20 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     await connectDb();
+    const session = await getServerSession({ ...authConfig });
+    const userId = session?.user?.id;
 
     const body = (await req.json()) as NewLabelRequest;
 
     const parsedBody = z
       .object({
         name: z.string().min(1),
-        user_id: z.string(),
         color: z.string(),
         type: z.string().min(1),
       })
       .parse(body);
 
-    const user = await User.findById(parsedBody.user_id);
+    const user = await User.findById(userId);
 
     if (!user) {
       return NextResponse.json(
@@ -94,7 +96,7 @@ export async function POST(req: NextRequest) {
 
     const existingLabel = await Label.findOne({
       name: parsedBody.name,
-      user_id: parsedBody.user_id,
+      user_id: userId,
       type: parsedBody.type,
     });
 
@@ -108,7 +110,10 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const label = (await Label.create({ ...parsedBody })) as LabelDocument;
+    const label = (await Label.create({
+      ...parsedBody,
+      user_id: userId,
+    })) as LabelDocument;
 
     return NextResponse.json({
       success: true,

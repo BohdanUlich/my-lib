@@ -1,13 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
-import { connectDb } from "@/services";
+import { connectDb } from "@/lib";
 import CodeItem, { CodeItemDocument } from "@/models/code-item";
 import { ZodError, z } from "zod";
 import User from "@/models/user";
 import mongoose from "mongoose";
+import { getServerSession } from "next-auth";
+import { authConfig } from "@/configs";
 
 interface NewCodeItemRequest {
   name: string;
-  user_id: string;
   category_id: string;
   description?: string;
   code?: string;
@@ -15,15 +16,17 @@ interface NewCodeItemRequest {
 
 export async function GET(req: NextRequest) {
   await connectDb();
+  const session = await getServerSession({ ...authConfig });
 
   const { searchParams } = new URL(req.url);
-  const userId = searchParams.get("userId");
+  const userId = session?.user?.id;
+
   const categoryId = searchParams.get("categoryId");
   const searchQuery = searchParams.get("q");
 
   if (!userId) {
     return NextResponse.json(
-      { success: false, error: "User id is required" },
+      { success: false, error: "Not authenticated" },
       {
         status: 400,
       }
@@ -80,12 +83,13 @@ export async function POST(req: NextRequest) {
   try {
     await connectDb();
 
+    const session = await getServerSession({ ...authConfig });
+    const userId = session?.user?.id;
     const body = (await req.json()) as NewCodeItemRequest;
 
     const parsedBody = z
       .object({
         name: z.string().min(1),
-        user_id: z.string().min(1),
         category_id: z.string().min(1),
         description: z.string(),
         language: z.string().min(1),
@@ -93,7 +97,7 @@ export async function POST(req: NextRequest) {
       })
       .parse(body);
 
-    const user = await User.findById(parsedBody.user_id);
+    const user = await User.findById(userId);
 
     if (!user) {
       return NextResponse.json(
@@ -107,6 +111,7 @@ export async function POST(req: NextRequest) {
 
     (await CodeItem.create({
       ...parsedBody,
+      user_id: userId,
     })) as CodeItemDocument;
 
     return NextResponse.json({

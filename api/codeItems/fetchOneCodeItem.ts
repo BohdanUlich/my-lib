@@ -3,17 +3,18 @@ import { ApiResponse, CodeItem, CODEITEMS_API_ENDPOINT } from "@/types";
 
 interface FetchOneCodeItemParams {
   codeItemId: string;
-  userId: string;
+  headers?: any;
 }
 
 export const fetchOneCodeItem = async ({
   codeItemId,
-  userId,
+  headers,
 }: FetchOneCodeItemParams): Promise<CodeItem> => {
-  let url = `${CODEITEMS_API_ENDPOINT}/${codeItemId}?userId=${userId}`;
+  let url = `${CODEITEMS_API_ENDPOINT}/${codeItemId}`;
 
   const response: ApiResponse<CodeItem> = await fetchService(url, {
     method: "GET",
+    headers,
   });
 
   if (!response.success) {

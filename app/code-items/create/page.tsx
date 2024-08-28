@@ -1,14 +1,12 @@
 "use client";
 
-import { useGetUser } from "@/hooks";
-import { CodeItemForm } from "@/components";
+import { CodeItemForm } from "@/components/code-items/CodeItemForm";
 import { FieldValues } from "react-hook-form";
 import { useSearchParams } from "next/navigation";
 import { Box, Container, Typography } from "@mui/material";
 import { useCreateCodeItem } from "@/api";
 
 const CodeItemCreate = () => {
-  const { userId } = useGetUser();
   const searchParams = useSearchParams();
   const categoryId = searchParams.get("categoryId") ?? "";
   const { createCodeItem, isPending } = useCreateCodeItem();
@@ -16,7 +14,6 @@ const CodeItemCreate = () => {
   const onSubmit = async (data: FieldValues) => {
     await createCodeItem({
       name: data.name,
-      user_id: userId,
       category_id: categoryId,
       description: data.description,
       code: data.code,

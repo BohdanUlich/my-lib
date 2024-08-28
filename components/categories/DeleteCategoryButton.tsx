@@ -1,5 +1,7 @@
+"use client";
+
 import { useState } from "react";
-import { Button } from "./Button";
+import { Button } from "../buttons";
 import { ConfirmationModal } from "../modals";
 import { useDeleteCategory } from "@/api";
 

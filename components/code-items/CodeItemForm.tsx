@@ -1,16 +1,15 @@
+"use client";
+
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { FieldValues } from "react-hook-form";
 import * as z from "zod";
 import { Grid } from "@mui/material";
 import { useMonaco } from "@monaco-editor/react";
-import {
-  AutocompleteInput,
-  Button,
-  CodeEditor,
-  TextInput,
-  Form,
-} from "@/components";
+import { Form } from "../Form";
+import { AutocompleteInput, TextInput } from "../inputs";
+import { Button } from "../buttons";
+import { CodeEditor } from "./CodeEditor";
 import { CodeItem } from "@/types";
 
 interface CodeItemFormProps {
@@ -44,11 +43,8 @@ export const CodeItemForm = ({
   }, [codeItem, monaco]);
 
   const onSave = async (data: FieldValues) => {
-    try {
-      await onSubmit({ ...data });
-    } finally {
-      back();
-    }
+    await onSubmit({ ...data });
+    back();
   };
 
   return (

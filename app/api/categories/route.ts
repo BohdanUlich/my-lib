@@ -1,13 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
-import { connectDb } from "@/services";
+import { connectDb } from "@/lib";
 import Category from "@/models/category";
 import { ZodError, z } from "zod";
 import User from "@/models/user";
 import mongoose from "mongoose";
+import { getServerSession } from "next-auth";
+import { authConfig } from "@/configs";
 
 interface NewCategoryRequest {
   name: string;
-  user_id: string;
 }
 
 interface MongoError {
@@ -19,12 +20,13 @@ export async function GET(req: NextRequest) {
   await connectDb();
 
   const { searchParams } = new URL(req.url);
-  const userId = searchParams.get("userId");
   const searchQuery = searchParams.get("q");
+  const session = await getServerSession({ ...authConfig });
+  const userId = session?.user?.id;
 
   if (!userId) {
     return NextResponse.json(
-      { success: false, error: "User id is required" },
+      { success: false, error: "Not authenticated" },
       {
         status: 400,
       }
@@ -80,15 +82,16 @@ export async function POST(req: NextRequest) {
     await connectDb();
 
     const body = (await req.json()) as NewCategoryRequest;
+    const session = await getServerSession({ ...authConfig });
+    const userId = session?.user?.id;
 
     const parsedBody = z
       .object({
         name: z.string().min(1),
-        user_id: z.string(),
       })
       .parse(body);
 
-    const user = await User.findById(body.user_id);
+    const user = await User.findById(userId);
 
     if (!user) {
       return NextResponse.json(
@@ -100,7 +103,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const category = await Category.create({ ...parsedBody });
+    const category = await Category.create({ ...parsedBody, user_id: userId });
 
     return NextResponse.json({
       success: true,
