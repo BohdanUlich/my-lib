@@ -22,6 +22,7 @@ const StyledListItem = styled(ListItem)(({ theme }) => ({
   "&:hover .MuiSvgIcon-root": {
     opacity: 1,
   },
+
   [`& .${CodeItemClasses.listItemButton}`]: {
     height: 70,
   },
@@ -44,21 +45,39 @@ const StyledListItem = styled(ListItem)(({ theme }) => ({
 
 export const CodeItem = ({ codeItemName, codeItemId }: CodeItemProps) => {
   return (
-    <StyledListItem className={CodeItemClasses.listItem}>
-      <ListItemButton className={CodeItemClasses.listItemButton}>
-        <ListItemText primary={codeItemName} />
+    <StyledListItem
+      className={CodeItemClasses.listItem}
+      secondaryAction={
+        <>
+          <Link
+            href={`/code-items/edit/${codeItemId}`}
+            className={CodeItemClasses.link}
+          >
+            <Edit className={CodeItemClasses.editIcon} />
+          </Link>
 
-        <Link
-          href={`/code-items/edit/${codeItemId}`}
-          onMouseDown={(e) => e.stopPropagation()}
-          className={CodeItemClasses.link}
-        >
-          <Edit className={CodeItemClasses.editIcon} />
-        </Link>
-
-        <DeleteCodeItemButton
-          codeItemName={codeItemName}
-          codeItemId={codeItemId}
+          <DeleteCodeItemButton
+            codeItemName={codeItemName}
+            codeItemId={codeItemId}
+          />
+        </>
+      }
+    >
+      <ListItemButton
+        component={Link}
+        href={`/code-items/show/${codeItemId}`}
+        className={CodeItemClasses.listItemButton}
+      >
+        <ListItemText
+          primary={codeItemName}
+          sx={{
+            display: "-webkit-box",
+            WebkitBoxOrient: "vertical",
+            WebkitLineClamp: 1,
+            overflow: "hidden",
+            wordBreak: "break-word",
+            marginRight: 3,
+          }}
         />
       </ListItemButton>
     </StyledListItem>
