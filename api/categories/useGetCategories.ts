@@ -8,7 +8,7 @@ export const useGetCategories = () => {
   const q = searchParams.get("q");
 
   return useQuery({
-    queryKey: [CATEGORIES_API_ENDPOINT],
+    queryKey: [CATEGORIES_API_ENDPOINT, q],
     queryFn: () => fetchCategories({ q }),
   });
 };
