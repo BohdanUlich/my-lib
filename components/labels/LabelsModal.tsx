@@ -68,7 +68,6 @@ export const LabelsModal = ({
         id: categoryId,
         labels: finalLabels,
         name: category.name,
-        user_id: category.user_id,
       });
 
       return { ...category, labels: finalLabels };
