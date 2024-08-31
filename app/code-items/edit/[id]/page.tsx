@@ -3,12 +3,10 @@ import {
   HydrationBoundary,
   QueryClient,
 } from "@tanstack/react-query";
-
-import { EditCodeItem } from "./edit";
+import { cookies } from "next/headers";
 import { CODEITEMS_API_ENDPOINT } from "@/types";
-import { getServerSession } from "next-auth/next";
-import { authConfig } from "@/configs";
 import { fetchOneCodeItem } from "@/api/codeItems/fetchOneCodeItem";
+import { EditCodeItem } from "./edit";
 
 interface EditPageProps {
   params: {
@@ -16,22 +14,21 @@ interface EditPageProps {
   };
 }
 
-export default async function EditPage({ params }: EditPageProps) {
+const CodeItemEditPage = async ({ params }: EditPageProps) => {
   const queryClient = new QueryClient();
-  const session = await getServerSession(authConfig);
-  const userId = session?.user.id;
   const { id: codeItemId } = params;
 
   await queryClient.prefetchQuery({
     queryKey: [CODEITEMS_API_ENDPOINT, codeItemId],
-    queryFn: () => fetchOneCodeItem({ userId, codeItemId }),
+    queryFn: () =>
+      fetchOneCodeItem({ codeItemId, headers: { Cookie: cookies() } }),
   });
 
-  const dehydratedState = dehydrate(queryClient);
-
   return (
-    <HydrationBoundary state={dehydratedState}>
+    <HydrationBoundary state={dehydrate(queryClient)}>
       <EditCodeItem />
     </HydrationBoundary>
   );
-}
+};
+
+export default CodeItemEditPage;

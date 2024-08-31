@@ -1,23 +1,24 @@
 "use client";
 
-import { CodeItemForm } from "@/components";
+import { useEffect } from "react";
 import { useParams } from "next/navigation";
 import { FieldValues } from "react-hook-form";
 import { Box, Container, Typography } from "@mui/material";
+import { CodeItemForm } from "@/components/code-items/CodeItemForm";
 import { fetchOneCodeItem, useUpdateCodeItem } from "@/api";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { CODEITEMS_API_ENDPOINT } from "@/types";
-import { useGetUser } from "@/hooks";
+import { useProgress } from "@/providers/ProgressBarProvider";
 
 export const EditCodeItem = () => {
   const { updateCodeItem, isPending } = useUpdateCodeItem();
-  const { userId } = useGetUser();
+  const { setLoadingProgress } = useProgress();
   const params = useParams();
   const codeItemId = `${params.id}` ?? "";
 
-  const { data: codeItem } = useSuspenseQuery({
+  const { data: codeItem } = useQuery({
     queryKey: [CODEITEMS_API_ENDPOINT, codeItemId],
-    queryFn: () => fetchOneCodeItem({ userId, codeItemId }),
+    queryFn: () => fetchOneCodeItem({ codeItemId }),
   });
 
   const onSubmit = async (data: FieldValues) => {
@@ -29,6 +30,10 @@ export const EditCodeItem = () => {
       id: codeItemId,
     });
   };
+
+  useEffect(() => {
+    setLoadingProgress(false);
+  }, [setLoadingProgress]);
 
   return (
     <Box component="main">

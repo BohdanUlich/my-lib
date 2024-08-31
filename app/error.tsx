@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components";
+import { Button } from "@/components/buttons";
 import { Container, Typography } from "@mui/material";
 import { useEffect } from "react";
 

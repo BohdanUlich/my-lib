@@ -8,9 +8,7 @@ export const useCreateLabel = () => {
   const queryClient = useQueryClient();
 
   const { mutateAsync: createLabel, isPending } = useMutation({
-    mutationFn: async (
-      newLabel: Pick<Label, "name" | "color" | "user_id" | "type">
-    ) => {
+    mutationFn: async (newLabel: Pick<Label, "name" | "color" | "type">) => {
       const response: ApiResponse<Label> = await fetchService(
         LABELS_API_ENDPOINT,
         {

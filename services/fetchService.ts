@@ -1,13 +1,17 @@
+import { RequestInit } from "next/dist/server/web/spec-extension/request";
+
 type RequestMethods = "GET" | "POST" | "PUT" | "DELETE";
 
 interface RequestOptions {
   method: RequestMethods;
   data?: any;
-  headers?: HeadersInit;
+  headers?: any;
 }
 
 export const fetchService = async (url: string, options: RequestOptions) => {
   const { method, data, headers } = options;
+
+  const isServer = typeof window === "undefined";
 
   const config: RequestInit = {
     method,
@@ -22,7 +26,6 @@ export const fetchService = async (url: string, options: RequestOptions) => {
   }
 
   try {
-    const isServer = typeof window === "undefined";
     const finalUrl = isServer
       ? `${process.env.API_BASE_URL}/${url}`
       : `/api/${url}`;

@@ -1,3 +1,5 @@
+"use client";
+
 import { Autocomplete, TextField, AutocompleteProps } from "@mui/material";
 import { useController } from "react-hook-form";
 

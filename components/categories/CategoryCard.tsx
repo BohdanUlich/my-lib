@@ -1,4 +1,9 @@
 "use client";
+
+import { useState, useEffect, useRef } from "react";
+import { FieldValues } from "react-hook-form";
+import { useRouter } from "next/navigation";
+import * as z from "zod";
 import { Edit } from "@mui/icons-material";
 import {
   Backdrop,
@@ -11,22 +16,18 @@ import {
   Typography,
 } from "@mui/material";
 import { grey } from "@mui/material/colors";
-import { useState, useEffect, useRef } from "react";
-import { useGetUser } from "@/hooks";
-import { FieldValues } from "react-hook-form";
-import * as z from "zod";
-import { EditLabelButton, Button, DeleteCategoryButton } from "./buttons";
-import { TextInput } from "./inputs";
 import {
   CATEGORY_TYPE,
   CODEITEMS_API_ENDPOINT,
   Label as ILabel,
 } from "@/types";
-import { Label } from "./Label";
-import { useRouter } from "next/navigation";
-import { Form } from "./forms";
 import { fetchCodeItems, useCreateCategory, useUpdateCategory } from "@/api";
 import { useQueryClient } from "@tanstack/react-query";
+import { Form } from "../Form";
+import { TextInput } from "../inputs";
+import { Button } from "../buttons";
+import { Label, EditLabelButton } from "../labels";
+import { DeleteCategoryButton } from "./DeleteCategoryButton";
 
 interface CategoryCardProps {
   categoryName: string;
@@ -48,7 +49,6 @@ export const CategoryCard = ({
   onFinishCreatingCategory,
 }: CategoryCardProps) => {
   const [isEdit, setIsEdit] = useState(false);
-  const { userId } = useGetUser();
   const router = useRouter();
   const { createCategory, isPending: isLoadingCreate } = useCreateCategory();
   const { updateCategory, isPending: isLoadingUpdate } = useUpdateCategory();
@@ -59,8 +59,8 @@ export const CategoryCard = ({
 
   const prefetchCodeItems = () => {
     queryClient.prefetchQuery({
-      queryKey: [CODEITEMS_API_ENDPOINT, userId, null, categoryId],
-      queryFn: () => fetchCodeItems({ userId, categoryId }),
+      queryKey: [CODEITEMS_API_ENDPOINT, null, categoryId],
+      queryFn: () => fetchCodeItems({ categoryId }),
     });
   };
 
@@ -74,7 +74,6 @@ export const CategoryCard = ({
       if (isNewCategory) {
         await createCategory({
           name: data.editedCategoryName,
-          user_id: userId,
         });
 
         return;
@@ -82,7 +81,6 @@ export const CategoryCard = ({
 
       await updateCategory({
         name: data.editedCategoryName,
-        user_id: userId,
         id: categoryId,
         labels,
       });

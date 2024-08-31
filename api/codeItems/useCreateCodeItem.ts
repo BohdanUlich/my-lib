@@ -8,7 +8,7 @@ export const useCreateCodeItem = () => {
   const queryClient = useQueryClient();
 
   const { mutateAsync: createCodeItem, isPending } = useMutation({
-    mutationFn: async (newCodeItem: Omit<CodeItem, "id">) => {
+    mutationFn: async (newCodeItem: Omit<CodeItem, "id" | "user_id">) => {
       const response: ApiResponse<CodeItem> = await fetchService(
         CODEITEMS_API_ENDPOINT,
         {

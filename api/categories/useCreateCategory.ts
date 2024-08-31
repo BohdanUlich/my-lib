@@ -1,6 +1,6 @@
+import { useSnackbar } from "notistack";
 import { fetchService } from "@/services";
 import { ApiResponse, CATEGORIES_API_ENDPOINT, Category } from "@/types";
-import { useSnackbar } from "notistack";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export const useCreateCategory = () => {
@@ -8,7 +8,7 @@ export const useCreateCategory = () => {
   const queryClient = useQueryClient();
 
   const { mutateAsync: createCategory, isPending } = useMutation({
-    mutationFn: async (newCategory: Omit<Category, "id">) => {
+    mutationFn: async (newCategory: Omit<Category, "id" | "user_id">) => {
       const response: ApiResponse<Category> = await fetchService(
         CATEGORIES_API_ENDPOINT,
         {

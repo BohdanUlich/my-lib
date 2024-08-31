@@ -1,16 +1,22 @@
 "use client";
 
 import Link from "next/link";
+import { Box, Container, Grid, Typography, List } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { useSearchParams } from "next/navigation";
-import { Button, CategoriesFilter, CodeItem, SearchInput } from "@/components";
-import { Box, Container, Grid, Typography, List } from "@mui/material";
+import {
+  Button,
+  CategoriesFilter,
+  CodeItem,
+  LoadingSpinner,
+  SearchInput,
+} from "@/components";
 import { useGetCodeItems } from "@/api";
 
 const CodeItemsPage = () => {
   const searchParams = useSearchParams();
   const categoryId = searchParams.get("categoryId");
-  const { data: codeItems = [] } = useGetCodeItems();
+  const { data: codeItems = [], isLoading } = useGetCodeItems();
 
   return (
     <Box component="main">
@@ -48,18 +54,31 @@ const CodeItemsPage = () => {
             </Grid>
           </Grid>
 
-          <List
-            dense
-            sx={{ width: "100%", "& .MuiTypography-root": { fontSize: 20 } }}
-          >
-            {codeItems?.map((codeItem) => (
-              <CodeItem
-                codeItemName={codeItem.name}
-                codeItemId={codeItem.id}
-                key={codeItem.id}
+          {isLoading ? (
+            <Box padding={9} position="relative">
+              <LoadingSpinner
+                sx={{
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%,-50%)",
+                }}
               />
-            ))}
-          </List>
+            </Box>
+          ) : (
+            <List
+              dense
+              sx={{ width: "100%", "& .MuiTypography-root": { fontSize: 20 } }}
+            >
+              {codeItems?.map((codeItem) => (
+                <CodeItem
+                  codeItemName={codeItem.name}
+                  codeItemId={codeItem.id}
+                  key={codeItem.id}
+                />
+              ))}
+            </List>
+          )}
         </Grid>
       </Container>
     </Box>

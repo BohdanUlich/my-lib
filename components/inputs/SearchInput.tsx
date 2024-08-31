@@ -1,6 +1,8 @@
-import { TextField } from "@mui/material";
+"use client";
+
 import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
+import { TextField } from "@mui/material";
 
 export const SearchInput = () => {
   const searchParams = useSearchParams();

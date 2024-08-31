@@ -14,7 +14,7 @@ export const useUpdateCategory = ({
   const queryClient = useQueryClient();
 
   const { mutateAsync: updateCategory, isPending } = useMutation({
-    mutationFn: async (category: Category) => {
+    mutationFn: async (category: Omit<Category, "user_id">) => {
       const response: ApiResponse<Category> = await fetchService(
         `${CATEGORIES_API_ENDPOINT}/${category.id}`,
         {
