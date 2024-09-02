@@ -1,9 +1,9 @@
+import { cookies } from "next/headers";
 import {
   dehydrate,
   HydrationBoundary,
   QueryClient,
 } from "@tanstack/react-query";
-import { cookies } from "next/headers";
 import { CODEITEMS_API_ENDPOINT } from "@/types";
 import { fetchOneCodeItem } from "@/api/codeItems/fetchOneCodeItem";
 import { ShowCodeItem } from "./show";
