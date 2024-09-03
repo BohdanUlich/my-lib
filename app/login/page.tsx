@@ -3,7 +3,7 @@ import { Grid, Typography } from "@mui/material";
 import GoogleIcon from "@mui/icons-material/Google";
 import * as z from "zod";
 import { signIn } from "next-auth/react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useState } from "react";
 import { Button, Form, TextInput } from "@/components";
@@ -20,10 +20,8 @@ const schema = z.object({
 
 const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const { push } = useRouter();
+  const { replace, refresh } = useRouter();
   const { enqueueSnackbar } = useSnackbar();
-  const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") || "/";
 
   const onSubmit = async (data: FieldValues) => {
     setIsLoading(true);
@@ -37,7 +35,8 @@ const Login = () => {
       if (res?.error) {
         enqueueSnackbar(`${res?.error}`, { variant: "error" });
       } else {
-        push("/");
+        refresh();
+        replace("/");
       }
     } catch (err) {
       enqueueSnackbar(`${err}`, { variant: "error" });
@@ -77,7 +76,7 @@ const Login = () => {
           size="large"
           fullWidth
           variant="contained"
-          onClick={() => signIn("google", { callbackUrl })}
+          onClick={() => signIn("google")}
           startIcon={<GoogleIcon />}
         >
           Sign in with google

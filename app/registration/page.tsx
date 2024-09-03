@@ -27,7 +27,7 @@ const schema = z
 
 const Registration = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const { push } = useRouter();
+  const { replace, refresh } = useRouter();
   const { enqueueSnackbar } = useSnackbar();
 
   const onSubmit = async (data: FieldValues) => {
@@ -53,7 +53,9 @@ const Registration = () => {
         enqueueSnackbar("Sign up successful. Welcome to My lib", {
           variant: "success",
         });
-        push("/");
+
+        refresh();
+        replace("/");
       } else {
         enqueueSnackbar(result?.error, { variant: "error" });
       }
