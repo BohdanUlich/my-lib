@@ -73,6 +73,8 @@ export const CodeItem = ({ codeItemName, codeItemId }: CodeItemProps) => {
             sx={{
               all: "unset",
               borderRadius: "50%",
+              height: 28,
+              width: 28,
             }}
           >
             <Delete
