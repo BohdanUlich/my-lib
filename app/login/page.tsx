@@ -3,7 +3,7 @@ import { Grid, Typography } from "@mui/material";
 import GoogleIcon from "@mui/icons-material/Google";
 import * as z from "zod";
 import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useState } from "react";
 import { Button, Form, TextInput } from "@/components";
@@ -22,6 +22,8 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { replace, refresh } = useRouter();
   const { enqueueSnackbar } = useSnackbar();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl") || "/";
 
   const onSubmit = async (data: FieldValues) => {
     setIsLoading(true);
@@ -76,7 +78,7 @@ const Login = () => {
           size="large"
           fullWidth
           variant="contained"
-          onClick={() => signIn("google")}
+          onClick={() => signIn("google", { callbackUrl })}
           startIcon={<GoogleIcon />}
         >
           Sign in with google
