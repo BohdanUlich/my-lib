@@ -5,7 +5,7 @@ import { ButtonProps } from "@mui/material";
 import { useDeleteCodeItem } from "@/api";
 import { ConfirmationModal } from "../modals";
 import { Button } from "../buttons";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 interface DeleteCodeItemButtonProps extends ButtonProps {
   codeItemId: string;
@@ -22,15 +22,17 @@ export const DeleteCodeItemButton = ({
 }: DeleteCodeItemButtonProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { deleteCodeItem, isPending } = useDeleteCodeItem();
+  const searchParams = useSearchParams();
+  const categoryId = searchParams.get("categoryId");
 
-  const { back } = useRouter();
+  const { push } = useRouter();
 
   const onDeleteCodeItem = async () => {
     await deleteCodeItem(codeItemId);
     setIsModalOpen(false);
 
     if (backAfterDelete) {
-      back();
+      push(`/code-items?categoryId=${categoryId}`);
     }
   };
 
