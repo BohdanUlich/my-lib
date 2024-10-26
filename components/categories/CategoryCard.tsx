@@ -28,6 +28,7 @@ import { TextInput } from "../inputs";
 import { Button } from "../buttons";
 import { Label, EditLabelButton } from "../labels";
 import { DeleteCategoryButton } from "./DeleteCategoryButton";
+import { useProgress } from "@/providers/ProgressBarProvider";
 
 interface CategoryCardProps {
   categoryName: string;
@@ -52,6 +53,7 @@ export const CategoryCard = ({
   const router = useRouter();
   const { createCategory, isPending: isLoadingCreate } = useCreateCategory();
   const { updateCategory, isPending: isLoadingUpdate } = useUpdateCategory();
+  const { setLoadingProgress } = useProgress();
   const isLoading = isLoadingCreate || isLoadingUpdate;
   const [showTooltip, setShowTooltip] = useState(false);
   const textRef = useRef<HTMLDivElement>(null);
@@ -96,6 +98,7 @@ export const CategoryCard = ({
 
   const onRedirect = () => {
     if (!isEdit && !isNewCategory) {
+      setLoadingProgress(true);
       router.push(`/code-items?categoryId=${categoryId}`);
     }
   };

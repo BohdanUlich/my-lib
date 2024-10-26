@@ -12,6 +12,7 @@ interface NewCodeItemRequest {
   category_id: string;
   description?: string;
   code?: string;
+  label_ids?: string[];
 }
 
 export async function GET(req: NextRequest) {
@@ -23,6 +24,7 @@ export async function GET(req: NextRequest) {
 
   const categoryId = searchParams.get("categoryId");
   const searchQuery = searchParams.get("q");
+  const labels = searchParams.getAll("label");
 
   if (!userId) {
     return NextResponse.json(
@@ -56,6 +58,7 @@ export async function GET(req: NextRequest) {
           _id: 0,
           name: 1,
           description: 1,
+          label_ids: 1,
         },
       },
     ];
@@ -68,9 +71,43 @@ export async function GET(req: NextRequest) {
       });
     }
 
+    if (labels.length > 0) {
+      const labelObjectIds = labels.map(
+        (label) => new mongoose.Types.ObjectId(label)
+      );
+
+      aggregationPipeline.unshift({
+        $match: {
+          label_ids: { $in: labelObjectIds },
+        },
+      });
+    }
+
     const codeItems = await CodeItem.aggregate(aggregationPipeline);
 
-    return NextResponse.json({ success: true, data: codeItems });
+    const populatedCodeItems = await CodeItem.populate(codeItems, {
+      path: "label_ids",
+      select: "id name color",
+      options: { skipInvalidIds: true },
+    });
+
+    const responseItems = populatedCodeItems.map((item) => ({
+      id: item.id,
+      name: item.name,
+      description: item.description,
+      labels: item.label_ids
+        ? item.label_ids.map((label: any) => ({
+            id: label._id,
+            name: label.name,
+            color: label.color,
+          }))
+        : [],
+    }));
+
+    return NextResponse.json({
+      success: true,
+      data: responseItems,
+    });
   } catch (error) {
     return NextResponse.json({
       success: false,
@@ -94,6 +131,7 @@ export async function POST(req: NextRequest) {
         description: z.string(),
         language: z.string().min(1),
         code: z.string(),
+        label_ids: z.array(z.string()).optional(),
       })
       .parse(body);
 

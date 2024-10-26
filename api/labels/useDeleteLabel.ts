@@ -2,6 +2,7 @@ import { fetchService } from "@/services";
 import {
   ApiResponse,
   CATEGORIES_API_ENDPOINT,
+  CODEITEMS_API_ENDPOINT,
   LABELS_API_ENDPOINT,
 } from "@/types";
 import { useSnackbar } from "notistack";
@@ -27,6 +28,9 @@ export const useDeleteLabel = () => {
       await queryClient.invalidateQueries({ queryKey: [LABELS_API_ENDPOINT] });
       await queryClient.invalidateQueries({
         queryKey: [CATEGORIES_API_ENDPOINT],
+      });
+      await queryClient.invalidateQueries({
+        queryKey: [CODEITEMS_API_ENDPOINT],
       });
     },
     onSuccess: () => {

@@ -1,3 +1,5 @@
+"use client";
+
 import { useController, useWatch } from "react-hook-form";
 import { CodeEditorView } from "./CodeEditorView";
 

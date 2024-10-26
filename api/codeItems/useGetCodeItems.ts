@@ -7,9 +7,10 @@ export const useGetCodeItems = () => {
   const searchParams = useSearchParams();
   const q = searchParams.get("q");
   const categoryId = searchParams.get("categoryId");
+  const labels = searchParams.getAll("label");
 
   return useQuery({
-    queryFn: () => fetchCodeItems({ q, categoryId }),
-    queryKey: [CODEITEMS_API_ENDPOINT, q, categoryId],
+    queryFn: () => fetchCodeItems({ q, categoryId, labels }),
+    queryKey: [CODEITEMS_API_ENDPOINT, q, categoryId, labels],
   });
 };
