@@ -3,11 +3,11 @@
 import * as z from "zod";
 import { useGetLabels } from "@/api";
 import { Grid } from "@mui/material";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { FieldValues } from "react-hook-form";
 import { useMonaco } from "@monaco-editor/react";
-import { CODE_ITEM_TYPE, CodeItem, Label } from "@/types";
+import { CODE_ITEM_TYPE, CodeItem } from "@/types";
 import { CodeEditor } from "./CodeEditor";
 import { CodeItemModals } from "./CodeItemModals";
 import { Form } from "../Form";
@@ -35,7 +35,9 @@ export const CodeItemForm = ({
   codeItem,
 }: CodeItemFormProps) => {
   const monaco = useMonaco();
-  const { back } = useRouter();
+  const { push } = useRouter();
+  const searchParams = useSearchParams();
+  const categoryId = searchParams.get("categoryId");
   const labelType = CODE_ITEM_TYPE;
   const { data: labels } = useGetLabels({ labelType });
 
@@ -48,13 +50,17 @@ export const CodeItemForm = ({
     }
   }, [codeItem, monaco]);
 
+  const goBackToList = () => {
+    push(`/code-items?categoryId=${categoryId}`);
+  };
+
   const onSave = async (data: FieldValues) => {
     try {
       await onSubmit({
         ...data,
       });
     } finally {
-      back();
+      goBackToList();
     }
   };
 
@@ -122,14 +128,14 @@ export const CodeItemForm = ({
           <AutocompleteInput
             name="language"
             options={languages}
-            defaultValue="typescript"
+            defaultValue="apex"
             fullWidth
           />
 
           <CodeEditor name="code" defaultValue="// Write your code" />
 
           <Grid container sx={{ justifyContent: "space-between" }}>
-            <Button variant="contained" onClick={back}>
+            <Button variant="contained" onClick={goBackToList}>
               Cancel
             </Button>
 
