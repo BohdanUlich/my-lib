@@ -31,7 +31,7 @@ export const useCreateCodeItem = () => {
       return response.data;
     },
     onSuccess: () => {
-      enqueueSnackbar("Category created successfully", {
+      enqueueSnackbar("Code item created successfully", {
         variant: "success",
       });
     },

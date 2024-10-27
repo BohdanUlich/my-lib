@@ -1,22 +1,31 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
-import { Box, Container, Grid, Typography, List } from "@mui/material";
+import { useGetCodeItems, useGetLabels } from "@/api";
 import AddIcon from "@mui/icons-material/Add";
 import { useSearchParams } from "next/navigation";
+import { Box, Container, Grid, Typography, List } from "@mui/material";
 import {
-  Button,
-  CategoriesFilter,
-  CodeItem,
+  CodeItemsFilterModal,
   LoadingSpinner,
   SearchInput,
+  CodeItem,
+  Button,
 } from "@/components";
-import { useGetCodeItems } from "@/api";
+import { CODE_ITEM_TYPE } from "@/types";
+import { useProgress } from "@/providers/ProgressBarProvider";
 
 const CodeItemsPage = () => {
   const searchParams = useSearchParams();
   const categoryId = searchParams.get("categoryId");
+  const { setLoadingProgress } = useProgress();
   const { data: codeItems = [], isLoading } = useGetCodeItems();
+  useGetLabels({ labelType: CODE_ITEM_TYPE });
+
+  useEffect(() => {
+    setLoadingProgress(false);
+  }, [setLoadingProgress]);
 
   return (
     <Box component="main">
@@ -50,7 +59,7 @@ const CodeItemsPage = () => {
             </Grid>
 
             <Grid item>
-              <CategoriesFilter />
+              <CodeItemsFilterModal />
             </Grid>
           </Grid>
 
@@ -74,6 +83,7 @@ const CodeItemsPage = () => {
                 <CodeItem
                   codeItemName={codeItem.name}
                   codeItemId={codeItem.id}
+                  codeItemLabels={codeItem?.labels || []}
                   key={codeItem.id}
                 />
               ))}

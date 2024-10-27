@@ -21,6 +21,7 @@ export interface CodeItem {
   category_id: string;
   user_id: string;
   labels?: Label[];
+  label_ids?: string[];
   language: string;
 }
 export interface Label {

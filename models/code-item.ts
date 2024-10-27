@@ -8,11 +8,7 @@ export interface CodeItemDocument {
   category_id: mongoose.Schema.Types.ObjectId;
   user_id: mongoose.Schema.Types.ObjectId;
   language: string;
-  labels: {
-    label_id: mongoose.Schema.Types.ObjectId;
-    name: string;
-    color: string;
-  }[];
+  label_ids: mongoose.Schema.Types.ObjectId[];
 }
 
 const codeItemSchema = new Schema<CodeItemDocument>(
@@ -33,18 +29,9 @@ const codeItemSchema = new Schema<CodeItemDocument>(
       index: true,
       required: true,
     },
-    labels: {
-      type: [
-        {
-          label_id: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Label",
-            required: true,
-          },
-          name: { type: String, required: true },
-          color: { type: String, required: true },
-        },
-      ],
+    label_ids: {
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: "Label",
       default: [],
     },
   },

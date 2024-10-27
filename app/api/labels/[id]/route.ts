@@ -3,6 +3,8 @@ import { connectDb } from "@/lib";
 import { ZodError, z } from "zod";
 import Label from "@/models/label";
 import Category from "@/models/category";
+import CodeItem from "@/models/code-item";
+import { CATEGORY_TYPE, CODE_ITEM_TYPE } from "@/types";
 
 interface UpdateLabelRequest {
   name: string;
@@ -33,11 +35,21 @@ const updateLabel = async (id: string, parsedBody: LabelSchema) => {
     throw new Error("Label not found");
   }
 
-  // Update label in all categories
-  await Category.updateMany(
-    { _id: { $in: label.category_ids }, "labels._id": id },
-    { $set: { "labels.$": label } }
-  );
+  if (label.type === CATEGORY_TYPE) {
+    // Update label in all categories
+    await Category.updateMany(
+      { _id: { $in: label.category_ids }, "labels._id": id },
+      { $set: { "labels.$": label } }
+    );
+  }
+
+  if (label.type === CODE_ITEM_TYPE) {
+    // Update label in all code items
+    await CodeItem.updateMany(
+      { "labels.id": id },
+      { $set: { "labels.$": { label, id: label._id } } }
+    );
+  }
 
   return label;
 };
@@ -46,6 +58,10 @@ const deleteLabel = async (labelId: string): Promise<void> => {
   await Label.findOneAndDelete({ _id: labelId });
   await Category.updateMany(
     { "labels._id": labelId },
+    { $pull: { labels: { _id: labelId } } }
+  );
+  await CodeItem.updateMany(
+    { "labels.id": labelId },
     { $pull: { labels: { _id: labelId } } }
   );
 };
