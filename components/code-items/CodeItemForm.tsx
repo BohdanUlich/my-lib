@@ -1,16 +1,19 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { FieldValues } from "react-hook-form";
 import * as z from "zod";
+import { useGetLabels } from "@/api";
 import { Grid } from "@mui/material";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { FieldValues } from "react-hook-form";
 import { useMonaco } from "@monaco-editor/react";
-import { Form } from "../Form";
-import { AutocompleteInput, TextInput } from "../inputs";
-import { Button } from "../buttons";
+import { CODE_ITEM_TYPE, CodeItem, Label } from "@/types";
 import { CodeEditor } from "./CodeEditor";
-import { CodeItem } from "@/types";
+import { CodeItemModals } from "./CodeItemModals";
+import { Form } from "../Form";
+import { Button } from "../buttons";
+import { AutocompleteInput, TextInput } from "../inputs";
+import { LabelsAutocompleteArrayInput } from "../labels";
 
 interface CodeItemFormProps {
   onSubmit: (data: FieldValues) => Promise<void>;
@@ -23,6 +26,7 @@ const schema = z.object({
   description: z.string(),
   language: z.string().min(1, { message: "Required" }),
   code: z.string(),
+  label_ids: z.array(z.string()).optional(),
 });
 
 export const CodeItemForm = ({
@@ -30,11 +34,13 @@ export const CodeItemForm = ({
   isLoading,
   codeItem,
 }: CodeItemFormProps) => {
+  const monaco = useMonaco();
   const { back } = useRouter();
+  const labelType = CODE_ITEM_TYPE;
+  const { data: labels } = useGetLabels({ labelType });
 
   const [languages, setLanguages] = useState<string[]>([]);
-
-  const monaco = useMonaco();
+  const [isEditLabelsModalOpen, setIsEditLabelsModalOpen] = useState(false);
 
   useEffect(() => {
     if (monaco) {
@@ -43,60 +49,96 @@ export const CodeItemForm = ({
   }, [codeItem, monaco]);
 
   const onSave = async (data: FieldValues) => {
-    await onSubmit({ ...data });
-    back();
+    try {
+      await onSubmit({
+        ...data,
+      });
+    } finally {
+      back();
+    }
   };
 
   return (
-    <Form
-      schema={schema}
-      onSubmit={onSave}
-      defaultValues={{
-        name: codeItem?.name,
-        description: codeItem?.description,
-        code: codeItem?.code,
-        language: codeItem?.language,
-      }}
-      sx={{ width: 1 }}
-    >
-      <Grid
-        container
-        sx={{
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          rowGap: 1.5,
+    <>
+      <CodeItemModals
+        codeItemId={codeItem?.id}
+        labelType={CODE_ITEM_TYPE}
+        isEditLabelsModalOpen={isEditLabelsModalOpen}
+        setIsEditLabelsModalOpen={setIsEditLabelsModalOpen}
+      />
+
+      <Form
+        schema={schema}
+        onSubmit={onSave}
+        defaultValues={{
+          name: codeItem?.name,
+          description: codeItem?.description,
+          code: codeItem?.code,
+          language: codeItem?.language,
+          label_ids: codeItem?.label_ids,
         }}
+        sx={{ width: 1 }}
       >
-        <TextInput label="Name" spellCheck="false" name="name" fullWidth />
+        <Grid
+          container
+          sx={{
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            rowGap: 1.5,
+          }}
+        >
+          <TextInput label="Name" spellCheck="false" name="name" fullWidth />
 
-        <TextInput
-          multiline={true}
-          fullWidth
-          rows={4}
-          label="Description"
-          name="description"
-        />
+          <TextInput
+            multiline={true}
+            fullWidth
+            rows={4}
+            label="Description"
+            name="description"
+          />
 
-        <AutocompleteInput
-          name="language"
-          options={languages}
-          defaultValue="typescript"
-          fullWidth
-        />
+          <Grid
+            container
+            justifyContent="space-between"
+            alignItems="center"
+            spacing={1.5}
+          >
+            <Grid item xs={10}>
+              <LabelsAutocompleteArrayInput options={labels} name="label_ids" />
+            </Grid>
 
-        <CodeEditor name="code" defaultValue="// Write your code" />
+            <Grid item xs={2}>
+              <Button
+                variant="contained"
+                fullWidth
+                onClick={() => setIsEditLabelsModalOpen(true)}
+              >
+                Edit Labels
+              </Button>
+            </Grid>
+          </Grid>
 
-        <Grid container sx={{ justifyContent: "space-between" }}>
-          <Button variant="contained" onClick={back}>
-            Cancel
-          </Button>
+          <AutocompleteInput
+            name="language"
+            options={languages}
+            defaultValue="typescript"
+            fullWidth
+          />
 
-          <Button variant="contained" isLoading={isLoading} type="submit">
-            Save
-          </Button>
+          <CodeEditor name="code" defaultValue="// Write your code" />
+
+          <Grid container sx={{ justifyContent: "space-between" }}>
+            <Button variant="contained" onClick={back}>
+              Cancel
+            </Button>
+
+            <Button variant="contained" isLoading={isLoading} type="submit">
+              Save
+            </Button>
+          </Grid>
         </Grid>
-      </Grid>
-    </Form>
+      </Form>
+    </>
   );
 };

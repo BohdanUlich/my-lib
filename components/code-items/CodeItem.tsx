@@ -1,49 +1,119 @@
 "use client";
 
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { ListItem, ListItemButton, ListItemText, styled } from "@mui/material";
+import {
+  Box,
+  styled,
+  ListItem,
+  Typography,
+  ListItemText,
+  ListItemButton,
+} from "@mui/material";
+import { Label } from "@/types";
 import { grey } from "@mui/material/colors";
+import { useRouter } from "next/navigation";
 import { Edit, Delete } from "@mui/icons-material";
-import { DeleteCodeItemButton } from "./DeleteCodeItemButton";
 import { useProgress } from "@/providers/ProgressBarProvider";
+import { DeleteCodeItemButton } from "./DeleteCodeItemButton";
 
 interface CodeItemProps {
+  codeItemLabels: Label[];
   codeItemName: string;
   codeItemId: string;
 }
 
 const CodeItemClasses = {
-  listItem: "code-item-list-item",
+  labelsContainer: "code-item-labels-container",
   listItemButton: "code-item-list-item-button",
   editIcon: "code-item-edit-icon",
+  listItem: "code-item-list-item",
+  container: "code-item-container",
+  label: "code-item-label",
   link: "code-item-link",
+  text: "code-item-text",
 };
 
 const StyledListItem = styled(ListItem)(({ theme }) => ({
-  padding: 0,
   borderBottom: `1px solid ${theme.palette.grey[300]}`,
-  "&:hover .MuiSvgIcon-root": {
-    opacity: 1,
-  },
-
+  padding: 0,
   [`& .${CodeItemClasses.listItemButton}`]: {
-    height: 70,
+    flexGrow: 0,
+    width: "100%",
+    minHeight: 70,
+    columnGap: "10px",
+    justifyContent: "space-between",
   },
   [`& .${CodeItemClasses.editIcon}`]: {
-    height: 28,
     width: 28,
-    opacity: 0,
-    transition: "0.1s all linear",
+    height: 28,
     borderRadius: "50%",
     padding: theme.spacing(0.6),
+    transition: "0.1s all linear",
     "&:hover": {
       backgroundColor: grey[200],
     },
   },
+  [`& .${CodeItemClasses.labelsContainer}`]: {
+    maxWidth: 150,
+    display: "flex",
+    overflowX: "auto",
+    borderRadius: "5px",
+    "::-webkit-scrollbar": {
+      height: "10px",
+    },
+    "::-webkit-scrollbar-thumb": {
+      width: "auto",
+      borderRadius: "5px",
+      boxShadow: "inset 0 0 10px 10px #b8b6b6",
+      border: "solid 3px transparent",
+      cursor: "pointer",
+
+      ":hover": {
+        boxShadow: "inset 0 0 10px 10px #999999",
+      },
+    },
+
+    "::-webkit-scrollbar-track": {
+      borderRadius: "5px",
+      boxShadow: "inset  0 -10px 10px #f1f1f1",
+      border: "solid 3px transparent",
+    },
+  },
+  [`& .${CodeItemClasses.label}`]: {
+    marginRight: "3px",
+    borderRadius: "4px",
+    padding: "3px 5px 3px 5px",
+    maxWidth: "135px",
+    p: {
+      fontSize: "14px !important",
+      whiteSpace: "nowrap",
+      overflow: "hidden",
+      wordBreak: "break-word",
+      textAlign: "center",
+      textOverflow: "ellipsis",
+      lineHeight: 1.3,
+    },
+  },
+  [`& .${CodeItemClasses.container}`]: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    columnGap: 1.5,
+  },
+  [`& .${CodeItemClasses.text}`]: {
+    display: "-webkit-box",
+    WebkitBoxOrient: "vertical",
+    WebkitLineClamp: 1,
+    overflow: "hidden",
+    wordBreak: "break-word",
+    marginRight: 3,
+  },
 }));
 
-export const CodeItem = ({ codeItemName, codeItemId }: CodeItemProps) => {
+export const CodeItem = ({
+  codeItemId,
+  codeItemName,
+  codeItemLabels,
+}: CodeItemProps) => {
   const { push } = useRouter();
   const { setLoadingProgress } = useProgress();
 
@@ -61,55 +131,61 @@ export const CodeItem = ({ codeItemName, codeItemId }: CodeItemProps) => {
     <StyledListItem
       className={CodeItemClasses.listItem}
       secondaryAction={
-        <>
-          <Edit
-            className={CodeItemClasses.editIcon}
-            onClick={onRedirectToEdit}
-          />
-
-          <DeleteCodeItemButton
-            codeItemName={codeItemName}
-            codeItemId={codeItemId}
-            sx={{
-              all: "unset",
-              borderRadius: "50%",
-              height: 28,
-              width: 28,
-            }}
+        <Box className={CodeItemClasses.container}>
+          <Box
+            onMouseDown={(e) => e.stopPropagation()}
+            className={CodeItemClasses.labelsContainer}
           >
-            <Delete
-              onMouseDown={(e) => e.stopPropagation()}
-              sx={{
-                height: 28,
-                width: 28,
-                opacity: 0,
-                transition: "0.1s all linear",
-                borderRadius: "50%",
-                padding: 0.6,
-                "&:hover": {
-                  backgroundColor: grey[200],
-                },
-              }}
+            {codeItemLabels.map((label) => (
+              <Box
+                className={CodeItemClasses.label}
+                bgcolor={label.color}
+                key={label.id}
+              >
+                <Typography>{label.name}</Typography>
+              </Box>
+            ))}
+          </Box>
+
+          <Box display="flex">
+            <Edit
+              className={CodeItemClasses.editIcon}
+              onClick={onRedirectToEdit}
             />
-          </DeleteCodeItemButton>
-        </>
+
+            <DeleteCodeItemButton
+              disableRipple
+              codeItemName={codeItemName}
+              codeItemId={codeItemId}
+              sx={{
+                padding: 0,
+                color: "black",
+                "&:hover": { background: 0 },
+                minWidth: 0,
+              }}
+            >
+              <Delete
+                onMouseDown={(e) => e.stopPropagation()}
+                sx={{
+                  height: 28,
+                  width: 28,
+                  borderRadius: "50%",
+                  padding: 0.6,
+                  "&:hover": {
+                    backgroundColor: grey[200],
+                  },
+                }}
+              />
+            </DeleteCodeItemButton>
+          </Box>
+        </Box>
       }
     >
       <ListItemButton
         className={CodeItemClasses.listItemButton}
         onClick={onRedirectToShow}
       >
-        <ListItemText
-          primary={codeItemName}
-          sx={{
-            display: "-webkit-box",
-            WebkitBoxOrient: "vertical",
-            WebkitLineClamp: 1,
-            overflow: "hidden",
-            wordBreak: "break-word",
-            marginRight: 3,
-          }}
-        />
+        <ListItemText primary={codeItemName} className={CodeItemClasses.text} />
       </ListItemButton>
     </StyledListItem>
   );

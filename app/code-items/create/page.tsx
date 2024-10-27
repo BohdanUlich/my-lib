@@ -1,10 +1,10 @@
 "use client";
 
-import { CodeItemForm } from "@/components/code-items/CodeItemForm";
+import { useCreateCodeItem } from "@/api";
 import { FieldValues } from "react-hook-form";
 import { useSearchParams } from "next/navigation";
 import { Box, Container, Typography } from "@mui/material";
-import { useCreateCodeItem } from "@/api";
+import { CodeItemForm } from "@/components/code-items/CodeItemForm";
 
 const CodeItemCreate = () => {
   const searchParams = useSearchParams();
@@ -18,6 +18,7 @@ const CodeItemCreate = () => {
       description: data.description,
       code: data.code,
       language: data.language,
+      label_ids: data.label_ids,
     });
   };
 
@@ -28,14 +29,15 @@ const CodeItemCreate = () => {
         sx={{
           pt: 5,
           pb: 3,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
           rowGap: 1.5,
+          display: "flex",
+          alignItems: "center",
+          flexDirection: "column",
+          justifyContent: "center",
         }}
       >
         <Typography variant="h3">Create code-item</Typography>
+
         <CodeItemForm onSubmit={onSubmit} isLoading={isPending} />
       </Container>
     </Box>

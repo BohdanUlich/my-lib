@@ -9,6 +9,7 @@ interface UpdateCodeItemRequest {
   name: string;
   description?: string;
   code?: string;
+  label_ids?: string[];
 }
 
 const codeItemSchema = z.object({
@@ -16,6 +17,7 @@ const codeItemSchema = z.object({
   description: z.string().optional(),
   code: z.string().optional(),
   language: z.string().min(1),
+  label_ids: z.array(z.string()).optional(),
 });
 
 type CodeItemSchema = z.infer<typeof codeItemSchema>;

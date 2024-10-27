@@ -3,7 +3,7 @@
 import { Box, Container, Grid, Typography } from "@mui/material";
 import {
   CreateCategoryButton,
-  CategoriesFilter,
+  CategoriesFilterModal,
   CategoriesList,
 } from "@/components/categories";
 import { SearchInput } from "@/components/inputs";
@@ -30,7 +30,7 @@ const Home = () => {
               <SearchInput />
             </Grid>
 
-            <CategoriesFilter />
+            <CategoriesFilterModal />
           </Grid>
 
           <CategoriesList />

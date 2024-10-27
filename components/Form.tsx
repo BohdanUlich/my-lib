@@ -1,3 +1,5 @@
+"use client";
+
 import { ZodType } from "zod";
 import { setFormErrors } from "@/helpers";
 import { Box, SxProps } from "@mui/material";

@@ -4,11 +4,12 @@ import { fetchLabels } from "./fetchLabels";
 
 interface UseGetLabelsParams {
   labelType: LabelType;
+  ids?: string[];
 }
 
-export const useGetLabels = ({ labelType }: UseGetLabelsParams) => {
+export const useGetLabels = ({ labelType, ids }: UseGetLabelsParams) => {
   return useQuery({
-    queryFn: () => fetchLabels({ labelType }),
-    queryKey: [LABELS_API_ENDPOINT, labelType],
+    queryFn: () => fetchLabels({ labelType, ids }),
+    queryKey: [LABELS_API_ENDPOINT, labelType, ids],
   });
 };
