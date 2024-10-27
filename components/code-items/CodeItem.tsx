@@ -9,8 +9,8 @@ import {
   ListItemButton,
 } from "@mui/material";
 import { Label } from "@/types";
+import { useRouter, useSearchParams } from "next/navigation";
 import { grey } from "@mui/material/colors";
-import { useRouter } from "next/navigation";
 import { Edit, Delete } from "@mui/icons-material";
 import { useProgress } from "@/providers/ProgressBarProvider";
 import { DeleteCodeItemButton } from "./DeleteCodeItemButton";
@@ -116,15 +116,17 @@ export const CodeItem = ({
 }: CodeItemProps) => {
   const { push } = useRouter();
   const { setLoadingProgress } = useProgress();
+  const searchParams = useSearchParams();
+  const categoryId = searchParams.get("categoryId");
 
   const onRedirectToEdit = () => {
     setLoadingProgress(true);
-    push(`/code-items/edit/${codeItemId}`);
+    push(`/code-items/edit/${codeItemId}?categoryId=${categoryId}`);
   };
 
   const onRedirectToShow = () => {
     setLoadingProgress(true);
-    push(`/code-items/show/${codeItemId}`);
+    push(`/code-items/show/${codeItemId}?categoryId=${categoryId}`);
   };
 
   return (
