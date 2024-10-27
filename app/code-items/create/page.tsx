@@ -2,14 +2,16 @@
 
 import { useCreateCodeItem } from "@/api";
 import { FieldValues } from "react-hook-form";
-import { useSearchParams } from "next/navigation";
-import { Box, Container, Typography } from "@mui/material";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Box, Container, Grid, Typography } from "@mui/material";
+import { Button } from "@/components/buttons";
 import { CodeItemForm } from "@/components/code-items/CodeItemForm";
 
 const CodeItemCreate = () => {
+  const { back } = useRouter();
+  const { createCodeItem, isPending } = useCreateCodeItem();
   const searchParams = useSearchParams();
   const categoryId = searchParams.get("categoryId") ?? "";
-  const { createCodeItem, isPending } = useCreateCodeItem();
 
   const onSubmit = async (data: FieldValues) => {
     await createCodeItem({
@@ -36,6 +38,10 @@ const CodeItemCreate = () => {
           justifyContent: "center",
         }}
       >
+        <Grid container justifyContent="end">
+          <Button onClick={back}>Back</Button>
+        </Grid>
+
         <Typography variant="h3">Create code-item</Typography>
 
         <CodeItemForm onSubmit={onSubmit} isLoading={isPending} />

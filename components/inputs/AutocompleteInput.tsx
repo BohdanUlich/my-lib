@@ -20,6 +20,7 @@ export const AutocompleteInput = ({
 }: AutocompleteInputProps) => {
   const { field, fieldState } = useController({
     name,
+    defaultValue,
   });
 
   return (

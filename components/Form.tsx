@@ -6,6 +6,7 @@ import { Box, SxProps } from "@mui/material";
 import { ReactNode } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormProvider, useForm } from "react-hook-form";
+import { useSnackbar } from "notistack";
 
 interface FormParams {
   children: ReactNode;
@@ -27,6 +28,8 @@ export const Form = ({
     defaultValues,
   });
 
+  const { enqueueSnackbar } = useSnackbar();
+
   const handleSubmit = async (values: unknown) => {
     const res = await onSubmit(values);
 
@@ -35,12 +38,17 @@ export const Form = ({
     }
   };
 
+  const handleError = () => {
+    enqueueSnackbar("Form is not valid", { variant: "error" });
+  };
+
   return (
     <FormProvider {...form}>
       <Box
         component="form"
         noValidate
-        onSubmit={form.handleSubmit(handleSubmit)}
+        onSubmit={form.handleSubmit(handleSubmit, handleError)}
+        onInvalid={() => handleError()}
         sx={sx}
       >
         {children}
