@@ -8,3 +8,4 @@ export * from "./Header";
 export * from "./LoadingSpinner";
 export * from "./Form";
 export * from "./ProgressBar";
+export * from "./RichTextEditor";
