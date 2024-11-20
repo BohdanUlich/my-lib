@@ -128,7 +128,7 @@ export async function POST(req: NextRequest) {
       .object({
         name: z.string().min(1),
         category_id: z.string().min(1),
-        description: z.string(),
+        description: z.string().optional(),
         language: z.string().min(1),
         code: z.string(),
         label_ids: z.array(z.string()).optional(),

@@ -8,7 +8,12 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { useQuery } from "@tanstack/react-query";
 import { fetchOneCodeItem } from "@/api/codeItems/fetchOneCodeItem";
 import { CODEITEMS_API_ENDPOINT } from "@/types";
-import { Button, CodeEditorView, DeleteCodeItemButton } from "@/components";
+import {
+  Button,
+  CodeEditorView,
+  DeleteCodeItemButton,
+  RichTextEditorView,
+} from "@/components";
 import { useProgress } from "@/providers/ProgressBarProvider";
 import { useSnackbar } from "notistack";
 
@@ -88,9 +93,10 @@ export const ShowCodeItem = () => {
           </Typography>
 
           {description && (
-            <Typography fontSize={20} sx={typographyStyles}>
-              {description}
-            </Typography>
+            <RichTextEditorView
+              content={codeItem.description ?? ""}
+              readonly={true}
+            />
           )}
 
           {code && (

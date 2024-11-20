@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { connectDb } from "@/lib";
+import { connectDb, deleteFile } from "@/lib";
 import { ZodError, z } from "zod";
 import CodeItem from "@/models/code-item";
 import { getServerSession } from "next-auth";
 import { authConfig } from "@/configs";
+import { extractImageUrls, mapUrlsToKeys } from "@/helpers";
 
 interface UpdateCodeItemRequest {
   name: string;
@@ -52,6 +53,21 @@ const deleteCodeItem = async (labelId: string): Promise<void> => {
   await CodeItem.findOneAndDelete({ _id: labelId });
 };
 
+const deleteImagesFromS3 = async (codeItemId: string) => {
+  const codeItem = await CodeItem.findById(codeItemId);
+
+  // Extract image URLs from the content
+  const imageUrls = extractImageUrls(codeItem?.description || "");
+
+  if (imageUrls.length > 0) {
+    // Map URLs to keys for S3 deletion
+    const keys = mapUrlsToKeys(imageUrls);
+
+    // Delete all images from S3
+    await Promise.all(keys.map((key) => deleteFile({ key })));
+  }
+};
+
 export async function PUT(
   req: NextRequest,
   { params }: { params: { id: string } }
@@ -93,6 +109,8 @@ export async function DELETE(
     await connectDb();
 
     const codeItemId = params.id;
+
+    await deleteImagesFromS3(codeItemId);
 
     await deleteCodeItem(codeItemId);
 
