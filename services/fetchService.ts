@@ -12,18 +12,20 @@ export const fetchService = async (url: string, options: RequestOptions) => {
   const { method, data, headers } = options;
 
   const isServer = typeof window === "undefined";
+  const isFormData = data instanceof FormData;
 
   const config: RequestInit = {
     method,
     headers: {
-      "Content-Type": "application/json",
+      ...(!isFormData ? { "Content-Type": "application/json" } : undefined),
       ...headers,
     },
+    ...(data
+      ? isFormData
+        ? { body: data }
+        : { body: JSON.stringify(data) }
+      : undefined),
   };
-
-  if (data) {
-    config.body = JSON.stringify(data);
-  }
 
   try {
     const finalUrl = isServer
