@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
         mimeType,
       });
 
-      const url = `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${fileName}`;
+      const url = `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.MY_AWS_REGION}.amazonaws.com/${fileName}`;
 
       return {
         url,
