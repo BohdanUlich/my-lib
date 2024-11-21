@@ -44,6 +44,11 @@ export interface ErrorResponse {
   code: number;
 }
 
+export interface Image {
+  url: string;
+  name: string;
+}
+
 export type ApiResponse<T> = SuccessResponse<T> | ErrorResponse;
 
 export type LabelType = typeof CATEGORY_TYPE | typeof CODE_ITEM_TYPE;
