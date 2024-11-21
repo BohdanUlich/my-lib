@@ -4,16 +4,18 @@ import * as z from "zod";
 import { useGetLabels } from "@/api";
 import { Grid } from "@mui/material";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FieldValues } from "react-hook-form";
 import { useMonaco } from "@monaco-editor/react";
-import { CODE_ITEM_TYPE, CodeItem } from "@/types";
+import { CODE_ITEM_TYPE, CodeItem, IMAGES_API_ENDPOINT } from "@/types";
 import { CodeEditor } from "./CodeEditor";
 import { CodeItemModals } from "./CodeItemModals";
 import { Form } from "../Form";
 import { Button } from "../buttons";
 import { AutocompleteInput, TextInput } from "../inputs";
 import { LabelsAutocompleteArrayInput } from "../labels";
+import { RichTextEditor } from "../RichTextEditor";
+import { fetchService } from "@/services";
 
 interface CodeItemFormProps {
   onSubmit: (data: FieldValues) => Promise<void>;
@@ -23,7 +25,7 @@ interface CodeItemFormProps {
 
 const schema = z.object({
   name: z.string().min(1, { message: "Required" }),
-  description: z.string(),
+  description: z.string().optional(),
   language: z.string().min(1, { message: "Required" }),
   code: z.string(),
   label_ids: z.array(z.string()).optional(),
@@ -40,6 +42,11 @@ export const CodeItemForm = ({
   const categoryId = searchParams.get("categoryId");
   const labelType = CODE_ITEM_TYPE;
   const { data: labels } = useGetLabels({ labelType });
+  const removedImagesRef = useRef<string[]>([]);
+
+  const handleCollectRemovedImages = (urls: string[]) => {
+    removedImagesRef.current = [...removedImagesRef.current, ...urls];
+  };
 
   const [languages, setLanguages] = useState<string[]>([]);
   const [isEditLabelsModalOpen, setIsEditLabelsModalOpen] = useState(false);
@@ -56,6 +63,14 @@ export const CodeItemForm = ({
 
   const onSave = async (data: FieldValues) => {
     try {
+      // Delete removed images if there are any
+      if (removedImagesRef.current.length > 0) {
+        await fetchService(IMAGES_API_ENDPOINT, {
+          method: "DELETE",
+          data: { urls: removedImagesRef.current },
+        });
+      }
+
       await onSubmit({
         ...data,
       });
@@ -96,12 +111,9 @@ export const CodeItemForm = ({
         >
           <TextInput label="Name" spellCheck="false" name="name" fullWidth />
 
-          <TextInput
-            multiline={true}
-            fullWidth
-            rows={4}
-            label="Description"
+          <RichTextEditor
             name="description"
+            onCollectRemovedImages={handleCollectRemovedImages}
           />
 
           <Grid
