@@ -65,7 +65,7 @@ export const CodeEditorView = ({
         language={language ?? "typescript"}
         value={value}
         onChange={onChange}
-        options={{ readOnly }}
+        options={{ readOnly, minimap: { enabled: false }, showUnused: false }}
       />
     </Grid>
   );
