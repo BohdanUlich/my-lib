@@ -140,7 +140,7 @@ export const CodeItemForm = ({
           <AutocompleteInput
             name="language"
             options={languages}
-            defaultValue="apex"
+            defaultValue="typescript"
             fullWidth
           />
 
