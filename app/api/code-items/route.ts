@@ -25,6 +25,9 @@ export async function GET(req: NextRequest) {
   const categoryId = searchParams.get("categoryId");
   const searchQuery = searchParams.get("q");
   const labels = searchParams.getAll("label");
+  const page = parseInt(searchParams.get("page") || "1", 10);
+  const limit = parseInt(searchParams.get("limit") || "20", 10);
+  const skip = (page - 1) * limit;
 
   if (!userId) {
     return NextResponse.json(
@@ -61,6 +64,8 @@ export async function GET(req: NextRequest) {
           label_ids: 1,
         },
       },
+      { $skip: skip },
+      { $limit: limit },
     ];
 
     if (searchQuery) {
@@ -83,6 +88,9 @@ export async function GET(req: NextRequest) {
       });
     }
 
+    const totalItems = await CodeItem.countDocuments(
+      aggregationPipeline[0].$match
+    );
     const codeItems = await CodeItem.aggregate(aggregationPipeline);
 
     const populatedCodeItems = await CodeItem.populate(codeItems, {
@@ -107,6 +115,13 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({
       success: true,
       data: responseItems,
+      pagination: {
+        page,
+        limit,
+        totalItems,
+        totalPages: Math.ceil(totalItems / limit),
+        hasMore: skip + responseItems.length < totalItems,
+      },
     });
   } catch (error) {
     return NextResponse.json({

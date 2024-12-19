@@ -21,6 +21,9 @@ export async function GET(req: NextRequest) {
 
   const { searchParams } = new URL(req.url);
   const searchQuery = searchParams.get("q");
+  const page = parseInt(searchParams.get("page") || "1", 10);
+  const limit = parseInt(searchParams.get("limit") || "20", 10);
+
   const session = await getServerSession({ ...authConfig });
   const userId = session?.user?.id;
 
@@ -66,9 +69,27 @@ export async function GET(req: NextRequest) {
       });
     }
 
+    aggregationPipeline.push({ $skip: (page - 1) * limit }, { $limit: limit });
+
     const categories = await Category.aggregate(aggregationPipeline);
 
-    return NextResponse.json({ success: true, data: categories });
+    const totalCategories = await Category.countDocuments({
+      user_id: new mongoose.Types.ObjectId(userId),
+      ...(searchQuery && { name: { $regex: searchQuery, $options: "i" } }),
+    });
+
+    const hasMore = page * limit < totalCategories;
+
+    return NextResponse.json({
+      success: true,
+      data: categories,
+      pagination: {
+        total: totalCategories,
+        page,
+        limit,
+        hasMore,
+      },
+    });
   } catch (error) {
     return NextResponse.json({
       success: false,

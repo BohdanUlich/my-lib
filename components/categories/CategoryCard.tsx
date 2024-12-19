@@ -16,13 +16,8 @@ import {
   Typography,
 } from "@mui/material";
 import { grey } from "@mui/material/colors";
-import {
-  CATEGORY_TYPE,
-  CODEITEMS_API_ENDPOINT,
-  Label as ILabel,
-} from "@/types";
-import { fetchCodeItems, useCreateCategory, useUpdateCategory } from "@/api";
-import { useQueryClient } from "@tanstack/react-query";
+import { CATEGORY_TYPE, Label as ILabel } from "@/types";
+import { useCreateCategory, useUpdateCategory } from "@/api";
 import { Form } from "../Form";
 import { TextInput } from "../inputs";
 import { Button } from "../buttons";
@@ -57,14 +52,6 @@ export const CategoryCard = ({
   const isLoading = isLoadingCreate || isLoadingUpdate;
   const [showTooltip, setShowTooltip] = useState(false);
   const textRef = useRef<HTMLDivElement>(null);
-  const queryClient = useQueryClient();
-
-  const prefetchCodeItems = () => {
-    queryClient.prefetchQuery({
-      queryKey: [CODEITEMS_API_ENDPOINT, null, categoryId],
-      queryFn: () => fetchCodeItems({ categoryId }),
-    });
-  };
 
   const onSave = async (data: FieldValues) => {
     try {
@@ -126,7 +113,6 @@ export const CategoryCard = ({
           zIndex: isEdit || isNewCategory ? 20 : 9,
           height: 1,
         }}
-        onMouseEnter={prefetchCodeItems}
       >
         <Form schema={schema} onSubmit={onSave} sx={{ height: 1 }}>
           <Card
