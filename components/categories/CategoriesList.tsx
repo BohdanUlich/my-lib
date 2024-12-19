@@ -1,17 +1,30 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { Grid } from "@mui/material";
+import { Box, Grid } from "@mui/material";
 import { useCategories } from "@/providers";
 import { getCategoryIdsFromLabels } from "@/helpers";
 import { CATEGORY_TYPE } from "@/types";
 import { useGetCategories, useGetLabels } from "@/api";
 import { CategoryCard } from "./CategoryCard";
 import { CategoryCardSkeleton } from "./CategoryCardSkeleton";
+import { LoadingSpinner } from "../LoadingSpinner";
+import { useInView } from "react-intersection-observer";
 
 export const CategoriesList = () => {
-  const { data: categories = [], isLoading } = useGetCategories();
+  const {
+    data: categoriesResponse,
+    isLoading,
+    isFetchingNextPage,
+    fetchNextPage,
+    hasNextPage,
+  } = useGetCategories();
+
+  const categories = useMemo(
+    () => categoriesResponse?.pages.flatMap((page) => page.data) || [],
+    [categoriesResponse]
+  );
   const { data: labels } = useGetLabels({ labelType: CATEGORY_TYPE });
   const { currentCategories, setCurrentCategories } = useCategories();
   const searchParams = useSearchParams();
@@ -47,6 +60,15 @@ export const CategoriesList = () => {
       : setCurrentCategories(categories);
   }, [categories, labelIds, filteredCategories, setCurrentCategories]);
 
+  const { ref, inView } = useInView({
+    triggerOnce: false,
+    threshold: 0.1,
+  });
+
+  if (inView && hasNextPage && !isFetchingNextPage) {
+    fetchNextPage();
+  }
+
   return (
     <Grid container spacing={2} alignItems="stretch">
       {isLoading
@@ -66,6 +88,11 @@ export const CategoriesList = () => {
               />
             </Grid>
           ))}
+      {hasNextPage && !isLoading && (
+        <Box ref={ref} width={1} py={2} display="flex" justifyContent="center">
+          <LoadingSpinner />
+        </Box>
+      )}
     </Grid>
   );
 };

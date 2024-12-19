@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import Link from "next/link";
 import { useGetCodeItems, useGetLabels } from "@/api";
 import AddIcon from "@mui/icons-material/Add";
@@ -15,17 +15,38 @@ import {
 } from "@/components";
 import { CODE_ITEM_TYPE } from "@/types";
 import { useProgress } from "@/providers/ProgressBarProvider";
+import { useInView } from "react-intersection-observer";
 
 const CodeItemsPage = () => {
   const searchParams = useSearchParams();
   const categoryId = searchParams.get("categoryId");
   const { setLoadingProgress } = useProgress();
-  const { data: codeItems = [], isLoading } = useGetCodeItems();
+  const {
+    data: codeItemsResponse,
+    isLoading,
+    isFetchingNextPage,
+    fetchNextPage,
+    hasNextPage,
+  } = useGetCodeItems({ limit: 20 });
   useGetLabels({ labelType: CODE_ITEM_TYPE });
+
+  const codeItems = useMemo(
+    () => codeItemsResponse?.pages.flatMap((page) => page.data) || [],
+    [codeItemsResponse]
+  );
 
   useEffect(() => {
     setLoadingProgress(false);
   }, [setLoadingProgress]);
+
+  const { ref, inView } = useInView({
+    triggerOnce: false,
+    threshold: 0.1,
+  });
+
+  if (inView && hasNextPage && !isFetchingNextPage) {
+    fetchNextPage();
+  }
 
   return (
     <Box component="main">
@@ -87,6 +108,17 @@ const CodeItemsPage = () => {
                   key={codeItem.id}
                 />
               ))}
+              {hasNextPage && !isLoading && (
+                <Box
+                  ref={ref}
+                  width={1}
+                  py={2}
+                  display="flex"
+                  justifyContent="center"
+                >
+                  <LoadingSpinner />
+                </Box>
+              )}
             </List>
           )}
         </Grid>

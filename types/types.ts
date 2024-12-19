@@ -1,5 +1,12 @@
 import { CATEGORY_TYPE, CODE_ITEM_TYPE } from "./constants";
 
+export interface Pagination {
+  total: number;
+  page: number;
+  limit: number;
+  hasMore: boolean;
+}
+
 export interface User {
   id: string;
   email: string;
@@ -13,6 +20,12 @@ export interface Category {
   user_id: string;
   labels?: Label[];
 }
+
+export interface CategoriesListResponse {
+  data: Category[];
+  pagination: Pagination;
+}
+
 export interface CodeItem {
   id: string;
   name: string;
@@ -24,6 +37,12 @@ export interface CodeItem {
   label_ids?: string[];
   language: string;
 }
+
+export interface CodeItemsListResponse {
+  data: CodeItem[];
+  pagination: Pagination;
+}
+
 export interface Label {
   id: string;
   name: string;
