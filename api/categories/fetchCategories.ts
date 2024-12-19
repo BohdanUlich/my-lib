@@ -1,17 +1,21 @@
-import { CATEGORIES_API_ENDPOINT, Category } from "@/types";
+import { CATEGORIES_API_ENDPOINT, CategoriesListResponse } from "@/types";
 import { fetchService } from "@/services";
 
 interface FetchCategoriesParams {
   q?: string | null;
+  page?: number;
+  limit?: number;
 }
 
 export const fetchCategories = async ({
   q,
-}: FetchCategoriesParams): Promise<Category[]> => {
-  let url = `${CATEGORIES_API_ENDPOINT}`;
+  page = 1,
+  limit = 20,
+}: FetchCategoriesParams): Promise<CategoriesListResponse> => {
+  let url = `${CATEGORIES_API_ENDPOINT}?page=${page}&limit=${limit}`;
 
   if (q) {
-    url += `?q=${q}`;
+    url += `&q=${encodeURIComponent(q)}`;
   }
 
   const response = await fetchService(url, { method: "GET" });
@@ -20,5 +24,5 @@ export const fetchCategories = async ({
     throw new Error(response?.error);
   }
 
-  return response.data;
+  return response;
 };

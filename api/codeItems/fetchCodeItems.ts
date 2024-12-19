@@ -1,18 +1,22 @@
 import { fetchService } from "@/services";
-import { ApiResponse, CodeItem, CODEITEMS_API_ENDPOINT } from "@/types";
+import { CODEITEMS_API_ENDPOINT, CodeItemsListResponse } from "@/types";
 
 interface FetchCodeItemsParams {
   q?: string | null;
   categoryId: any;
   labels?: string[];
+  page?: number;
+  limit?: number;
 }
 
 export const fetchCodeItems = async ({
   q,
   categoryId,
   labels,
-}: FetchCodeItemsParams): Promise<CodeItem[]> => {
-  let url = `${CODEITEMS_API_ENDPOINT}?categoryId=${categoryId}`;
+  page = 1,
+  limit = 20,
+}: FetchCodeItemsParams): Promise<CodeItemsListResponse> => {
+  let url = `${CODEITEMS_API_ENDPOINT}?categoryId=${categoryId}&page=${page}&limit=${limit}`;
 
   if (q) {
     url += `&q=${q}`;
@@ -23,7 +27,7 @@ export const fetchCodeItems = async ({
     url += `&${labelsParams}`;
   }
 
-  const response: ApiResponse<CodeItem[]> = await fetchService(url, {
+  const response = await fetchService(url, {
     method: "GET",
   });
 
@@ -31,5 +35,5 @@ export const fetchCodeItems = async ({
     throw new Error(response?.error);
   }
 
-  return response.data;
+  return response;
 };
