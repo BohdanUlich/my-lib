@@ -6,14 +6,10 @@ import User from "@/models/user";
 import mongoose from "mongoose";
 import { getServerSession } from "next-auth";
 import { authConfig } from "@/configs";
+import { MongoError } from "@/types";
 
 interface NewCategoryRequest {
   name: string;
-}
-
-interface MongoError {
-  code?: number;
-  message: string;
 }
 
 export async function GET(req: NextRequest) {

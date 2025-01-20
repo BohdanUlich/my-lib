@@ -69,6 +69,11 @@ export interface Image {
   name: string;
 }
 
+export interface MongoError {
+  code?: number;
+  message: string;
+}
+
 export type ApiResponse<T> = SuccessResponse<T> | ErrorResponse;
 
 export type LabelType = typeof CATEGORY_TYPE | typeof CODE_ITEM_TYPE;

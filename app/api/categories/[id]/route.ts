@@ -3,6 +3,7 @@ import { connectDb } from "@/lib";
 import Category from "@/models/category";
 import { ZodError, z } from "zod";
 import Label from "@/models/label";
+import { MongoError } from "@/types";
 
 interface UpdateCategoryRequest {
   name: string;
@@ -55,6 +56,18 @@ export async function PUT(
           })),
         },
         { status: 422 }
+      );
+    }
+
+    const mongoError = error as MongoError;
+
+    if (mongoError.code === 11000) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "A category with this name already exists",
+        },
+        { status: 400 }
       );
     }
 
