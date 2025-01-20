@@ -4,8 +4,8 @@ type RequestMethods = "GET" | "POST" | "PUT" | "DELETE";
 
 interface RequestOptions {
   method: RequestMethods;
-  data?: any;
-  headers?: any;
+  data?: Record<string, unknown>;
+  headers?: Record<string, unknown>;
 }
 
 export const fetchService = async (url: string, options: RequestOptions) => {

@@ -10,10 +10,10 @@ import {
   Toolbar,
   IconButton,
   Typography,
-  Container,
   Avatar,
   Tooltip,
   Switch,
+  Container,
 } from "@mui/material";
 import { useGetUser } from "@/hooks";
 import { useColorMode } from "@/providers";
@@ -33,8 +33,8 @@ export const Header = () => {
   };
 
   return (
-    <AppBar position="static">
-      <Container maxWidth="xl">
+    <AppBar position="fixed" sx={{ zIndex: 9 }}>
+      <Container maxWidth="lg">
         <Toolbar
           disableGutters
           sx={{
@@ -48,10 +48,10 @@ export const Header = () => {
             noWrap
             component={Link}
             href="/"
+            color="primary"
             sx={{
               display: "flex",
               fontWeight: 700,
-              color: "inherit",
               textDecoration: "none",
             }}
           >

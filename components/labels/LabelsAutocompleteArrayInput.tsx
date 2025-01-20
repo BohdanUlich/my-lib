@@ -61,7 +61,7 @@ export const LabelsAutocompleteArrayInput = ({
             label={option.name}
             {...getTagProps({ index })}
             key={option.id}
-            sx={{ backgroundColor: option.color, fontSize: 13 }}
+            sx={{ backgroundColor: option.color }}
           />
         ))
       }

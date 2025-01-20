@@ -6,7 +6,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 
-type ButtonProps = MuiButtonProps & {
+export type ButtonProps = MuiButtonProps & {
   isLoading?: boolean;
 };
 

@@ -114,10 +114,23 @@ export const EditLabelModal = ({
               defaultValue={editedLabel?.color || label?.color || grey[100]}
               inputProps={{
                 sx: {
-                  height: "53.15px",
-                  p: 0,
                   cursor: "pointer",
                   borderRadius: 2,
+                  height: 50,
+                },
+              }}
+              sx={{
+                ".MuiInputBase-root": {
+                  padding: 0,
+                },
+                ".MuiInputBase-root::before": {
+                  border: 0,
+                },
+                ".MuiInputBase-root::after": {
+                  border: 0,
+                },
+                ".css-xwh72k-MuiInputBase-root-MuiInput-root:before:hover": {
+                  border: 0,
                 },
               }}
             />

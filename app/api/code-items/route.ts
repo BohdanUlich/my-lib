@@ -6,6 +6,7 @@ import User from "@/models/user";
 import mongoose from "mongoose";
 import { getServerSession } from "next-auth";
 import { authConfig } from "@/configs";
+import Category from "@/models/category";
 
 interface NewCodeItemRequest {
   name: string;
@@ -17,6 +18,7 @@ interface NewCodeItemRequest {
 
 export async function GET(req: NextRequest) {
   await connectDb();
+
   const session = await getServerSession({ ...authConfig });
 
   const { searchParams } = new URL(req.url);
@@ -47,8 +49,15 @@ export async function GET(req: NextRequest) {
     );
   }
 
+  const category = await Category.findOne({
+    _id: new mongoose.Types.ObjectId(categoryId),
+    user_id: new mongoose.Types.ObjectId(userId),
+  });
+
+  const pageTitle = category.name || "Code items";
+
   try {
-    let aggregationPipeline: any[] = [
+    const aggregationPipeline: any[] = [
       {
         $match: {
           user_id: new mongoose.Types.ObjectId(userId),
@@ -64,12 +73,10 @@ export async function GET(req: NextRequest) {
           label_ids: 1,
         },
       },
-      { $skip: skip },
-      { $limit: limit },
     ];
 
     if (searchQuery) {
-      aggregationPipeline.unshift({
+      aggregationPipeline.push({
         $match: {
           name: { $regex: searchQuery, $options: "i" },
         },
@@ -81,16 +88,20 @@ export async function GET(req: NextRequest) {
         (label) => new mongoose.Types.ObjectId(label)
       );
 
-      aggregationPipeline.unshift({
+      aggregationPipeline.push({
         $match: {
           label_ids: { $in: labelObjectIds },
         },
       });
     }
 
-    const totalItems = await CodeItem.countDocuments(
-      aggregationPipeline[0].$match
-    );
+    const countPipeline = [...aggregationPipeline, { $count: "total" }];
+
+    aggregationPipeline.push({ $skip: skip }, { $limit: limit });
+
+    const [totalResult] = await CodeItem.aggregate(countPipeline);
+    const totalItems = totalResult?.total || 0;
+
     const codeItems = await CodeItem.aggregate(aggregationPipeline);
 
     const populatedCodeItems = await CodeItem.populate(codeItems, {
@@ -112,15 +123,18 @@ export async function GET(req: NextRequest) {
         : [],
     }));
 
+    const hasMore = skip + responseItems.length < totalItems;
+
     return NextResponse.json({
       success: true,
       data: responseItems,
+      pageTitle,
       pagination: {
         page,
         limit,
         totalItems,
         totalPages: Math.ceil(totalItems / limit),
-        hasMore: skip + responseItems.length < totalItems,
+        hasMore,
       },
     });
   } catch (error) {
