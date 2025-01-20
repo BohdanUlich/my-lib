@@ -30,7 +30,7 @@ export const SearchInput = () => {
     <TextField
       label="Search"
       value={keyword}
-      sx={{ width: "300px" }}
+      sx={{ width: { xs: "100%", md: "300px" } }}
       fullWidth
       onChange={(e) => setKeyword(e.target.value)}
     />

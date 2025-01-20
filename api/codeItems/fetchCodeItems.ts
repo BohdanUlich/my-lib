@@ -7,6 +7,7 @@ interface FetchCodeItemsParams {
   labels?: string[];
   page?: number;
   limit?: number;
+  headers?: Record<string, unknown>;
 }
 
 export const fetchCodeItems = async ({
@@ -15,6 +16,7 @@ export const fetchCodeItems = async ({
   labels,
   page = 1,
   limit = 20,
+  headers,
 }: FetchCodeItemsParams): Promise<CodeItemsListResponse> => {
   let url = `${CODEITEMS_API_ENDPOINT}?categoryId=${categoryId}&page=${page}&limit=${limit}`;
 
@@ -22,13 +24,14 @@ export const fetchCodeItems = async ({
     url += `&q=${q}`;
   }
 
-  if (labels) {
+  if (labels?.length) {
     const labelsParams = labels.map((label) => `label=${label}`).join("&");
     url += `&${labelsParams}`;
   }
 
   const response = await fetchService(url, {
     method: "GET",
+    headers,
   });
 
   if (!response.success) {

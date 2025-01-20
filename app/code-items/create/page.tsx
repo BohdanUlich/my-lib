@@ -3,9 +3,10 @@
 import { useCreateCodeItem } from "@/api";
 import { FieldValues } from "react-hook-form";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Box, Container, Grid, Typography } from "@mui/material";
+import { Grid2 } from "@mui/material";
 import { Button } from "@/components/buttons";
 import { CodeItemForm } from "@/components/code-items/CodeItemForm";
+import { MainLayout } from "@/components";
 
 const CodeItemCreate = () => {
   const { back } = useRouter();
@@ -25,28 +26,17 @@ const CodeItemCreate = () => {
   };
 
   return (
-    <Box component="main">
-      <Container
-        maxWidth="md"
-        sx={{
-          pt: 5,
-          pb: 3,
-          rowGap: 1.5,
-          display: "flex",
-          alignItems: "center",
-          flexDirection: "column",
-          justifyContent: "center",
-        }}
-      >
-        <Grid container justifyContent="end">
+    <MainLayout
+      title="Create new code item"
+      titleProps={{ textAlign: "center" }}
+      toolbar={
+        <Grid2 container justifyContent="end">
           <Button onClick={back}>Back</Button>
-        </Grid>
-
-        <Typography variant="h3">Create code-item</Typography>
-
-        <CodeItemForm onSubmit={onSubmit} isLoading={isPending} />
-      </Container>
-    </Box>
+        </Grid2>
+      }
+    >
+      <CodeItemForm onSubmit={onSubmit} isLoading={isPending} />
+    </MainLayout>
   );
 };
 

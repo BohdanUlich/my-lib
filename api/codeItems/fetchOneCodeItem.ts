@@ -3,7 +3,7 @@ import { ApiResponse, CodeItem, CODEITEMS_API_ENDPOINT } from "@/types";
 
 interface FetchOneCodeItemParams {
   codeItemId: string;
-  headers?: any;
+  headers?: Record<string, unknown>;
 }
 
 export const fetchOneCodeItem = async ({

@@ -21,6 +21,7 @@ export const CodeEditorView = ({
 }: MonacoEditorProps) => {
   const { theme } = useColorMode();
   const monaco = useMonaco();
+  const isDarkTheme = theme === DARK_THEME;
 
   useEffect(() => {
     if (monaco) {
@@ -46,20 +47,17 @@ export const CodeEditorView = ({
   return (
     <Grid
       sx={{
-        border: "1px solid rgba(0, 0, 0, 0.23)",
-        borderRadius: "4px",
+        border: `1px solid ${isDarkTheme ? "#3a3a3a" : "rgba(0, 0, 0, 0.23)"}`,
+        borderRadius: "8px",
         width: "100%",
         overflow: "auto",
-        "&:focus": {
-          border: "2px solid #1976d2",
-        },
         "&:hover": {
-          border: "1px solid black",
+          border: `1px solid ${isDarkTheme ? "#fff" : "#000"}`,
         },
       }}
     >
       <MonacoEditor
-        theme={theme === DARK_THEME ? "vs-dark" : "vs"}
+        theme={isDarkTheme ? "vs-dark" : "vs"}
         height="500px"
         width="100%"
         language={language ?? "typescript"}

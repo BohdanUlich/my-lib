@@ -41,6 +41,7 @@ export interface CodeItem {
 export interface CodeItemsListResponse {
   data: CodeItem[];
   pagination: Pagination;
+  pageTitle: string;
 }
 
 export interface Label {
