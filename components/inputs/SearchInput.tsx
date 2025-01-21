@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { TextField } from "@mui/material";
+import { InputAdornment, TextField } from "@mui/material";
+import ClearIcon from "@mui/icons-material/Clear";
 
 export const SearchInput = () => {
   const searchParams = useSearchParams();
@@ -15,6 +16,10 @@ export const SearchInput = () => {
     keyword ? params.set("q", keyword) : params.delete("q");
 
     router.replace(`?${params.toString()}`);
+  };
+
+  const onClearInput = () => {
+    setKeyword("");
   };
 
   useEffect(() => {
@@ -33,6 +38,22 @@ export const SearchInput = () => {
       sx={{ width: { xs: "100%", md: "300px" } }}
       fullWidth
       onChange={(e) => setKeyword(e.target.value)}
+      slotProps={
+        keyword
+          ? {
+              input: {
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <ClearIcon
+                      sx={{ cursor: "pointer" }}
+                      onClick={onClearInput}
+                    />
+                  </InputAdornment>
+                ),
+              },
+            }
+          : undefined
+      }
     />
   );
 };
