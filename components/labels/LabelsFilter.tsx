@@ -8,9 +8,13 @@ import { useGetLabels } from "@/api";
 
 interface LabelsFilterProps {
   labelType: LabelType;
+  setFilterCounter: (number: number) => void;
 }
 
-export const LabelsFilter = ({ labelType }: LabelsFilterProps) => {
+export const LabelsFilter = ({
+  labelType,
+  setFilterCounter,
+}: LabelsFilterProps) => {
   const { data: labels } = useGetLabels({ labelType });
   const searchParams = useSearchParams();
   const [labelIds, setLabelIds] = useState<string[]>(
@@ -60,6 +64,8 @@ export const LabelsFilter = ({ labelType }: LabelsFilterProps) => {
           query += `&categoryId=${categoryId}`;
         }
       }
+
+      setFilterCounter(currentLabelIds.length);
 
       return currentLabelIds;
     });

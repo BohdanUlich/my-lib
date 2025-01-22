@@ -7,12 +7,12 @@ import AddIcon from "@mui/icons-material/Add";
 import { useSearchParams } from "next/navigation";
 import { Box, List, Grid2, useMediaQuery, useTheme } from "@mui/material";
 import {
-  CodeItemsFilterModal,
   LoadingSpinner,
   SearchInput,
   CodeItem,
   Button,
   MainLayout,
+  FiltersModal,
 } from "@/components";
 import { CODE_ITEM_TYPE } from "@/types";
 import { useProgress } from "@/providers/ProgressBarProvider";
@@ -87,7 +87,7 @@ export const CodeItemsList = ({ pageTitle }: CodeItemsListProps) => {
         >
           <SearchInput />
 
-          <CodeItemsFilterModal />
+          <FiltersModal labelType={CODE_ITEM_TYPE} />
         </Grid2>
       </Grid2>
 

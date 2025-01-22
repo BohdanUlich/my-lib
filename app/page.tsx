@@ -1,13 +1,11 @@
 "use client";
 
 import { Grid2, useMediaQuery, useTheme } from "@mui/material";
-import {
-  CreateCategoryButton,
-  CategoriesFilterModal,
-  CategoriesList,
-} from "@/components/categories";
+import { CreateCategoryButton, CategoriesList } from "@/components/categories";
 import { SearchInput } from "@/components/inputs";
 import { MainLayout } from "@/components/MainLayout";
+import { FiltersModal } from "@/components/modals";
+import { CATEGORY_TYPE } from "@/types";
 
 const Home = () => {
   const theme = useTheme();
@@ -35,7 +33,7 @@ const Home = () => {
         >
           <SearchInput />
 
-          <CategoriesFilterModal />
+          <FiltersModal labelType={CATEGORY_TYPE} />
         </Grid2>
       </Grid2>
 
