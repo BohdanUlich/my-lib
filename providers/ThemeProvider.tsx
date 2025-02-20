@@ -9,12 +9,8 @@ import {
 } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import { Inter } from "next/font/google";
-import { createContext, ReactNode, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { DARK_THEME, LIGHT_THEME } from "@/types";
-
-interface ThemeProviderProps {
-  children: ReactNode;
-}
 
 export const inter = Inter({
   subsets: ["latin", "cyrillic"],
@@ -239,10 +235,15 @@ const ColorModeContext = createContext({
 
 export const useColorMode = () => useContext(ColorModeContext);
 
-export const ThemeProvider = ({ children }: ThemeProviderProps) => {
-  const [theme, setTheme] = useState(() => {
-    return localStorage.getItem("theme") || LIGHT_THEME;
-  });
+export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  const [theme, setTheme] = useState<string | null>(null);
+
+  useEffect(() => {
+    const storedTheme = localStorage.getItem("theme") || LIGHT_THEME;
+    setTheme(storedTheme);
+  }, []);
 
   const toggleTheme = () => {
     setTheme((prevTheme) => {
@@ -251,6 +252,10 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
       return newTheme;
     });
   };
+
+  if (!theme) {
+    return null;
+  }
 
   const themeObject = theme === LIGHT_THEME ? lightTheme : darkTheme;
 

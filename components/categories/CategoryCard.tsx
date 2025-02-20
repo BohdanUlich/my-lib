@@ -153,6 +153,7 @@ export const CategoryCard = ({
                           key={label.id}
                           labelName={label.name}
                           labelColor={label.color}
+                          textColor={label.text_color}
                         />
                       ))}
                     </Grid>

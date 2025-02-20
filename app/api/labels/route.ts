@@ -53,6 +53,7 @@ export async function GET(req: NextRequest) {
           color: 1,
           category_ids: 1,
           type: 1,
+          text_color: 1,
         },
       },
     ]);
@@ -79,6 +80,7 @@ export async function POST(req: NextRequest) {
         name: z.string().min(1),
         color: z.string(),
         type: z.string().min(1),
+        text_color: z.string().min(1),
       })
       .parse(body);
 
@@ -122,6 +124,7 @@ export async function POST(req: NextRequest) {
           id: label._id.toString(),
           name: label.name,
           color: label.color,
+          text_color: label.text_color,
         },
       },
     });

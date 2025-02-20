@@ -1,10 +1,8 @@
-import { CATEGORY_TYPE, CODE_ITEM_TYPE } from "@/types";
+import { CATEGORY_TYPE, CODE_ITEM_TYPE, LIGHT_TEXT, DARK_TEXT } from "@/types";
 import mongoose, { Schema, models } from "mongoose";
 
-enum LabelType {
-  CATEGORY = CATEGORY_TYPE,
-  CODE_ITEM = CODE_ITEM_TYPE,
-}
+type LabelType = typeof CATEGORY_TYPE | typeof CODE_ITEM_TYPE;
+type LabelTextColor = typeof LIGHT_TEXT | typeof DARK_TEXT;
 
 export interface LabelDocument {
   _id: mongoose.Schema.Types.ObjectId;
@@ -13,6 +11,7 @@ export interface LabelDocument {
   user_id: mongoose.Schema.Types.ObjectId;
   type: LabelType;
   color: string;
+  text_color: LabelTextColor;
 }
 
 const labelSchema = new Schema<LabelDocument>(
@@ -26,13 +25,18 @@ const labelSchema = new Schema<LabelDocument>(
     },
     type: {
       type: String,
-      enum: [LabelType.CATEGORY, LabelType.CODE_ITEM],
+      enum: [CATEGORY_TYPE, CODE_ITEM_TYPE],
       required: true,
     },
     category_ids: [
       { type: mongoose.Schema.Types.ObjectId, ref: "Category", index: true },
     ],
     color: { type: String },
+    text_color: {
+      type: String,
+      enum: [DARK_TEXT, LIGHT_TEXT],
+      required: true,
+    },
   },
   { timestamps: true }
 );

@@ -51,6 +51,7 @@ export interface Label {
   category_ids?: string[];
   color: string;
   type: string;
+  text_color: string;
 }
 
 export interface SuccessResponse<T> {

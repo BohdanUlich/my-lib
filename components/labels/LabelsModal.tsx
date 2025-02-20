@@ -13,6 +13,7 @@ import { Label, LabelType } from "@/types";
 import { useCategories } from "@/providers";
 import { useGetLabels, useUpdateCategory, useUpdateLabel } from "@/api";
 import { Button } from "../buttons";
+import { getTextColor } from "@/helpers/getTextColor";
 
 interface LabelsModalProps {
   isOpen: boolean;
@@ -165,7 +166,11 @@ export const LabelsModal = ({
                     minWidth: 230,
                   }}
                 >
-                  <Typography color="text.primary">{label.name}</Typography>
+                  <Typography
+                    color={getTextColor({ textColor: label.text_color })}
+                  >
+                    {label.name}
+                  </Typography>
                 </Grid>
 
                 <IconButton

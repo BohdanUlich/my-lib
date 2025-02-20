@@ -14,6 +14,7 @@ import { grey } from "@mui/material/colors";
 import { Edit, Delete } from "@mui/icons-material";
 import { useProgress } from "@/providers/ProgressBarProvider";
 import { DeleteCodeItemButton } from "./DeleteCodeItemButton";
+import { getTextColor } from "@/helpers/getTextColor";
 
 interface CodeItemProps {
   codeItemLabels: Label[];
@@ -176,7 +177,11 @@ export const CodeItem = ({
                   bgcolor={label.color}
                   key={label.id}
                 >
-                  <Typography>{label.name}</Typography>
+                  <Typography
+                    color={getTextColor({ textColor: label.text_color })}
+                  >
+                    {label.name}
+                  </Typography>
                 </Box>
               ))}
             </Box>

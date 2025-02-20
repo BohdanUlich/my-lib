@@ -32,7 +32,12 @@ export async function PUT(
       .object({
         name: z.string().min(1),
         labels: z.array(
-          z.object({ id: z.string(), name: z.string(), color: z.string() })
+          z.object({
+            id: z.string(),
+            name: z.string(),
+            color: z.string(),
+            text_color: z.string(),
+          })
         ),
       })
       .parse(body);

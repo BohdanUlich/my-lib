@@ -16,6 +16,7 @@ const labelSchema = z.object({
   color: z.string().min(1),
   category_ids: z.array(z.string()),
   type: z.string().min(1),
+  text_color: z.string().min(1),
 });
 
 type LabelSchema = z.infer<typeof labelSchema>;

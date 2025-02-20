@@ -50,6 +50,7 @@ export async function GET(req: NextRequest) {
                 id: { $toString: "$$label._id" },
                 name: "$$label.name",
                 color: "$$label.color",
+                text_color: "$$label.text_color",
               },
             },
           },
