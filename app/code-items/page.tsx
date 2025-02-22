@@ -19,7 +19,9 @@ interface CodeItemsPageProps {
 
 const CodeItemsPage = async ({ searchParams }: CodeItemsPageProps) => {
   const queryClient = new QueryClient();
-  const params = new URLSearchParams(searchParams);
+  const resolvedSearchParams = await searchParams;
+  const resolvedCookies = await cookies();
+  const params = new URLSearchParams(resolvedSearchParams);
   const categoryId = params.get("categoryId");
 
   const codeItemsResponse = await queryClient.fetchInfiniteQuery({
@@ -32,7 +34,7 @@ const CodeItemsPage = async ({ searchParams }: CodeItemsPageProps) => {
         labels: [],
         page: 1,
         limit: 20,
-        headers: { Cookie: cookies() },
+        headers: { Cookie: resolvedCookies },
       }),
   });
   const pageTitle = codeItemsResponse?.pages[0].pageTitle ?? "Code items";

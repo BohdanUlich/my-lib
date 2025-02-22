@@ -14,7 +14,6 @@ interface UpdateLabelRequest {
 const labelSchema = z.object({
   name: z.string().min(1),
   color: z.string().min(1),
-  category_ids: z.array(z.string()),
   type: z.string().min(1),
   text_color: z.string().min(1),
 });
@@ -39,7 +38,7 @@ const updateLabel = async (id: string, parsedBody: LabelSchema) => {
   if (label.type === CATEGORY_TYPE) {
     // Update label in all categories
     await Category.updateMany(
-      { _id: { $in: label.category_ids }, "labels._id": id },
+      { "labels._id": id },
       { $set: { "labels.$": label } }
     );
   }

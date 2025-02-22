@@ -5,16 +5,13 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { Grid, Checkbox, Typography } from "@mui/material";
 import { LABEL_QUERY_KEY, Label, LabelType } from "@/types";
 import { useGetLabels } from "@/api";
+import { getTextColor } from "@/helpers";
 
 interface LabelsFilterProps {
   labelType: LabelType;
-  setFilterCounter: (number: number) => void;
 }
 
-export const LabelsFilter = ({
-  labelType,
-  setFilterCounter,
-}: LabelsFilterProps) => {
+export const LabelsFilter = ({ labelType }: LabelsFilterProps) => {
   const { data: labels } = useGetLabels({ labelType });
   const searchParams = useSearchParams();
   const [labelIds, setLabelIds] = useState<string[]>(
@@ -65,8 +62,6 @@ export const LabelsFilter = ({
         }
       }
 
-      setFilterCounter(currentLabelIds.length);
-
       return currentLabelIds;
     });
 
@@ -110,7 +105,11 @@ export const LabelsFilter = ({
                     minWidth: 200,
                   }}
                 >
-                  <Typography color="text.primary">{label.name}</Typography>
+                  <Typography
+                    color={getTextColor({ textColor: label.text_color })}
+                  >
+                    {label.name}
+                  </Typography>
                 </Grid>
               </Grid>
             ))

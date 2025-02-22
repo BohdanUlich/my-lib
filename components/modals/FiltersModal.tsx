@@ -14,11 +14,9 @@ interface FiltersModalProps {
 }
 
 export const FiltersModal = ({ labelType }: FiltersModalProps) => {
-  const searchParams = useSearchParams();
   const [open, setOpen] = useState(false);
-  const [filterCounter, setFilterCounter] = useState(
-    searchParams.getAll(LABEL_QUERY_KEY).length
-  );
+  const searchParams = useSearchParams();
+  const filterCounter = searchParams.getAll(LABEL_QUERY_KEY).length;
 
   const onClose = useCallback(() => {
     setOpen(false);
@@ -39,10 +37,7 @@ export const FiltersModal = ({ labelType }: FiltersModalProps) => {
           Filters
         </Typography>
 
-        <LabelsFilter
-          labelType={labelType}
-          setFilterCounter={setFilterCounter}
-        />
+        <LabelsFilter labelType={labelType} />
       </Modal>
 
       {!!filterCounter && (

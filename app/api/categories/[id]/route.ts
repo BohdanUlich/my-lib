@@ -42,9 +42,14 @@ export async function PUT(
       })
       .parse(body);
 
+    const updatedLabels = parsedBody.labels.map(({ id, ...rest }) => ({
+      _id: id,
+      ...rest,
+    }));
+
     const category = await Category.findOneAndUpdate(
       { _id: id },
-      { $set: { ...parsedBody } },
+      { $set: { name: parsedBody.name, labels: updatedLabels } },
       { new: true }
     );
 
@@ -105,11 +110,6 @@ export async function DELETE(
     }
 
     await Category.findOneAndDelete({ _id: categoryId });
-
-    await Label.updateMany(
-      { category_ids: categoryId },
-      { $pull: { category_ids: categoryId } }
-    );
 
     return NextResponse.json({ success: true });
   } catch (error) {

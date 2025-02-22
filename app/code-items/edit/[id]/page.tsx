@@ -16,12 +16,13 @@ interface EditPageProps {
 
 const CodeItemEditPage = async ({ params }: EditPageProps) => {
   const queryClient = new QueryClient();
-  const { id: codeItemId } = params;
+  const { id: codeItemId } = await params;
+  const resolvedCookies = await cookies();
 
   await queryClient.prefetchQuery({
     queryKey: [CODEITEMS_API_ENDPOINT, codeItemId],
     queryFn: () =>
-      fetchOneCodeItem({ codeItemId, headers: { Cookie: cookies() } }),
+      fetchOneCodeItem({ codeItemId, headers: { Cookie: resolvedCookies } }),
   });
 
   return (

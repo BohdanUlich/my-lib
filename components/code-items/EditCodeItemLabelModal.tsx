@@ -66,7 +66,9 @@ export const EditCodeItemLabelModal = ({
       });
     } finally {
       onClose();
-      refetch();
+      if (codeItemId) {
+        refetch();
+      }
     }
   };
 

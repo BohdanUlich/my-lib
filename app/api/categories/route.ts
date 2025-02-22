@@ -17,6 +17,7 @@ export async function GET(req: NextRequest) {
 
   const { searchParams } = new URL(req.url);
   const searchQuery = searchParams.get("q");
+  const labels = searchParams.getAll("label");
   const page = parseInt(searchParams.get("page") || "1", 10);
   const limit = parseInt(searchParams.get("limit") || "20", 10);
 
@@ -67,6 +68,14 @@ export async function GET(req: NextRequest) {
     }
 
     aggregationPipeline.push({ $skip: (page - 1) * limit }, { $limit: limit });
+
+    if (labels.length > 0) {
+      aggregationPipeline.push({
+        $match: {
+          "labels.id": { $in: labels },
+        },
+      });
+    }
 
     const categories = await Category.aggregate(aggregationPipeline);
 

@@ -48,7 +48,6 @@ export interface Label {
   id: string;
   name: string;
   user_id: string;
-  category_ids?: string[];
   color: string;
   type: string;
   text_color: string;

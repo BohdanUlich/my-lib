@@ -6,10 +6,12 @@ import { SearchInput } from "@/components/inputs";
 import { MainLayout } from "@/components/MainLayout";
 import { FiltersModal } from "@/components/modals";
 import { CATEGORY_TYPE } from "@/types";
+import { useGetLabels } from "@/api";
 
 const Home = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  useGetLabels({ labelType: CATEGORY_TYPE });
 
   return (
     <MainLayout title="Categories">

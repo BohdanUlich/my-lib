@@ -21,7 +21,7 @@ export const MainLayout = ({
   titleProps,
 }: MainLayoutProps) => {
   return (
-    <Box component="main" pt={12} pb={4}>
+    <Box component="main" pt={12} pb={8}>
       <Container maxWidth="lg">
         <Grid2 container gap={2} direction="column">
           {toolbar}

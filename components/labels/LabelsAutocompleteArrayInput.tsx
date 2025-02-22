@@ -81,12 +81,13 @@ export const LabelsAutocompleteArrayInput = ({
       renderOption={(props, option, { selected }) => {
         const { ...optionProps } = props;
         return (
-          <li {...optionProps}>
+          <li {...optionProps} key={option.id}>
             <Checkbox
               icon={icon}
               checkedIcon={checkedIcon}
               style={{ marginRight: 8 }}
               checked={selected}
+              key={`checkbox_${option.id}`}
             />
             {option.name}
             <Box
@@ -95,6 +96,7 @@ export const LabelsAutocompleteArrayInput = ({
               borderRadius="50%"
               bgcolor={option.color}
               marginLeft={1}
+              key={`box${option.id}`}
             ></Box>
           </li>
         );

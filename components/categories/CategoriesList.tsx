@@ -1,16 +1,14 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useCallback, useEffect, useMemo } from "react";
 import { Box, Grid } from "@mui/material";
 import { useCategories } from "@/providers";
-import { getCategoryIdsFromLabels } from "@/helpers";
-import { CATEGORY_TYPE } from "@/types";
-import { useGetCategories, useGetLabels } from "@/api";
+import { useGetCategories } from "@/api";
 import { CategoryCard } from "./CategoryCard";
 import { CategoryCardSkeleton } from "./CategoryCardSkeleton";
 import { LoadingSpinner } from "../LoadingSpinner";
 import { useInView } from "react-intersection-observer";
+import { isCategoryLabelsEdited } from "@/helpers";
 
 export const CategoriesList = () => {
   const {
@@ -25,40 +23,18 @@ export const CategoriesList = () => {
     () => categoriesResponse?.pages.flatMap((page) => page.data) || [],
     [categoriesResponse]
   );
-  const { data: labels } = useGetLabels({ labelType: CATEGORY_TYPE });
   const { currentCategories, setCurrentCategories } = useCategories();
-  const searchParams = useSearchParams();
-  const labelIds = searchParams.getAll("label");
-  const [filteredCategories, setFilteredCategories] = useState(categories);
 
   useEffect(() => {
-    // Initial categories filtering when label ids are in search params
-    if (labels?.length && categories.length && labelIds.length) {
-      const categoryIds = getCategoryIdsFromLabels({ labelIds, labels });
-
-      const filteredCategories = categories.filter((category) =>
-        categoryIds.includes(category.id)
-      );
-
-      setFilteredCategories(filteredCategories);
-      setCurrentCategories(filteredCategories);
-
-      return;
-    }
-
-    // Initial set of categories without filters
+    // Initial set of categories
     if ((!categories.length && currentCategories.length) || categories.length) {
       setCurrentCategories(categories);
     }
-
-    //eslint-disable-next-line
-  }, [labels, categories, setCurrentCategories, searchParams]);
+  }, [categories, setCurrentCategories]);
 
   const onFinishCreatingCategory = useCallback(() => {
-    labelIds.length
-      ? setCurrentCategories(filteredCategories)
-      : setCurrentCategories(categories);
-  }, [categories, labelIds, filteredCategories, setCurrentCategories]);
+    setCurrentCategories(categories);
+  }, [categories, setCurrentCategories]);
 
   const { ref, inView } = useInView({
     triggerOnce: false,
@@ -85,6 +61,11 @@ export const CategoriesList = () => {
                 onFinishCreatingCategory={onFinishCreatingCategory}
                 categoryId={category.id}
                 labels={category.labels || []}
+                isCategoryLabelsEdited={isCategoryLabelsEdited({
+                  categories,
+                  categoryId: category.id,
+                  newLabels: category.labels || [],
+                })}
               />
             </Grid>
           ))}

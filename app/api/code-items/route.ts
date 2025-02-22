@@ -106,7 +106,7 @@ export async function GET(req: NextRequest) {
 
     const populatedCodeItems = await CodeItem.populate(codeItems, {
       path: "label_ids",
-      select: "id name color",
+      select: "id name color text_color",
       options: { skipInvalidIds: true },
     });
 
@@ -119,6 +119,7 @@ export async function GET(req: NextRequest) {
             id: label._id,
             name: label.name,
             color: label.color,
+            text_color: label.text_color,
           }))
         : [],
     }));

@@ -51,7 +51,6 @@ export async function GET(req: NextRequest) {
           _id: 0,
           name: 1,
           color: 1,
-          category_ids: 1,
           type: 1,
           text_color: 1,
         },

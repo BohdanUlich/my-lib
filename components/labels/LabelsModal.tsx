@@ -11,7 +11,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Label, LabelType } from "@/types";
 import { useCategories } from "@/providers";
-import { useGetLabels, useUpdateCategory, useUpdateLabel } from "@/api";
+import { useGetLabels } from "@/api";
 import { Button } from "../buttons";
 import { getTextColor } from "@/helpers/getTextColor";
 
@@ -36,8 +36,6 @@ export const LabelsModal = ({
 }: LabelsModalProps) => {
   const { data: labels } = useGetLabels({ labelType });
   const { currentCategories, setCurrentCategories } = useCategories();
-  const { updateLabel } = useUpdateLabel({ hideSuccessMessage: true });
-  const { updateCategory } = useUpdateCategory({ hideSuccessMessage: true });
 
   const onEdit = (label: Label) => {
     onOpenEditModal();
@@ -65,27 +63,10 @@ export const LabelsModal = ({
         ? [...labels, { ...label }]
         : labels.filter((currentLabel) => currentLabel.id !== label.id);
 
-      updateCategory({
-        id: categoryId,
-        labels: finalLabels,
-        name: category.name,
-      });
-
       return { ...category, labels: finalLabels };
     });
 
     setCurrentCategories(updatedCategories);
-
-    // Update category id in label
-    const { category_ids: categoryIds = [] } = label;
-
-    const finalCategoryIds = checked
-      ? [...categoryIds, categoryId]
-      : categoryIds.filter(
-          (currenCategoryId) => currenCategoryId !== categoryId
-        );
-
-    updateLabel({ ...label, category_ids: finalCategoryIds });
   };
 
   return (

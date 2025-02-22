@@ -7,7 +7,6 @@ type LabelTextColor = typeof LIGHT_TEXT | typeof DARK_TEXT;
 export interface LabelDocument {
   _id: mongoose.Schema.Types.ObjectId;
   name: string;
-  category_ids?: mongoose.Schema.Types.ObjectId[];
   user_id: mongoose.Schema.Types.ObjectId;
   type: LabelType;
   color: string;
@@ -28,9 +27,6 @@ const labelSchema = new Schema<LabelDocument>(
       enum: [CATEGORY_TYPE, CODE_ITEM_TYPE],
       required: true,
     },
-    category_ids: [
-      { type: mongoose.Schema.Types.ObjectId, ref: "Category", index: true },
-    ],
     color: { type: String },
     text_color: {
       type: String,

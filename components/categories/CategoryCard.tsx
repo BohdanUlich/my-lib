@@ -14,6 +14,8 @@ import {
   Grid,
   Tooltip,
   Typography,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import { CATEGORY_TYPE, Label as ILabel } from "@/types";
@@ -29,6 +31,7 @@ interface CategoryCardProps {
   categoryName: string;
   categoryId: string;
   isNewCategory: boolean;
+  isCategoryLabelsEdited: boolean;
   labels: ILabel[];
   onFinishCreatingCategory: () => void;
 }
@@ -41,6 +44,7 @@ export const CategoryCard = ({
   categoryName,
   categoryId,
   isNewCategory,
+  isCategoryLabelsEdited,
   labels,
   onFinishCreatingCategory,
 }: CategoryCardProps) => {
@@ -52,14 +56,11 @@ export const CategoryCard = ({
   const isLoading = isLoadingCreate || isLoadingUpdate;
   const [showTooltip, setShowTooltip] = useState(false);
   const textRef = useRef<HTMLDivElement>(null);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const onSave = async (data: FieldValues) => {
     try {
-      if (data.editedCategoryName === categoryName) {
-        setIsEdit(false);
-        return;
-      }
-
       if (isNewCategory) {
         await createCategory({
           name: data.editedCategoryName,
@@ -67,6 +68,9 @@ export const CategoryCard = ({
 
         return;
       }
+
+      if (!isCategoryLabelsEdited && data.editedCategoryName === categoryName)
+        return;
 
       await updateCategory({
         name: data.editedCategoryName,
@@ -171,7 +175,7 @@ export const CategoryCard = ({
                       >
                         <Edit
                           sx={{
-                            opacity: 0,
+                            opacity: isMobile ? 1 : 0,
                             transition: "0.1s all linear",
                             padding: 0.4,
                             height: 23,
