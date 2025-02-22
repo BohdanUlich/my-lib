@@ -30,7 +30,7 @@ export const CategoriesList = () => {
     if ((!categories.length && currentCategories.length) || categories.length) {
       setCurrentCategories(categories);
     }
-  }, [categories, setCurrentCategories]);
+  }, [categories, setCurrentCategories, currentCategories]);
 
   const onFinishCreatingCategory = useCallback(() => {
     setCurrentCategories(categories);
