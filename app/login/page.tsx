@@ -4,9 +4,8 @@ import GoogleIcon from "@mui/icons-material/Google";
 import * as z from "zod";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
-import Link from "next/link";
 import { useState } from "react";
-import { Button, Form, TextInput } from "@/components";
+import { Button, Form, TextInput, Link } from "@/components";
 import { FieldValues } from "react-hook-form";
 import { useSnackbar } from "notistack";
 

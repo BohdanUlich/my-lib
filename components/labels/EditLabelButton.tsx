@@ -4,9 +4,9 @@ import { useCallback, useState } from "react";
 import { Label, LabelType } from "@/types";
 import { useDeleteLabel, useGetCategories } from "@/api";
 import { LabelsModal } from "./LabelsModal";
-import { EditLabelModal } from "./EditLabelModal";
 import { ConfirmationModal } from "../modals";
 import { Button } from "../buttons";
+import { EditCategoryLabelModal } from "../categories";
 
 interface EditLabelButtonProps {
   categoryId: string;
@@ -63,10 +63,9 @@ export const EditLabelButton = ({
         labelType={labelType}
       />
 
-      <EditLabelModal
+      <EditCategoryLabelModal
         isOpen={isOpenEditLabelModal}
         editedLabel={editedLabel}
-        labelType={labelType}
         onClose={onCloseEditedModal}
       />
 

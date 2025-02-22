@@ -7,6 +7,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Modal, Box, Typography, IconButton, Grid } from "@mui/material";
+import { getTextColor } from "@/helpers/getTextColor";
 
 interface CodeItemLabelsModalProps {
   isOpen: boolean;
@@ -93,7 +94,11 @@ export const CodeItemLabelsModal = ({
                     minWidth: 230,
                   }}
                 >
-                  <Typography color="text.primary">{label.name}</Typography>
+                  <Typography
+                    color={getTextColor({ textColor: label.text_color })}
+                  >
+                    {label.name}
+                  </Typography>
                 </Grid>
 
                 <IconButton

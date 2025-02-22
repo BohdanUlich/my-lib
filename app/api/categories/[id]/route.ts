@@ -3,6 +3,7 @@ import { connectDb } from "@/lib";
 import Category from "@/models/category";
 import { ZodError, z } from "zod";
 import Label from "@/models/label";
+import { MongoError } from "@/types";
 
 interface UpdateCategoryRequest {
   name: string;
@@ -31,14 +32,24 @@ export async function PUT(
       .object({
         name: z.string().min(1),
         labels: z.array(
-          z.object({ id: z.string(), name: z.string(), color: z.string() })
+          z.object({
+            id: z.string(),
+            name: z.string(),
+            color: z.string(),
+            text_color: z.string(),
+          })
         ),
       })
       .parse(body);
 
+    const updatedLabels = parsedBody.labels.map(({ id, ...rest }) => ({
+      _id: id,
+      ...rest,
+    }));
+
     const category = await Category.findOneAndUpdate(
       { _id: id },
-      { $set: { ...parsedBody } },
+      { $set: { name: parsedBody.name, labels: updatedLabels } },
       { new: true }
     );
 
@@ -55,6 +66,18 @@ export async function PUT(
           })),
         },
         { status: 422 }
+      );
+    }
+
+    const mongoError = error as MongoError;
+
+    if (mongoError.code === 11000) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "A category with this name already exists",
+        },
+        { status: 400 }
       );
     }
 
@@ -87,11 +110,6 @@ export async function DELETE(
     }
 
     await Category.findOneAndDelete({ _id: categoryId });
-
-    await Label.updateMany(
-      { category_ids: categoryId },
-      { $pull: { category_ids: categoryId } }
-    );
 
     return NextResponse.json({ success: true });
   } catch (error) {

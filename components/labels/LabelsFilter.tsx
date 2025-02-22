@@ -5,6 +5,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { Grid, Checkbox, Typography } from "@mui/material";
 import { LABEL_QUERY_KEY, Label, LabelType } from "@/types";
 import { useGetLabels } from "@/api";
+import { getTextColor } from "@/helpers";
 
 interface LabelsFilterProps {
   labelType: LabelType;
@@ -104,7 +105,11 @@ export const LabelsFilter = ({ labelType }: LabelsFilterProps) => {
                     minWidth: 200,
                   }}
                 >
-                  <Typography color="text.primary">{label.name}</Typography>
+                  <Typography
+                    color={getTextColor({ textColor: label.text_color })}
+                  >
+                    {label.name}
+                  </Typography>
                 </Grid>
               </Grid>
             ))

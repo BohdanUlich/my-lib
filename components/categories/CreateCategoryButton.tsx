@@ -2,9 +2,9 @@
 
 import AddIcon from "@mui/icons-material/Add";
 import { useCategories } from "@/providers";
-import { Button } from "../buttons";
+import { Button, ButtonProps } from "../buttons";
 
-export const CreateCategoryButton = () => {
+export const CreateCategoryButton = ({ fullWidth }: ButtonProps) => {
   const { setCurrentCategories } = useCategories();
 
   const onAddNewCategory = () => {
@@ -20,6 +20,7 @@ export const CreateCategoryButton = () => {
       startIcon={<AddIcon />}
       sx={{ maxWidth: 1 }}
       onClick={onAddNewCategory}
+      fullWidth={fullWidth}
     >
       Create category
     </Button>

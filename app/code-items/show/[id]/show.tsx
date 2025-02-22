@@ -1,9 +1,8 @@
 "use client";
 
 import { useEffect } from "react";
-import Link from "next/link";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-import { Box, Container, Grid, Typography } from "@mui/material";
+import { Grid2 } from "@mui/material";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { useQuery } from "@tanstack/react-query";
 import { fetchOneCodeItem } from "@/api/codeItems/fetchOneCodeItem";
@@ -12,25 +11,46 @@ import {
   Button,
   CodeEditorView,
   DeleteCodeItemButton,
+  MainLayout,
   RichTextEditorView,
 } from "@/components";
 import { useProgress } from "@/providers/ProgressBarProvider";
 import { useSnackbar } from "notistack";
 
-const typographyStyles = {
-  display: "-webkit-box",
-  WebkitBoxOrient: "vertical",
-  wordBreak: "break-word",
+interface ShowCodeItemToolbarProps {
+  codeItemId: string;
+}
+
+const ShowCodeItemToolbar = ({ codeItemId }: ShowCodeItemToolbarProps) => {
+  const searchParams = useSearchParams();
+  const { push } = useRouter();
+  const categoryId = searchParams.get("categoryId");
+  const { setLoadingProgress } = useProgress();
+
+  const onRedirectToEdit = () => {
+    setLoadingProgress(true);
+    push(`/code-items/edit/${codeItemId}?categoryId=${categoryId}`);
+  };
+
+  const onRedirectToList = () => {
+    setLoadingProgress(true);
+    push(`/code-items?categoryId=${categoryId}`);
+  };
+
+  return (
+    <Grid2 container gap={1} justifyContent="end">
+      <Button onClick={onRedirectToList}>Back</Button>
+
+      <Button onClick={onRedirectToEdit}>Edit</Button>
+    </Grid2>
+  );
 };
 
 export const ShowCodeItem = () => {
   const params = useParams();
   const { setLoadingProgress } = useProgress();
   const { enqueueSnackbar } = useSnackbar();
-  const { push } = useRouter();
   const codeItemId = String(params.id);
-  const searchParams = useSearchParams();
-  const categoryId = searchParams.get("categoryId");
 
   const { data: codeItem } = useQuery({
     queryKey: [CODEITEMS_API_ENDPOINT, codeItemId],
@@ -43,10 +63,6 @@ export const ShowCodeItem = () => {
   useEffect(() => {
     setLoadingProgress(false);
   }, [setLoadingProgress]);
-
-  const goBackToList = () => {
-    push(`/code-items?categoryId=${categoryId}`);
-  };
 
   const onCopyCode = () => {
     if (code) {
@@ -61,76 +77,54 @@ export const ShowCodeItem = () => {
           enqueueSnackbar("Copy failed", {
             variant: "error",
           });
+          console.error(error);
         });
     }
   };
 
   return (
-    <Box component="main">
-      <Container maxWidth="lg" sx={{ pt: 5, pb: 2 }}>
-        <Grid
-          container
-          sx={{
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            rowGap: 1.5,
-          }}
+    <MainLayout
+      title={codeItem?.name ?? "Code item"}
+      titleProps={{ textAlign: "center", mb: 0 }}
+      toolbar={<ShowCodeItemToolbar codeItemId={codeItemId} />}
+    >
+      {description && (
+        <RichTextEditorView
+          content={codeItem.description ?? ""}
+          readonly={true}
+        />
+      )}
+
+      {code && (
+        <Grid2 container direction="column" gap={0.5} alignItems="end">
+          <Button
+            sx={{ display: "flex", gap: 0.5 }}
+            onClick={onCopyCode}
+            disabled={!code}
+          >
+            Copy
+            <ContentCopyIcon />
+          </Button>
+
+          <CodeEditorView
+            language={codeItem?.language ?? ""}
+            value={code}
+            readOnly
+          />
+        </Grid2>
+      )}
+
+      <Grid2 container justifyContent="end">
+        <DeleteCodeItemButton
+          codeItemId={codeItemId}
+          codeItemName={codeItem?.name ?? ""}
+          backAfterDelete
+          variant="contained"
+          color="error"
         >
-          <Grid container gap={1} justifyContent="end">
-            <Button onClick={goBackToList}>Back</Button>
-
-            <Button
-              component={Link}
-              href={`/code-items/edit/${codeItemId}?categoryId=${categoryId}`}
-            >
-              Edit
-            </Button>
-          </Grid>
-
-          <Typography variant="h3" sx={typographyStyles}>
-            {codeItem?.name}
-          </Typography>
-
-          {description && (
-            <RichTextEditorView
-              content={codeItem.description ?? ""}
-              readonly={true}
-            />
-          )}
-
-          {code && (
-            <Grid container flexDirection="column" gap={0.5} alignItems="end">
-              <Button
-                sx={{ display: "flex", gap: 0.5 }}
-                onClick={onCopyCode}
-                disabled={!code}
-              >
-                Copy
-                <ContentCopyIcon />
-              </Button>
-
-              <CodeEditorView
-                language={codeItem?.language ?? ""}
-                value={code}
-                readOnly
-              />
-            </Grid>
-          )}
-
-          <Grid container justifyContent="end">
-            <DeleteCodeItemButton
-              codeItemId={codeItemId}
-              codeItemName={codeItem?.name ?? ""}
-              backAfterDelete
-              variant="contained"
-              color="error"
-            >
-              Delete
-            </DeleteCodeItemButton>
-          </Grid>
-        </Grid>
-      </Container>
-    </Box>
+          Delete
+        </DeleteCodeItemButton>
+      </Grid2>
+    </MainLayout>
   );
 };

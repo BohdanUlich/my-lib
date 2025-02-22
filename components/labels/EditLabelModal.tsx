@@ -1,61 +1,36 @@
-import * as z from "zod";
 import { Modal, Box, Typography, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { grey } from "@mui/material/colors";
 import { FieldValues } from "react-hook-form";
-import { Label, LabelType } from "@/types";
-import { useUpdateLabel, useCreateLabel, useGetCategories } from "@/api";
+import { DARK_TEXT, Label, LIGHT_TEXT } from "@/types";
 import { Form } from "../Form";
 import { Button } from "../buttons";
-import { TextInput } from "../inputs";
+import { RadioGroupInput, TextInput } from "../inputs";
+import { ZodType } from "zod";
 
 interface LabelFormModalProps {
   isOpen: boolean;
   onClose: () => void;
   label?: { id: string; name: string; color: string };
   editedLabel: Label | null;
-  labelType: LabelType;
+  schema: ZodType;
+  onSaveLabel: (
+    data: FieldValues
+  ) => Promise<void | { error: string; details: any[] }>;
+  isPending: boolean;
+  isLoadingUpdate: boolean;
 }
-
-const schema = z.object({
-  name: z.string().min(1, { message: "Required" }),
-  color: z.string(),
-});
 
 export const EditLabelModal = ({
   isOpen,
   onClose,
   label,
   editedLabel,
-  labelType,
+  schema,
+  onSaveLabel,
+  isPending,
+  isLoadingUpdate,
 }: LabelFormModalProps) => {
-  const { createLabel, isPending } = useCreateLabel();
-  const { updateLabel, isPending: isLoadingUpdate } = useUpdateLabel();
-  const { refetch } = useGetCategories();
-
-  const onSaveLabel = async (data: FieldValues) => {
-    try {
-      if (editedLabel) {
-        await updateLabel({
-          ...editedLabel,
-          name: data.name,
-          color: data.color,
-        });
-
-        return;
-      }
-
-      await createLabel({
-        name: data.name,
-        color: data.color,
-        type: labelType,
-      });
-    } finally {
-      onClose();
-      refetch();
-    }
-  };
-
   return (
     <Modal
       open={isOpen}
@@ -114,14 +89,38 @@ export const EditLabelModal = ({
               defaultValue={editedLabel?.color || label?.color || grey[100]}
               inputProps={{
                 sx: {
-                  height: "53.15px",
-                  p: 0,
                   cursor: "pointer",
                   borderRadius: 2,
+                  height: 50,
+                },
+              }}
+              sx={{
+                ".MuiInputBase-root": {
+                  padding: 0,
+                },
+                ".MuiInputBase-root::before": {
+                  border: 0,
+                },
+                ".MuiInputBase-root::after": {
+                  border: 0,
+                },
+                ".css-xwh72k-MuiInputBase-root-MuiInput-root:before:hover": {
+                  border: 0,
                 },
               }}
             />
           </Box>
+
+          <RadioGroupInput
+            name="text_color"
+            defaultValue={editedLabel?.text_color || DARK_TEXT}
+            label="Text color"
+            choices={[
+              { value: DARK_TEXT, label: "Dark" },
+              { value: LIGHT_TEXT, label: "Light" },
+            ]}
+            sx={{ mt: 2, "& .MuiFormGroup-root": { flexDirection: "row" } }}
+          />
 
           <Button
             variant="contained"

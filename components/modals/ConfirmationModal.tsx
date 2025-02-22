@@ -1,4 +1,4 @@
-import { Modal, ModalProps, Grid } from "@mui/material";
+import { Modal, ModalProps, Grid2, Box } from "@mui/material";
 import { Typography } from "@mui/material";
 import { Button } from "../buttons";
 
@@ -32,13 +32,14 @@ export const ConfirmationModal = ({
         },
       }}
     >
-      <Grid
-        container
+      <Box
+        display="flex"
         flexDirection="column"
         gap={2}
         sx={{
           p: 2,
           position: "absolute",
+          boxShadow: 24,
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
@@ -52,7 +53,7 @@ export const ConfirmationModal = ({
 
         {text && <Typography variant="body1">{text}</Typography>}
 
-        <Grid container justifyContent="end">
+        <Grid2 container justifyContent="end">
           <Button onClick={onClose} variant="contained" sx={{ mr: 2 }}>
             Cancel
           </Button>
@@ -64,8 +65,8 @@ export const ConfirmationModal = ({
           >
             Confirm
           </Button>
-        </Grid>
-      </Grid>
+        </Grid2>
+      </Box>
     </Modal>
   );
 };

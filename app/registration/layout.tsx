@@ -1,11 +1,5 @@
-import type { Metadata } from "next";
 import { Avatar, Typography, Container } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-
-export const metadata: Metadata = {
-  title: "Registration",
-  description: "My-lib registration page",
-};
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
