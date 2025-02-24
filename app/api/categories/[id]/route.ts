@@ -2,8 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { connectDb } from "@/lib";
 import Category from "@/models/category";
 import { ZodError, z } from "zod";
-import Label from "@/models/label";
 import { MongoError } from "@/types";
+import { getServerSession } from "next-auth";
+import { authConfig } from "@/configs";
+import CodeItem from "@/models/code-item";
 
 interface UpdateCategoryRequest {
   name: string;
@@ -11,12 +13,12 @@ interface UpdateCategoryRequest {
 
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectDb();
 
-    const id = params.id;
+    const id = (await params).id;
     const body = (await req.json()) as UpdateCategoryRequest;
 
     if (!id) {
@@ -93,12 +95,21 @@ export async function PUT(
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectDb();
 
-    const categoryId = params.id;
+    const session = await getServerSession({ ...authConfig });
+    const userId = session?.user?.id;
+    const categoryId = (await params).id;
+
+    if (!userId) {
+      return NextResponse.json(
+        { success: false, error: "Unauthorized" },
+        { status: 401 }
+      );
+    }
 
     if (!categoryId) {
       return NextResponse.json(
@@ -108,6 +119,8 @@ export async function DELETE(
         }
       );
     }
+
+    await CodeItem.deleteMany({ user_id: userId, category_id: categoryId });
 
     await Category.findOneAndDelete({ _id: categoryId });
 

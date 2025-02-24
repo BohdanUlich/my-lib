@@ -9,9 +9,7 @@ import { fetchOneCodeItem } from "@/api/codeItems/fetchOneCodeItem";
 import { ShowCodeItem } from "./show";
 
 interface EditPageProps {
-  params: {
-    id: string;
-  };
+  params: Promise<{ id: string }>;
 }
 
 const CodeIteShowPage = async ({ params }: EditPageProps) => {

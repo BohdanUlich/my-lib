@@ -62,7 +62,9 @@ export const Header = () => {
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
                 <IconButton onClick={onOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar alt={userName} src={userImage ?? userName} />
+                  <Avatar alt={userName} src={userImage}>
+                    {userImage ? null : userName?.[0]?.toUpperCase()}
+                  </Avatar>
                 </IconButton>
               </Tooltip>
               <Menu
@@ -93,6 +95,17 @@ export const Header = () => {
                   <Switch checked={theme === "dark"} onChange={toggleTheme} />
                   <Typography variant="subtitle2">Dark mode</Typography>
                 </Box>
+
+                <MenuItem>
+                  <Typography
+                    component={Link}
+                    width={1}
+                    href="/about"
+                    color="primary"
+                  >
+                    About
+                  </Typography>
+                </MenuItem>
 
                 <MenuItem onClick={() => signOut()}>
                   <Typography textAlign="center" color="primary">

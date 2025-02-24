@@ -49,14 +49,26 @@ export const ConfirmationModal = ({
         }}
         onMouseDown={(e) => e.stopPropagation()}
       >
-        <Typography variant="h4">{title}</Typography>
+        <Typography
+          variant="h4"
+          sx={{
+            display: "-webkit-box",
+            WebkitBoxOrient: "vertical",
+            WebkitLineClamp: 5,
+            overflow: "hidden",
+            wordBreak: "break-all",
+          }}
+        >
+          {title}
+        </Typography>
 
         {text && <Typography variant="body1">{text}</Typography>}
 
-        <Grid2 container justifyContent="end">
+        <Grid2 container justifyContent="end" flexWrap="nowrap">
           <Button onClick={onClose} variant="contained" sx={{ mr: 2 }}>
             Cancel
           </Button>
+
           <Button
             onClick={onConfirm}
             variant="contained"

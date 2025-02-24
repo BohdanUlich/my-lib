@@ -26,7 +26,19 @@ export const MainLayout = ({
         <Grid2 container gap={2} direction="column">
           {toolbar}
 
-          <Typography variant="h2" mb={{ xs: 2, md: 4 }} {...titleProps}>
+          <Typography
+            variant="h2"
+            mb={{ xs: 2, md: 4 }}
+            title={title}
+            sx={{
+              display: "-webkit-box",
+              WebkitBoxOrient: "vertical",
+              WebkitLineClamp: 2,
+              overflow: "hidden",
+              wordBreak: "break-all",
+            }}
+            {...titleProps}
+          >
             {title}
           </Typography>
 

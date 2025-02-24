@@ -24,7 +24,11 @@ export const Button = ({
       sx={{ textTransform: "initial", ...sx }}
       {...rest}
       startIcon={
-        isLoading ? <CircularProgress color="inherit" size={20} /> : startIcon
+        isLoading ? (
+          <CircularProgress sx={{ color: "white" }} size={20} />
+        ) : (
+          startIcon
+        )
       }
     >
       {children}

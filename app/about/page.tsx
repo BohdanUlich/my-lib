@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import { Container, Typography, List, ListItem, Box } from "@mui/material";
 import { Button } from "@/components/buttons";
 import Link from "next/link";
+import Image from "next/image";
 
 export const metadata: Metadata = {
   title: "About My Lib - Your Personal Code Library",
@@ -13,17 +14,21 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <Container maxWidth="lg" sx={{ py: 8 }}>
-      <Typography variant="h1" gutterBottom textAlign="center">
-        About My Lib
+      <Typography component="h1" variant="h2" my={3} textAlign="center">
+        My Lib: Your Universal Code & Knowledge Organizer for IT Professionals
       </Typography>
 
-      <Typography paragraph fontSize={18}>
-        My Lib is a powerful yet simple tool designed for developers who need a
-        fast, organized, and efficient way to save and retrieve code snippets,
-        scripts, configurations, and more.
+      <Typography fontSize={18}>
+        My Lib is an intuitive platform built for developers, DevOps engineers,
+        IT specialists, and anyone working with code or technical information.
+        More than just a snippet manager, it’s a versatile workspace to organize
+        your knowledge
       </Typography>
 
-      <Box display="flex" gap={3} justifyContent="center" my={3}>
+      <Box display="flex" gap={3} justifyContent="center" my={5}>
+        <Button size="large" variant="contained" href="/" component={Link}>
+          Homepage
+        </Button>
         <Button size="large" variant="contained" href="/login" component={Link}>
           Sign in
         </Button>
@@ -37,17 +42,86 @@ export default function AboutPage() {
         </Button>
       </Box>
 
-      <Typography variant="h2" gutterBottom textAlign="center">
-        Why Use My Lib?
+      <Typography variant="h2" my={3} textAlign="center">
+        What Makes My Lib Indispensable?
       </Typography>
 
-      <Typography paragraph fontSize={18}>
-        Instead of searching through old projects or repositories, save your
-        frequently used code in My Lib and retrieve it instantly whenever you
-        need it. Perfect for work, personal projects, and improving efficiency.
+      <Typography fontSize={18} mb={2}>
+        🚀 Build Your Personal Code Library Save code snippets in any language
+        (JavaScript, Python, Go, SQL, etc.) for frontend, backend, mobile
+        development, or automation tasks. The built-in code editor with syntax
+        highlighting ensures a seamless coding experience.
       </Typography>
 
-      <Typography variant="h3" gutterBottom textAlign="center">
+      <Typography fontSize={18} mb={2}>
+        📂 Organize Beyond Code Store server configurations, instructions,
+        documentation, checklists, bookmarks, and even images. The rich text
+        editor lets you format content, add tables, lists, and embed media.
+      </Typography>
+
+      <Typography fontSize={18} mb={2}>
+        🏷️ Instant Access with Categories & Labels Sort data into customizable
+        categories and apply labels for precise filtering. Examples: “Docker
+        Configs,” “React Hooks,” “SQL Templates.”
+      </Typography>
+
+      <Typography fontSize={18}>
+        🔍 Find Anything in Seconds Search by category names, labels, or content
+        within code items—no more digging through messy folders, old projects,
+        or dozens of repositories. Stop wasting time scrolling through forums or
+        GitHub to rediscover solutions you’ve already used. With My Lib, every
+        piece of code, configuration, or knowledge you’ve saved is just a quick
+        search away.
+      </Typography>
+
+      <Box display={{ xs: "none", md: "block" }}>
+        <Typography component="h3" variant="h2" my={5} textAlign="center">
+          Example of usage:
+        </Typography>
+
+        <Typography variant="h4" mb={2}>
+          Home page with categories:
+        </Typography>
+
+        <Box
+          height={560}
+          width={1}
+          position="relative"
+          border={1}
+          borderRadius={2}
+          overflow="hidden"
+        >
+          <Image
+            src="/about/categories.png"
+            alt="Categories example"
+            objectFit="contain"
+            fill
+          />
+        </Box>
+
+        <Typography variant="h4" my={2}>
+          Code items inside category:
+        </Typography>
+
+        <Box
+          height={550}
+          width={1}
+          position="relative"
+          border={1}
+          borderRadius={2}
+          mt={2}
+          overflow="hidden"
+        >
+          <Image
+            src="/about/code-items-styles.png"
+            alt="Code items example"
+            objectFit="contain"
+            fill
+          />
+        </Box>
+      </Box>
+
+      <Typography component="h4" variant="h2" my={3} textAlign="center">
         Key Features
       </Typography>
 

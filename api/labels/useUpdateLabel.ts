@@ -18,7 +18,7 @@ export const useUpdateLabel = ({
         `${LABELS_API_ENDPOINT}/${label.id}`,
         {
           method: "PUT",
-          data: label,
+          data: { ...label },
           headers: {
             "Content-Type": "application/json",
           },
