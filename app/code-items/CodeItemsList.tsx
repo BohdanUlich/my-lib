@@ -5,7 +5,14 @@ import Link from "next/link";
 import { useGetCodeItems, useGetLabels } from "@/api";
 import AddIcon from "@mui/icons-material/Add";
 import { useSearchParams } from "next/navigation";
-import { Box, List, Grid2, useMediaQuery, useTheme } from "@mui/material";
+import {
+  Box,
+  List,
+  Grid2,
+  useMediaQuery,
+  useTheme,
+  Typography,
+} from "@mui/material";
 import {
   LoadingSpinner,
   SearchInput,
@@ -102,7 +109,7 @@ export const CodeItemsList = ({ pageTitle }: CodeItemsListProps) => {
             }}
           />
         </Box>
-      ) : (
+      ) : codeItems.length ? (
         <List
           dense
           sx={{ width: "100%", "& .MuiTypography-root": { fontSize: 20 } }}
@@ -127,6 +134,8 @@ export const CodeItemsList = ({ pageTitle }: CodeItemsListProps) => {
             </Box>
           )}
         </List>
+      ) : (
+        <Typography mt={3}>No code items found...</Typography>
       )}
     </MainLayout>
   );

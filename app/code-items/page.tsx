@@ -9,12 +9,9 @@ import { CodeItemsList } from "./CodeItemsList";
 import { cookies } from "next/headers";
 
 interface CodeItemsPageProps {
-  searchParams:
-    | string
-    | string[][]
-    | Record<string, string>
-    | URLSearchParams
-    | undefined;
+  searchParams: Promise<
+    string | string[][] | Record<string, string> | URLSearchParams | undefined
+  >;
 }
 
 const CodeItemsPage = async ({ searchParams }: CodeItemsPageProps) => {

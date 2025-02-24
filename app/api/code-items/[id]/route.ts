@@ -70,12 +70,12 @@ const deleteImagesFromS3 = async (codeItemId: string) => {
 
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectDb();
 
-    const id = params.id;
+    const id = (await params).id;
     const body = (await req.json()) as UpdateCodeItemRequest;
 
     const parsedBody = await validateBody(body);
@@ -103,12 +103,12 @@ export async function PUT(
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectDb();
 
-    const codeItemId = params.id;
+    const codeItemId = (await params).id;
 
     await deleteImagesFromS3(codeItemId);
 
@@ -122,14 +122,14 @@ export async function DELETE(
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectDb();
 
     const session = await getServerSession({ ...authConfig });
     const userId = session?.user?.id;
-    const codeItemId = params.id;
+    const codeItemId = (await params).id;
 
     const codeItem = await CodeItem.findById(codeItemId);
 

@@ -68,12 +68,12 @@ const deleteLabel = async (labelId: string): Promise<void> => {
 
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectDb();
 
-    const id = params.id;
+    const id = (await params).id;
     const body = (await req.json()) as UpdateLabelRequest;
 
     if (!id) {
@@ -116,12 +116,12 @@ export async function PUT(
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectDb();
 
-    const labelId = params.id;
+    const labelId = (await params).id;
 
     if (!labelId) {
       return NextResponse.json(

@@ -9,9 +9,7 @@ import { fetchOneCodeItem } from "@/api/codeItems/fetchOneCodeItem";
 import { EditCodeItem } from "./edit";
 
 interface EditPageProps {
-  params: {
-    id: string;
-  };
+  params: Promise<{ id: string }>;
 }
 
 const CodeItemEditPage = async ({ params }: EditPageProps) => {

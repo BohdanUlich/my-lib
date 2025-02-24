@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo } from "react";
-import { Box, Grid } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import { useCategories } from "@/providers";
 import { useGetCategories } from "@/api";
 import { CategoryCard } from "./CategoryCard";
@@ -27,10 +27,10 @@ export const CategoriesList = () => {
 
   useEffect(() => {
     // Initial set of categories
-    if ((!categories.length && currentCategories.length) || categories.length) {
+    if (categories.length) {
       setCurrentCategories(categories);
     }
-  }, [categories, setCurrentCategories, currentCategories]);
+  }, [categories]);
 
   const onFinishCreatingCategory = useCallback(() => {
     setCurrentCategories(categories);
@@ -47,28 +47,34 @@ export const CategoriesList = () => {
 
   return (
     <Grid container spacing={2} alignItems="stretch">
-      {isLoading
-        ? Array.from({ length: 8 }).map((_, index) => (
-            <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
-              <CategoryCardSkeleton />
-            </Grid>
-          ))
-        : currentCategories?.map((category) => (
-            <Grid item xs={12} sm={6} md={4} lg={3} key={category.id}>
-              <CategoryCard
-                categoryName={category.name}
-                isNewCategory={!category.id}
-                onFinishCreatingCategory={onFinishCreatingCategory}
-                categoryId={category.id}
-                labels={category.labels || []}
-                isCategoryLabelsEdited={isCategoryLabelsEdited({
-                  categories,
-                  categoryId: category.id,
-                  newLabels: category.labels || [],
-                })}
-              />
-            </Grid>
-          ))}
+      {isLoading ? (
+        Array.from({ length: 8 }).map((_, index) => (
+          <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+            <CategoryCardSkeleton />
+          </Grid>
+        ))
+      ) : currentCategories.length ? (
+        currentCategories?.map((category) => (
+          <Grid item xs={12} sm={6} md={4} lg={3} key={category.id}>
+            <CategoryCard
+              categoryName={category.name}
+              isNewCategory={!category.id}
+              onFinishCreatingCategory={onFinishCreatingCategory}
+              categoryId={category.id}
+              labels={category.labels || []}
+              isCategoryLabelsEdited={isCategoryLabelsEdited({
+                categories,
+                categoryId: category.id,
+                newLabels: category.labels || [],
+              })}
+            />
+          </Grid>
+        ))
+      ) : (
+        <Grid item>
+          <Typography mt={3}>No categories found...</Typography>
+        </Grid>
+      )}
       {hasNextPage && !isLoading && (
         <Box ref={ref} width={1} py={2} display="flex" justifyContent="center">
           <LoadingSpinner />
