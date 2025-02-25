@@ -3,10 +3,9 @@ import { Grid, Typography } from "@mui/material";
 import GoogleIcon from "@mui/icons-material/Google";
 import * as z from "zod";
 import { signIn } from "next-auth/react";
-import { useRouter, useSearchParams } from "next/navigation";
-import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
-import { Button, Form, TextInput } from "@/components";
+import { Button, Form, TextInput, Link } from "@/components";
 import { FieldValues } from "react-hook-form";
 import { useSnackbar } from "notistack";
 
@@ -20,7 +19,6 @@ const schema = z.object({
 
 const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const { replace, refresh } = useRouter();
   const { enqueueSnackbar } = useSnackbar();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/";
@@ -37,8 +35,7 @@ const Login = () => {
       if (res?.error) {
         enqueueSnackbar(`${res?.error}`, { variant: "error" });
       } else {
-        refresh();
-        replace("/");
+        window.location.assign("/");
       }
     } catch (err) {
       enqueueSnackbar(`${err}`, { variant: "error" });

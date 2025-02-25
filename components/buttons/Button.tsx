@@ -6,7 +6,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 
-type ButtonProps = MuiButtonProps & {
+export type ButtonProps = MuiButtonProps & {
   isLoading?: boolean;
 };
 
@@ -24,7 +24,11 @@ export const Button = ({
       sx={{ textTransform: "initial", ...sx }}
       {...rest}
       startIcon={
-        isLoading ? <CircularProgress color="inherit" size={20} /> : startIcon
+        isLoading ? (
+          <CircularProgress sx={{ color: "white" }} size={20} />
+        ) : (
+          startIcon
+        )
       }
     >
       {children}

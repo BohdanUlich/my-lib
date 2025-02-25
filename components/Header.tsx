@@ -10,10 +10,10 @@ import {
   Toolbar,
   IconButton,
   Typography,
-  Container,
   Avatar,
   Tooltip,
   Switch,
+  Container,
 } from "@mui/material";
 import { useGetUser } from "@/hooks";
 import { useColorMode } from "@/providers";
@@ -33,8 +33,8 @@ export const Header = () => {
   };
 
   return (
-    <AppBar position="static">
-      <Container maxWidth="xl">
+    <AppBar position="fixed" sx={{ zIndex: 9 }}>
+      <Container maxWidth="lg">
         <Toolbar
           disableGutters
           sx={{
@@ -48,10 +48,10 @@ export const Header = () => {
             noWrap
             component={Link}
             href="/"
+            color="primary"
             sx={{
               display: "flex",
               fontWeight: 700,
-              color: "inherit",
               textDecoration: "none",
             }}
           >
@@ -62,7 +62,9 @@ export const Header = () => {
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
                 <IconButton onClick={onOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar alt={userName} src={userImage ?? userName} />
+                  <Avatar alt={userName} src={userImage}>
+                    {userImage ? null : userName?.[0]?.toUpperCase()}
+                  </Avatar>
                 </IconButton>
               </Tooltip>
               <Menu
@@ -93,6 +95,17 @@ export const Header = () => {
                   <Switch checked={theme === "dark"} onChange={toggleTheme} />
                   <Typography variant="subtitle2">Dark mode</Typography>
                 </Box>
+
+                <MenuItem>
+                  <Typography
+                    component={Link}
+                    width={1}
+                    href="/about"
+                    color="primary"
+                  >
+                    About
+                  </Typography>
+                </MenuItem>
 
                 <MenuItem onClick={() => signOut()}>
                   <Typography textAlign="center" color="primary">

@@ -41,15 +41,16 @@ export interface CodeItem {
 export interface CodeItemsListResponse {
   data: CodeItem[];
   pagination: Pagination;
+  pageTitle: string;
 }
 
 export interface Label {
   id: string;
   name: string;
   user_id: string;
-  category_ids?: string[];
   color: string;
   type: string;
+  text_color: string;
 }
 
 export interface SuccessResponse<T> {
@@ -66,6 +67,11 @@ export interface ErrorResponse {
 export interface Image {
   url: string;
   name: string;
+}
+
+export interface MongoError {
+  code?: number;
+  message: string;
 }
 
 export type ApiResponse<T> = SuccessResponse<T> | ErrorResponse;

@@ -35,6 +35,9 @@ export const RichTextEditorView = forwardRef<
             scrollMarginTop: 50,
           },
         },
+        img: {
+          outline: "none !important",
+        },
       }}
     >
       <Editor
