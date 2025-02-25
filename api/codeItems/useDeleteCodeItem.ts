@@ -2,10 +2,15 @@ import { useSnackbar } from "notistack";
 import { fetchService } from "@/services";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ApiResponse, CODEITEMS_API_ENDPOINT } from "@/types";
+import { useSearchParams } from "next/navigation";
 
 export const useDeleteCodeItem = () => {
   const queryClient = useQueryClient();
   const { enqueueSnackbar } = useSnackbar();
+  const searchParams = useSearchParams();
+  const categoryId = searchParams.get("categoryId");
+  const q = searchParams.get("q");
+  const labels = searchParams.getAll("label");
 
   const { mutateAsync: deleteCodeItem, isPending } = useMutation({
     mutationFn: async (codeItemId: string) => {
@@ -20,8 +25,8 @@ export const useDeleteCodeItem = () => {
         throw new Error(response.error);
       }
 
-      await queryClient.invalidateQueries({
-        queryKey: [CODEITEMS_API_ENDPOINT],
+      await queryClient.refetchQueries({
+        queryKey: [CODEITEMS_API_ENDPOINT, q, categoryId, labels],
       });
     },
     onSuccess: () => {

@@ -3,7 +3,6 @@ import { useState } from "react";
 import { Grid, Typography } from "@mui/material";
 import * as z from "zod";
 import { FieldValues } from "react-hook-form";
-import { useRouter } from "next/navigation";
 import { Button, Form, TextInput, Link } from "@/components";
 import { fetchService } from "@/services";
 import { useSnackbar } from "notistack";
@@ -26,7 +25,6 @@ const schema = z
 
 const Registration = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const { replace, refresh } = useRouter();
   const { enqueueSnackbar } = useSnackbar();
 
   const onSubmit = async (data: FieldValues) => {
@@ -49,12 +47,11 @@ const Registration = () => {
       });
 
       if (!result?.error && result?.status === 200) {
+        window.location.assign("/");
+
         enqueueSnackbar("Sign up successful. Welcome to My lib", {
           variant: "success",
         });
-
-        refresh();
-        replace("/");
       } else {
         enqueueSnackbar(result?.error, { variant: "error" });
       }

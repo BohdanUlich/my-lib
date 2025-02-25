@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import { Container, Typography, List, ListItem, Box } from "@mui/material";
 import { Button } from "@/components/buttons";
 import Link from "next/link";
-import Image from "next/image";
+import Image from "next/legacy/image";
 
 export const metadata: Metadata = {
   title: "About My Lib - Your Personal Code Library",
@@ -95,7 +95,8 @@ export default function AboutPage() {
             src="/about/categories.png"
             alt="Categories example"
             objectFit="contain"
-            fill
+            layout="fill"
+            quality={100}
           />
         </Box>
 
@@ -116,7 +117,8 @@ export default function AboutPage() {
             src="/about/code-items-styles.png"
             alt="Code items example"
             objectFit="contain"
-            fill
+            layout="fill"
+            quality={100}
           />
         </Box>
       </Box>
