@@ -1,17 +1,13 @@
-"use client";
-
 import * as z from "zod";
 import { FieldValues } from "react-hook-form";
-import { CODE_ITEM_TYPE, CODEITEMS_API_ENDPOINT, Label } from "@/types";
-import { useUpdateLabel, useCreateLabel, fetchOneCodeItem } from "@/api";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useParams } from "next/navigation";
+import { CATEGORY_TYPE, Label } from "@/types";
+import { useUpdateLabel, useCreateLabel, useGetCategories } from "@/api";
 import { EditLabelModal } from "../labels";
 
-interface EditCodeItemLabelModalProps {
+interface LabelFormModalProps {
   isOpen: boolean;
   onClose: () => void;
-  label?: Pick<Label, "id" | "name" | "color">;
+  label?: { id: string; name: string; color: string };
   editedLabel: Label | null;
 }
 
@@ -21,21 +17,15 @@ const schema = z.object({
   text_color: z.string(),
 });
 
-export const EditCodeItemLabelModal = ({
+export const EditCategoryLabelModal = ({
   isOpen,
   onClose,
   label,
   editedLabel,
-}: EditCodeItemLabelModalProps) => {
-  const { id: codeItemId } = useParams();
-  const queryClient = useQueryClient();
-  const { refetch } = useQuery({
-    queryKey: [CODEITEMS_API_ENDPOINT, codeItemId],
-    queryFn: () => fetchOneCodeItem({ codeItemId: `${codeItemId}` }),
-    enabled: !!codeItemId,
-  });
+}: LabelFormModalProps) => {
   const { createLabel, isPending } = useCreateLabel();
   const { updateLabel, isPending: isLoadingUpdate } = useUpdateLabel();
+  const { refetch } = useGetCategories();
 
   const onSaveLabel = async (data: FieldValues) => {
     try {
@@ -47,28 +37,18 @@ export const EditCodeItemLabelModal = ({
           text_color: data.text_color,
         });
 
-        await queryClient.invalidateQueries({
-          queryKey: [CODEITEMS_API_ENDPOINT],
-        });
-
         return;
       }
 
       await createLabel({
         name: data.name,
         color: data.color,
-        type: CODE_ITEM_TYPE,
+        type: CATEGORY_TYPE,
         text_color: data.text_color,
-      });
-
-      await queryClient.invalidateQueries({
-        queryKey: [CODEITEMS_API_ENDPOINT],
       });
     } finally {
       onClose();
-      if (codeItemId) {
-        refetch();
-      }
+      refetch();
     }
   };
 

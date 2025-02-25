@@ -8,10 +8,11 @@ import {
   Autocomplete,
   AutocompleteProps,
 } from "@mui/material";
-import { Label } from "@/types";
+import { DARK_TEXT, Label } from "@/types";
 import { useController } from "react-hook-form";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
+import { getTextColor } from "@/helpers/getTextColor";
 
 interface LabelsAutocompleteArrayInputProps
   extends Omit<
@@ -33,11 +34,14 @@ export const LabelsAutocompleteArrayInput = ({
     name,
   });
 
-  const transformedOptions = options?.map(({ id, name, color }) => ({
-    id,
-    name,
-    color,
-  }));
+  const transformedOptions = options?.map(
+    ({ id, name, color, text_color }) => ({
+      id,
+      name,
+      color,
+      textColor: text_color,
+    })
+  );
 
   const selectedOptions =
     transformedOptions?.filter((option) => field.value?.includes(option.id)) ??
@@ -61,19 +65,29 @@ export const LabelsAutocompleteArrayInput = ({
             label={option.name}
             {...getTagProps({ index })}
             key={option.id}
-            sx={{ backgroundColor: option.color, fontSize: 13 }}
+            sx={{
+              backgroundColor: option.color,
+              color: getTextColor({ textColor: option.textColor }),
+              "& .MuiChip-deleteIcon": {
+                color: option.textColor === DARK_TEXT ? "#878787" : "#fff",
+                "&:hover": {
+                  color: option.textColor === DARK_TEXT ? "#000" : "#c4c4c4",
+                },
+              },
+            }}
           />
         ))
       }
       renderOption={(props, option, { selected }) => {
         const { ...optionProps } = props;
         return (
-          <li {...optionProps}>
+          <li {...optionProps} key={option.id}>
             <Checkbox
               icon={icon}
               checkedIcon={checkedIcon}
               style={{ marginRight: 8 }}
               checked={selected}
+              key={`checkbox_${option.id}`}
             />
             {option.name}
             <Box
@@ -82,6 +96,7 @@ export const LabelsAutocompleteArrayInput = ({
               borderRadius="50%"
               bgcolor={option.color}
               marginLeft={1}
+              key={`box${option.id}`}
             ></Box>
           </li>
         );

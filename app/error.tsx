@@ -18,7 +18,7 @@ export default function Error({
 
   return (
     <Container
-      maxWidth="md"
+      maxWidth="xl"
       sx={{
         pt: 5,
         display: "flex",
@@ -26,6 +26,7 @@ export default function Error({
         alignItems: "center",
         justifyContent: "center",
         gap: 3,
+        height: "100vh",
       }}
     >
       <Typography variant="h2">Something went wrong!</Typography>

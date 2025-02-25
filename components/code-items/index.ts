@@ -6,4 +6,3 @@ export * from "./CodeItemModals";
 export * from "./CodeItemLabelsModal";
 export * from "./DeleteCodeItemButton";
 export * from "./DeleteCodeItemButton";
-export * from "./CodeItemsFilterModal";

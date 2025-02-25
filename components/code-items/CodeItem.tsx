@@ -14,6 +14,7 @@ import { grey } from "@mui/material/colors";
 import { Edit, Delete } from "@mui/icons-material";
 import { useProgress } from "@/providers/ProgressBarProvider";
 import { DeleteCodeItemButton } from "./DeleteCodeItemButton";
+import { getTextColor } from "@/helpers/getTextColor";
 
 interface CodeItemProps {
   codeItemLabels: Label[];
@@ -33,14 +34,19 @@ const CodeItemClasses = {
 };
 
 const StyledListItem = styled(ListItem)(({ theme }) => ({
-  borderBottom: `1px solid ${theme.palette.grey[300]}`,
-  padding: 0,
+  borderBottom: `1px solid ${theme.palette.grey[400]}`,
+  padding: "3px 0",
   [`& .${CodeItemClasses.listItemButton}`]: {
     flexGrow: 0,
     width: "100%",
-    minHeight: 70,
+    minHeight: 50,
     columnGap: "10px",
     justifyContent: "space-between",
+    borderRadius: theme.shape.borderRadius,
+    padding: "0 5px",
+    [theme.breakpoints.up("sm")]: {
+      minHeight: 60,
+    },
   },
   [`& .${CodeItemClasses.editIcon}`]: {
     width: 28,
@@ -48,15 +54,23 @@ const StyledListItem = styled(ListItem)(({ theme }) => ({
     borderRadius: "50%",
     padding: theme.spacing(0.6),
     transition: "0.1s all linear",
+    color: "primary",
+    cursor: "pointer",
     "&:hover": {
       backgroundColor: grey[200],
     },
   },
   [`& .${CodeItemClasses.labelsContainer}`]: {
-    maxWidth: 150,
     display: "flex",
     overflowX: "auto",
     borderRadius: "5px",
+    maxWidth: 70,
+    [theme.breakpoints.up("sm")]: {
+      maxWidth: 100,
+    },
+    [theme.breakpoints.up("md")]: {
+      maxWidth: 200,
+    },
     "::-webkit-scrollbar": {
       height: "10px",
     },
@@ -81,16 +95,19 @@ const StyledListItem = styled(ListItem)(({ theme }) => ({
   [`& .${CodeItemClasses.label}`]: {
     marginRight: "3px",
     borderRadius: "4px",
-    padding: "3px 5px 3px 5px",
-    maxWidth: "135px",
+    padding: "3px 8px",
+    maxWidth: "110px",
     p: {
-      fontSize: "14px !important",
+      fontSize: 14,
       whiteSpace: "nowrap",
       overflow: "hidden",
       wordBreak: "break-word",
       textAlign: "center",
       textOverflow: "ellipsis",
       lineHeight: 1.3,
+      [theme.breakpoints.down("sm")]: {
+        fontSize: 12,
+      },
     },
   },
   [`& .${CodeItemClasses.container}`]: {
@@ -100,12 +117,27 @@ const StyledListItem = styled(ListItem)(({ theme }) => ({
     columnGap: 1.5,
   },
   [`& .${CodeItemClasses.text}`]: {
-    display: "-webkit-box",
-    WebkitBoxOrient: "vertical",
-    WebkitLineClamp: 1,
-    overflow: "hidden",
-    wordBreak: "break-word",
-    marginRight: 3,
+    ".MuiTypography-root": {
+      overflow: "hidden",
+      whiteSpace: "nowrap",
+      textOverflow: "ellipsis",
+      marginRight: 3,
+      [theme.breakpoints.up("xs")]: {
+        maxWidth: 185,
+        fontSize: 16,
+      },
+      [theme.breakpoints.up("sm")]: {
+        maxWidth: 360,
+        fontSize: 18,
+      },
+      [theme.breakpoints.up("md")]: {
+        maxWidth: 570,
+        fontSize: 20,
+      },
+      [theme.breakpoints.up("lg")]: {
+        maxWidth: 850,
+      },
+    },
   },
 }));
 
@@ -134,25 +166,30 @@ export const CodeItem = ({
       className={CodeItemClasses.listItem}
       secondaryAction={
         <Box className={CodeItemClasses.container}>
-          <Box
-            onMouseDown={(e) => e.stopPropagation()}
-            className={CodeItemClasses.labelsContainer}
-          >
-            {codeItemLabels.map((label) => (
-              <Box
-                className={CodeItemClasses.label}
-                bgcolor={label.color}
-                key={label.id}
-              >
-                <Typography>{label.name}</Typography>
-              </Box>
-            ))}
-          </Box>
+          <Box display="flex" alignItems="center" gap={{ xs: 0.5, sm: 1 }}>
+            <Box
+              onMouseDown={(e) => e.stopPropagation()}
+              className={CodeItemClasses.labelsContainer}
+            >
+              {codeItemLabels.map((label) => (
+                <Box
+                  className={CodeItemClasses.label}
+                  bgcolor={label.color}
+                  key={label.id}
+                >
+                  <Typography
+                    color={getTextColor({ textColor: label.text_color })}
+                  >
+                    {label.name}
+                  </Typography>
+                </Box>
+              ))}
+            </Box>
 
-          <Box display="flex">
             <Edit
               className={CodeItemClasses.editIcon}
               onClick={onRedirectToEdit}
+              color="primary"
             />
 
             <DeleteCodeItemButton
@@ -161,7 +198,6 @@ export const CodeItem = ({
               codeItemId={codeItemId}
               sx={{
                 padding: 0,
-                color: "black",
                 "&:hover": { background: 0 },
                 minWidth: 0,
               }}

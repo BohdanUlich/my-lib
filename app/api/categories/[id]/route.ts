@@ -2,7 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { connectDb } from "@/lib";
 import Category from "@/models/category";
 import { ZodError, z } from "zod";
-import Label from "@/models/label";
+import { MongoError } from "@/types";
+import { getServerSession } from "next-auth";
+import { authConfig } from "@/configs";
+import CodeItem from "@/models/code-item";
 
 interface UpdateCategoryRequest {
   name: string;
@@ -10,12 +13,12 @@ interface UpdateCategoryRequest {
 
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectDb();
 
-    const id = params.id;
+    const id = (await params).id;
     const body = (await req.json()) as UpdateCategoryRequest;
 
     if (!id) {
@@ -31,14 +34,24 @@ export async function PUT(
       .object({
         name: z.string().min(1),
         labels: z.array(
-          z.object({ id: z.string(), name: z.string(), color: z.string() })
+          z.object({
+            id: z.string(),
+            name: z.string(),
+            color: z.string(),
+            text_color: z.string(),
+          })
         ),
       })
       .parse(body);
 
+    const updatedLabels = parsedBody.labels.map(({ id, ...rest }) => ({
+      _id: id,
+      ...rest,
+    }));
+
     const category = await Category.findOneAndUpdate(
       { _id: id },
-      { $set: { ...parsedBody } },
+      { $set: { name: parsedBody.name, labels: updatedLabels } },
       { new: true }
     );
 
@@ -58,6 +71,18 @@ export async function PUT(
       );
     }
 
+    const mongoError = error as MongoError;
+
+    if (mongoError.code === 11000) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "A category with this name already exists",
+        },
+        { status: 400 }
+      );
+    }
+
     return NextResponse.json(
       {
         success: false,
@@ -70,12 +95,21 @@ export async function PUT(
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectDb();
 
-    const categoryId = params.id;
+    const session = await getServerSession({ ...authConfig });
+    const userId = session?.user?.id;
+    const categoryId = (await params).id;
+
+    if (!userId) {
+      return NextResponse.json(
+        { success: false, error: "Unauthorized" },
+        { status: 401 }
+      );
+    }
 
     if (!categoryId) {
       return NextResponse.json(
@@ -86,12 +120,9 @@ export async function DELETE(
       );
     }
 
-    await Category.findOneAndDelete({ _id: categoryId });
+    await CodeItem.deleteMany({ user_id: userId, category_id: categoryId });
 
-    await Label.updateMany(
-      { category_ids: categoryId },
-      { $pull: { category_ids: categoryId } }
-    );
+    await Category.findOneAndDelete({ _id: categoryId });
 
     return NextResponse.json({ success: true });
   } catch (error) {

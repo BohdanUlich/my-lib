@@ -12,7 +12,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     <Container
       maxWidth="xs"
       sx={{
-        height: 1,
+        height: "100vh",
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",

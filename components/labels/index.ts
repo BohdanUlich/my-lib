@@ -4,3 +4,4 @@ export * from "./EditLabelModal";
 export * from "./LabelsModal";
 export * from "./LabelsAutocompleteArrayInput";
 export * from "./LabelsFilter";
+export * from "./EditLabelModal";

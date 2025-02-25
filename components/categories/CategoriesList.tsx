@@ -1,16 +1,14 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { useSearchParams } from "next/navigation";
-import { Box, Grid } from "@mui/material";
+import { useCallback, useEffect, useMemo } from "react";
+import { Box, Grid, Typography } from "@mui/material";
 import { useCategories } from "@/providers";
-import { getCategoryIdsFromLabels } from "@/helpers";
-import { CATEGORY_TYPE } from "@/types";
-import { useGetCategories, useGetLabels } from "@/api";
+import { useGetCategories } from "@/api";
 import { CategoryCard } from "./CategoryCard";
 import { CategoryCardSkeleton } from "./CategoryCardSkeleton";
 import { LoadingSpinner } from "../LoadingSpinner";
 import { useInView } from "react-intersection-observer";
+import { isCategoryLabelsEdited } from "@/helpers";
 
 export const CategoriesList = () => {
   const {
@@ -25,40 +23,18 @@ export const CategoriesList = () => {
     () => categoriesResponse?.pages.flatMap((page) => page.data) || [],
     [categoriesResponse]
   );
-  const { data: labels } = useGetLabels({ labelType: CATEGORY_TYPE });
   const { currentCategories, setCurrentCategories } = useCategories();
-  const searchParams = useSearchParams();
-  const labelIds = searchParams.getAll("label");
-  const [filteredCategories, setFilteredCategories] = useState(categories);
 
   useEffect(() => {
-    // Initial categories filtering when label ids are in search params
-    if (labels?.length && categories.length && labelIds.length) {
-      const categoryIds = getCategoryIdsFromLabels({ labelIds, labels });
-
-      const filteredCategories = categories.filter((category) =>
-        categoryIds.includes(category.id)
-      );
-
-      setFilteredCategories(filteredCategories);
-      setCurrentCategories(filteredCategories);
-
-      return;
-    }
-
-    // Initial set of categories without filters
-    if ((!categories.length && currentCategories.length) || categories.length) {
+    // Initial set of categories
+    if (categories.length) {
       setCurrentCategories(categories);
     }
-
-    //eslint-disable-next-line
-  }, [labels, categories, setCurrentCategories, searchParams]);
+  }, [categories]);
 
   const onFinishCreatingCategory = useCallback(() => {
-    labelIds.length
-      ? setCurrentCategories(filteredCategories)
-      : setCurrentCategories(categories);
-  }, [categories, labelIds, filteredCategories, setCurrentCategories]);
+    setCurrentCategories(categories);
+  }, [categories, setCurrentCategories]);
 
   const { ref, inView } = useInView({
     triggerOnce: false,
@@ -71,23 +47,34 @@ export const CategoriesList = () => {
 
   return (
     <Grid container spacing={2} alignItems="stretch">
-      {isLoading
-        ? Array.from({ length: 8 }).map((_, index) => (
-            <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
-              <CategoryCardSkeleton />
-            </Grid>
-          ))
-        : currentCategories?.map((category) => (
-            <Grid item xs={12} sm={6} md={4} lg={3} key={category.id}>
-              <CategoryCard
-                categoryName={category.name}
-                isNewCategory={!category.id}
-                onFinishCreatingCategory={onFinishCreatingCategory}
-                categoryId={category.id}
-                labels={category.labels || []}
-              />
-            </Grid>
-          ))}
+      {isLoading ? (
+        Array.from({ length: 8 }).map((_, index) => (
+          <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+            <CategoryCardSkeleton />
+          </Grid>
+        ))
+      ) : currentCategories.length ? (
+        currentCategories?.map((category) => (
+          <Grid item xs={12} sm={6} md={4} lg={3} key={category.id}>
+            <CategoryCard
+              categoryName={category.name}
+              isNewCategory={!category.id}
+              onFinishCreatingCategory={onFinishCreatingCategory}
+              categoryId={category.id}
+              labels={category.labels || []}
+              isCategoryLabelsEdited={isCategoryLabelsEdited({
+                categories,
+                categoryId: category.id,
+                newLabels: category.labels || [],
+              })}
+            />
+          </Grid>
+        ))
+      ) : (
+        <Grid item>
+          <Typography mt={3}>No categories found...</Typography>
+        </Grid>
+      )}
       {hasNextPage && !isLoading && (
         <Box ref={ref} width={1} py={2} display="flex" justifyContent="center">
           <LoadingSpinner />

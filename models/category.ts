@@ -8,6 +8,7 @@ interface CategoryDocument {
     label_id: mongoose.Schema.Types.ObjectId;
     name: string;
     color: string;
+    text_color: string;
   }[];
 }
 
@@ -30,6 +31,7 @@ const categorySchema = new Schema<CategoryDocument>(
           },
           name: { type: String, required: true },
           color: { type: String, required: true },
+          text_color: { type: String, required: true },
         },
       ],
       default: [],

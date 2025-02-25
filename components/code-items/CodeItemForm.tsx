@@ -106,7 +106,7 @@ export const CodeItemForm = ({
             flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
-            rowGap: 1.5,
+            rowGap: 2,
           }}
         >
           <TextInput label="Name" spellCheck="false" name="name" fullWidth />
@@ -122,11 +122,11 @@ export const CodeItemForm = ({
             alignItems="center"
             spacing={1.5}
           >
-            <Grid item xs={10}>
+            <Grid item xs={8} md={10}>
               <LabelsAutocompleteArrayInput options={labels} name="label_ids" />
             </Grid>
 
-            <Grid item xs={2}>
+            <Grid item xs={4} md={2}>
               <Button
                 variant="contained"
                 fullWidth

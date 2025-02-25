@@ -10,10 +10,12 @@ interface UseGetCategoriesParams {
 export const useGetCategories = ({ limit }: UseGetCategoriesParams = {}) => {
   const searchParams = useSearchParams();
   const q = searchParams.get("q");
+  const labels = searchParams.getAll("label");
 
   return useInfiniteQuery({
-    queryKey: [CATEGORIES_API_ENDPOINT, q],
-    queryFn: ({ pageParam }) => fetchCategories({ q, page: pageParam, limit }),
+    queryKey: [CATEGORIES_API_ENDPOINT, q, labels],
+    queryFn: ({ pageParam }) =>
+      fetchCategories({ q, page: pageParam, limit, labels }),
     initialPageParam: 1,
     getNextPageParam: (lastPage) => {
       if (lastPage.pagination.hasMore) {

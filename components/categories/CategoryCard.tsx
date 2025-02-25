@@ -14,6 +14,8 @@ import {
   Grid,
   Tooltip,
   Typography,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import { CATEGORY_TYPE, Label as ILabel } from "@/types";
@@ -29,6 +31,7 @@ interface CategoryCardProps {
   categoryName: string;
   categoryId: string;
   isNewCategory: boolean;
+  isCategoryLabelsEdited: boolean;
   labels: ILabel[];
   onFinishCreatingCategory: () => void;
 }
@@ -41,6 +44,7 @@ export const CategoryCard = ({
   categoryName,
   categoryId,
   isNewCategory,
+  isCategoryLabelsEdited,
   labels,
   onFinishCreatingCategory,
 }: CategoryCardProps) => {
@@ -52,14 +56,11 @@ export const CategoryCard = ({
   const isLoading = isLoadingCreate || isLoadingUpdate;
   const [showTooltip, setShowTooltip] = useState(false);
   const textRef = useRef<HTMLDivElement>(null);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const onSave = async (data: FieldValues) => {
     try {
-      if (data.editedCategoryName === categoryName) {
-        setIsEdit(false);
-        return;
-      }
-
       if (isNewCategory) {
         await createCategory({
           name: data.editedCategoryName,
@@ -67,6 +68,9 @@ export const CategoryCard = ({
 
         return;
       }
+
+      if (!isCategoryLabelsEdited && data.editedCategoryName === categoryName)
+        return;
 
       await updateCategory({
         name: data.editedCategoryName,
@@ -110,18 +114,12 @@ export const CategoryCard = ({
       <Box
         sx={{
           position: "relative",
-          zIndex: isEdit || isNewCategory ? 20 : 9,
+          zIndex: isEdit || isNewCategory ? 20 : 8,
           height: 1,
         }}
       >
         <Form schema={schema} onSubmit={onSave} sx={{ height: 1 }}>
-          <Card
-            sx={{
-              height: 1,
-              "&:hover": { ".MuiSvgIcon-root": { color: "text.primary" } },
-            }}
-            onClick={onRedirect}
-          >
+          <Card onClick={onRedirect}>
             <CardActionArea sx={{ height: 1 }}>
               <CardContent
                 sx={{
@@ -159,6 +157,7 @@ export const CategoryCard = ({
                           key={label.id}
                           labelName={label.name}
                           labelColor={label.color}
+                          textColor={label.text_color}
                         />
                       ))}
                     </Grid>
@@ -176,7 +175,7 @@ export const CategoryCard = ({
                       >
                         <Edit
                           sx={{
-                            opacity: 0,
+                            opacity: isMobile ? 1 : 0,
                             transition: "0.1s all linear",
                             padding: 0.4,
                             height: 23,
@@ -184,6 +183,7 @@ export const CategoryCard = ({
                             borderRadius: "50%",
                             "&:hover": {
                               backgroundColor: grey[200],
+                              color: "#000",
                             },
                           }}
                         />
@@ -200,12 +200,20 @@ export const CategoryCard = ({
                     name="editedCategoryName"
                     inputProps={{
                       sx: {
-                        fontSize: 50,
+                        fontSize: 30,
                         textAlign: "center",
                         padding: 0,
                         paddingBottom: "1px",
                         boxSizing: "border-box",
                         height: 75,
+                      },
+                    }}
+                    sx={{
+                      ".MuiInputBase-root::before": {
+                        border: 0,
+                      },
+                      ".MuiInputBase-root::after": {
+                        border: 0,
                       },
                     }}
                     autoFocus
@@ -231,7 +239,7 @@ export const CategoryCard = ({
                         wordBreak: "break-word",
                         textAlign: "center",
                         lineHeight: 1.3,
-                        fontSize: "30px",
+                        fontSize: { xs: 26, md: 30 },
                       }}
                     >
                       {categoryName}
@@ -246,7 +254,7 @@ export const CategoryCard = ({
             <Button
               variant="contained"
               type="submit"
-              sx={{ position: "absolute", bottom: -40, left: 0, zIndex: 11 }}
+              sx={{ position: "absolute", bottom: -43, left: 0, zIndex: 11 }}
               isLoading={isLoading}
             >
               Save
@@ -261,7 +269,7 @@ export const CategoryCard = ({
                 display="flex"
                 flexDirection="column"
                 gap={0.5}
-                sx={{ position: "absolute", top: 0, right: -150, zIndex: 11 }}
+                sx={{ position: "absolute", top: 0, right: -142, zIndex: 11 }}
               >
                 <Box sx={{ position: "relative" }}>
                   <EditLabelButton

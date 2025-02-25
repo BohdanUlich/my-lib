@@ -6,14 +6,10 @@ import User from "@/models/user";
 import mongoose from "mongoose";
 import { getServerSession } from "next-auth";
 import { authConfig } from "@/configs";
+import { MongoError } from "@/types";
 
 interface NewCategoryRequest {
   name: string;
-}
-
-interface MongoError {
-  code?: number;
-  message: string;
 }
 
 export async function GET(req: NextRequest) {
@@ -21,6 +17,7 @@ export async function GET(req: NextRequest) {
 
   const { searchParams } = new URL(req.url);
   const searchQuery = searchParams.get("q");
+  const labels = searchParams.getAll("label");
   const page = parseInt(searchParams.get("page") || "1", 10);
   const limit = parseInt(searchParams.get("limit") || "20", 10);
 
@@ -54,6 +51,7 @@ export async function GET(req: NextRequest) {
                 id: { $toString: "$$label._id" },
                 name: "$$label.name",
                 color: "$$label.color",
+                text_color: "$$label.text_color",
               },
             },
           },
@@ -70,6 +68,14 @@ export async function GET(req: NextRequest) {
     }
 
     aggregationPipeline.push({ $skip: (page - 1) * limit }, { $limit: limit });
+
+    if (labels.length > 0) {
+      aggregationPipeline.push({
+        $match: {
+          "labels.id": { $in: labels },
+        },
+      });
+    }
 
     const categories = await Category.aggregate(aggregationPipeline);
 

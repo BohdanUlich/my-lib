@@ -1,11 +1,13 @@
 import { Box, Tooltip, Typography } from "@mui/material";
+import { getTextColor } from "@/helpers/getTextColor";
 
 interface LabelProps {
   labelName: string;
   labelColor: string;
+  textColor: string;
 }
 
-export const Label = ({ labelName, labelColor }: LabelProps) => {
+export const Label = ({ labelName, labelColor, textColor }: LabelProps) => {
   return (
     <Tooltip title={labelName}>
       <Box
@@ -21,7 +23,7 @@ export const Label = ({ labelName, labelColor }: LabelProps) => {
       >
         <Typography
           fontSize={10}
-          color={`${labelColor}.contrastText`}
+          color={getTextColor({ textColor })}
           sx={{
             textWrap: "nowrap",
             overflow: "hidden",
