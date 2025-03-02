@@ -26,10 +26,7 @@ export const CategoriesList = () => {
   const { currentCategories, setCurrentCategories } = useCategories();
 
   useEffect(() => {
-    // Initial set of categories
-    if (categories.length) {
-      setCurrentCategories(categories);
-    }
+    setCurrentCategories(categories);
   }, [categories]);
 
   const onFinishCreatingCategory = useCallback(() => {
