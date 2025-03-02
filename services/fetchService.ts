@@ -25,6 +25,7 @@ export const fetchService = async (url: string, options: RequestOptions) => {
         ? { body: data }
         : { body: JSON.stringify(data) }
       : undefined),
+    cache: "no-store",
   };
 
   try {

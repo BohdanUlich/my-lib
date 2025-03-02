@@ -13,7 +13,6 @@ import { Header } from "@/components/Header";
 import { ProgressBar } from "@/components/ProgressBar";
 
 export const metadata: Metadata = {
-  robots: "noindex, nofollow",
   title: "My Lib",
 };
 
