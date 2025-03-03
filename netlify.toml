@@ -5,3 +5,8 @@
   command = "next build"
   publish = ".next"
   
+[[headers]]
+  for = "/app/api/*"
+  [headers.values]
+    Cache-Control = "no-store"
+    CDN-Cache-Control = "no-store"
