@@ -97,6 +97,10 @@ export async function GET(req: NextRequest) {
         limit,
         hasMore,
       },
+      headers: {
+        "Cache-Control": "no-store, max-age=0",
+        "CDN-Cache-Control": "no-store",
+      },
     });
   } catch (error) {
     return NextResponse.json({
