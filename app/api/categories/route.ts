@@ -12,6 +12,8 @@ interface NewCategoryRequest {
   name: string;
 }
 
+export const dynamic = "force-dynamic";
+
 export async function GET(req: NextRequest) {
   await connectDb();
 
@@ -94,6 +96,10 @@ export async function GET(req: NextRequest) {
         page,
         limit,
         hasMore,
+      },
+      headers: {
+        "Cache-Control": "no-store, max-age=0",
+        "CDN-Cache-Control": "no-store",
       },
     });
   } catch (error) {
