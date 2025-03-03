@@ -12,6 +12,8 @@ interface NewLabelRequest {
   color: string;
 }
 
+export const dynamic = "force-dynamic";
+
 export async function GET(req: NextRequest) {
   await connectDb();
   const session = await getServerSession({ ...authConfig });

@@ -21,6 +21,8 @@ const codeItemSchema = z.object({
   label_ids: z.array(z.string()).optional(),
 });
 
+export const dynamic = "force-dynamic";
+
 type CodeItemSchema = z.infer<typeof codeItemSchema>;
 
 const internalServerError = NextResponse.json(
