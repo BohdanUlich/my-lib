@@ -19,6 +19,11 @@ export const fetchService = async (url: string, options: RequestOptions) => {
     headers: {
       ...(!isFormData ? { "Content-Type": "application/json" } : undefined),
       ...headers,
+      "Cache-Control":
+        "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0, s-maxage=0",
+      "CDN-Cache-Control":
+        "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0, s-maxage=0",
+      "Surrogate-Control": "no-store",
     },
     ...(data
       ? isFormData
@@ -34,6 +39,8 @@ export const fetchService = async (url: string, options: RequestOptions) => {
       : `/api/${url}`;
     const response = await fetch(finalUrl, config);
     const jsonData = await response.json();
+
+    console.log("response", jsonData);
 
     return jsonData;
   } catch (error) {
