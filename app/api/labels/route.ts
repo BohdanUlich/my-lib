@@ -12,6 +12,8 @@ interface NewLabelRequest {
   color: string;
 }
 
+export const dynamic = "force-dynamic";
+
 export async function GET(req: NextRequest) {
   await connectDb();
   const session = await getServerSession({ ...authConfig });
@@ -56,6 +58,8 @@ export async function GET(req: NextRequest) {
         },
       },
     ]);
+
+    console.log({ labels, userId, session });
 
     return NextResponse.json({ success: true, data: labels });
   } catch (error) {
