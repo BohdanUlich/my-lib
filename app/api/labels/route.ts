@@ -59,6 +59,8 @@ export async function GET(req: NextRequest) {
       },
     ]);
 
+    console.log({ labels, userId, session });
+
     return NextResponse.json({ success: true, data: labels });
   } catch (error) {
     return NextResponse.json({

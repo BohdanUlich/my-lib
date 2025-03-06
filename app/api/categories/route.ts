@@ -88,6 +88,8 @@ export async function GET(req: NextRequest) {
 
     const hasMore = page * limit < totalCategories;
 
+    console.log({ categories, userId, session });
+
     return NextResponse.json({
       success: true,
       data: categories,
