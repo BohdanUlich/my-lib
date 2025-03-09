@@ -164,3 +164,5 @@ export async function GET(
     return internalServerError;
   }
 }
+
+export const runtime = "edge";

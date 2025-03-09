@@ -1,0 +1,6 @@
+{
+  "name": "my-lib",
+  "compatibility_date": "2025-03-09",
+  "compatibility_flags": ["nodejs_compat"],
+  "pages_build_output_dir": ".next/static"
+}

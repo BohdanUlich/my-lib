@@ -84,3 +84,5 @@ export const POST = async (req: NextRequest): Promise<NewResponse> => {
     );
   }
 };
+
+export const runtime = "edge";
