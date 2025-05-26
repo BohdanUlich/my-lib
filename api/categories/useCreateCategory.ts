@@ -14,9 +14,6 @@ export const useCreateCategory = () => {
         {
           method: "POST",
           data: newCategory,
-          headers: {
-            "Content-Type": "application/json",
-          },
         }
       );
 

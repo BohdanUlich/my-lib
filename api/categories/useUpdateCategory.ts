@@ -20,9 +20,6 @@ export const useUpdateCategory = ({
         {
           method: "PUT",
           data: category,
-          headers: {
-            "Content-Type": "application/json",
-          },
         }
       );
 
