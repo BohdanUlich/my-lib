@@ -16,9 +16,6 @@ export const useCreateLabel = () => {
         {
           method: "POST",
           data: newLabel,
-          headers: {
-            "Content-Type": "application/json",
-          },
         }
       );
 
