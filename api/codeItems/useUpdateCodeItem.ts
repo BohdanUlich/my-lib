@@ -20,9 +20,6 @@ export const useUpdateCodeItem = ({
         {
           method: "PUT",
           data: codeItem,
-          headers: {
-            "Content-Type": "application/json",
-          },
         }
       );
 

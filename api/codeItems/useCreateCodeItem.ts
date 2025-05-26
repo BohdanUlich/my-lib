@@ -14,9 +14,6 @@ export const useCreateCodeItem = () => {
         {
           method: "POST",
           data: newCodeItem,
-          headers: {
-            "Content-Type": "application/json",
-          },
         }
       );
 
