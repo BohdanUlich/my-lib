@@ -14,6 +14,9 @@ import { ProgressBar } from "@/components/ProgressBar";
 
 export const metadata: Metadata = {
   title: "My Lib",
+  other: {
+    "google-site-verification": "tF4APm9Ef57vuo1EalGFhWE486sHWOmrpH1wGcZ_Cbk",
+  },
 };
 
 export const viewport = {
