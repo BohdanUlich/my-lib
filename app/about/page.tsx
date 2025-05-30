@@ -83,14 +83,7 @@ export default function AboutPage() {
           Home page with categories:
         </Typography>
 
-        <Box
-          height={560}
-          width={1}
-          position="relative"
-          border={1}
-          borderRadius={2}
-          overflow="hidden"
-        >
+        <Box height={560} width={1} position="relative" overflow="hidden">
           <Image
             src="/about/categories.png"
             alt="Categories example"
@@ -105,11 +98,9 @@ export default function AboutPage() {
         </Typography>
 
         <Box
-          height={550}
+          height={560}
           width={1}
           position="relative"
-          border={1}
-          borderRadius={2}
           mt={2}
           overflow="hidden"
         >
