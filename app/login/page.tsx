@@ -8,6 +8,7 @@ import { useState } from "react";
 import { Button, Form, TextInput, Link } from "@/components";
 import { FieldValues } from "react-hook-form";
 import { useSnackbar } from "notistack";
+import { CATEGORIES_ROUTE } from "@/types";
 
 const schema = z.object({
   email: z
@@ -21,7 +22,7 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") || "/";
+  const callbackUrl = searchParams.get("callbackUrl") || CATEGORIES_ROUTE;
 
   const onSubmit = async (data: FieldValues) => {
     setIsLoading(true);
@@ -35,7 +36,7 @@ const Login = () => {
       if (res?.error) {
         enqueueSnackbar(`${res?.error}`, { variant: "error" });
       } else {
-        window.location.assign("/");
+        window.location.assign(CATEGORIES_ROUTE);
       }
     } catch (err) {
       enqueueSnackbar(`${err}`, { variant: "error" });

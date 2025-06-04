@@ -19,4 +19,4 @@ export const LIGHT_TEXT = "light-text";
 export const DARK_TEXT = "dark-text";
 
 // Routes
-export const ABOUT_PAGE_ROUTE = "/about";
+export const CATEGORIES_ROUTE = "/categories";
