@@ -2,8 +2,6 @@
 
 Effortlessly save, organize, and reuse code snippets, configurations, and technical notes. Built for developers, DevOps engineers, and IT specialists.
 
-https://my-lib-pro.netlify.app
-
 ## Features
 
 ✅ Save and organize code snippets in multiple languages  
