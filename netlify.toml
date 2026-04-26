@@ -2,6 +2,6 @@
     package = "@netlify/plugin-nextjs"
 
 [build]
-  command = "next build"
+  command = "next build && next-sitemap"
   publish = ".next"
   

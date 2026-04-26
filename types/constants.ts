@@ -17,3 +17,6 @@ export const LIGHT_THEME = "light";
 export const DARK_THEME = "dark";
 export const LIGHT_TEXT = "light-text";
 export const DARK_TEXT = "dark-text";
+
+// Routes
+export const CATEGORIES_ROUTE = "/categories";

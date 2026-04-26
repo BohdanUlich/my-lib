@@ -7,6 +7,7 @@ import { Button, Form, TextInput, Link } from "@/components";
 import { fetchService } from "@/services";
 import { useSnackbar } from "notistack";
 import { signIn } from "next-auth/react";
+import { CATEGORIES_ROUTE } from "@/types";
 
 const schema = z
   .object({
@@ -47,7 +48,7 @@ const Registration = () => {
       });
 
       if (!result?.error && result?.status === 200) {
-        window.location.assign("/");
+        window.location.assign(CATEGORIES_ROUTE);
 
         enqueueSnackbar("Sign up successful. Welcome to My lib", {
           variant: "success",

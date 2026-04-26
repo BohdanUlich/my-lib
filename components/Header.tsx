@@ -17,11 +17,11 @@ import {
 } from "@mui/material";
 import { useGetUser } from "@/hooks";
 import { useColorMode } from "@/providers";
+import { CATEGORIES_ROUTE } from "@/types";
 
 export const Header = () => {
   const { userName, userImage, userId, userEmail } = useGetUser();
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
-
   const { theme, toggleTheme } = useColorMode();
 
   const onOpenUserMenu = (event: MouseEvent<HTMLElement>) => {
@@ -47,7 +47,7 @@ export const Header = () => {
             variant="h6"
             noWrap
             component={Link}
-            href="/"
+            href={userId ? CATEGORIES_ROUTE : "/"}
             color="primary"
             sx={{
               display: "flex",
@@ -100,7 +100,7 @@ export const Header = () => {
                   <Typography
                     component={Link}
                     width={1}
-                    href="/about"
+                    href="/"
                     color="primary"
                   >
                     About
