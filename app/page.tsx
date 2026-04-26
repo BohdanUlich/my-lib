@@ -1,21 +1,14 @@
-import { Metadata } from "next";
+"use client";
+
 import { Container, Typography, List, ListItem, Box } from "@mui/material";
 import { Button } from "@/components/buttons";
 import Link from "next/link";
 import Image from "next/legacy/image";
 import { CATEGORIES_ROUTE } from "@/types";
-import { authConfig } from "@/configs";
-import { getServerSession } from "next-auth";
+import { useSession } from "next-auth/react";
 
-export const metadata: Metadata = {
-  title: "About My Lib - Your Personal Code Library",
-  description:
-    "My Lib is a simple and efficient way to store, organize, and reuse code snippets, scripts, configurations, and more. Create your own personal library with frontend, backend, and any programming languages.",
-  robots: "index, follow",
-};
-
-const LandingPage = async () => {
-  const session = await getServerSession(authConfig);
+const LandingPage = () => {
+  const { data: session } = useSession();
   const userId = session?.user?.id;
 
   return (
