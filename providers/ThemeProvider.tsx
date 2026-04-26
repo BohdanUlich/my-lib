@@ -172,7 +172,7 @@ const darkTheme = createTheme({
       default: "#1e1e1e",
     },
     grey: { 400: "#3a3a3a" },
-    primary: { main: "#ed8002" },
+    primary: { main: "#fde052", light: "#fff6c7", dark: "#f5b848" },
     secondary: { main: "#008edf", light: "#00afff", dark: "#005caa" },
   },
   shape,

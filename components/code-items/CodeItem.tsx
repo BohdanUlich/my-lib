@@ -57,7 +57,8 @@ const StyledListItem = styled(ListItem)(({ theme }) => ({
     color: "primary",
     cursor: "pointer",
     "&:hover": {
-      backgroundColor: grey[200],
+      backgroundColor: theme.palette.primary.light,
+      color: theme.palette.primary.dark,
     },
   },
   [`& .${CodeItemClasses.labelsContainer}`]: {
@@ -210,7 +211,8 @@ export const CodeItem = ({
                   borderRadius: "50%",
                   padding: 0.6,
                   "&:hover": {
-                    backgroundColor: grey[200],
+                    backgroundColor: "primary.light",
+                    color: "primary.dark",
                   },
                 }}
               />
